@@ -3,12 +3,14 @@ import { sections } from './data/sections'
 import { containsKeyword, countKwtWords, isCorrect, normalize } from './lib/answers'
 import { checkAll, parseErrorSentence, questionCount, splitGaps } from './lib/exercise'
 import type { Exercise } from './types'
+import { countWords } from './lib/writing'
 
 const allParts = sections.flatMap((s) => s.parts.map((p) => ({ s, p })))
 const allExercises = allParts.flatMap(({ p }) => p.exercises)
 
 /** Respuestas modelo (la primera aceptada) para cada pregunta. */
 function modelAnswers(ex: Exercise): string[] {
+  // eslint-disable-next-line default-case
   switch (ex.kind) {
     case 'mc-cloze':
       return ex.gaps.map((g) => String(g.answer))
@@ -22,6 +24,13 @@ function modelAnswers(ex: Exercise): string[] {
       return ex.items.map((it) => String(it.answer))
     case 'error':
       return ex.items.map((it) => String(parseErrorSentence(it.sentence).wrong))
+    case 'reading-mc':
+    case 'matching':
+      return ex.questions.map((q) => String(q.answer))
+    case 'gapped-text':
+      return ex.answers.map(String)
+    case 'writing':
+      return []
   }
 }
 
@@ -67,6 +76,11 @@ describe('contenido', () => {
       for (const ex of p.exercises) {
         it(`${ex.id}: formato correcto`, () => {
           // las partes de examen tienen el nº oficial de preguntas
+          if (ex.kind === 'writing') {
+            expect(ex.prompt.length).toBeGreaterThan(40)
+            expect(ex.plan.length).toBeGreaterThanOrEqual(3)
+            return
+          }
           if (p.questions) expect(questionCount(ex)).toBe(p.questions)
           else expect(questionCount(ex)).toBeGreaterThanOrEqual(5)
 
@@ -114,6 +128,30 @@ describe('contenido', () => {
                 expect(it.explanation.length).toBeGreaterThan(8)
               }
               break
+            case 'reading-mc':
+              expect(ex.text.split(/\n\s*\n/).length).toBeGreaterThanOrEqual(4)
+              for (const q of ex.questions) {
+                expect(new Set(q.options).size).toBe(4)
+                expect(q.explanation.length).toBeGreaterThan(20)
+              }
+              break
+            case 'gapped-text': {
+              const nums = splitGaps(ex.text).filter((x): x is number => typeof x === 'number')
+              expect(nums).toEqual(ex.answers.map((_, i) => i))
+              expect(ex.sentences).toHaveLength(ex.answers.length + 1)
+              expect(new Set(ex.answers).size).toBe(ex.answers.length)
+              expect(ex.explanations).toHaveLength(ex.answers.length)
+              break
+            }
+            case 'matching':
+              expect(ex.sections.length).toBeGreaterThanOrEqual(4)
+              for (const q of ex.questions) {
+                expect(q.answer).toBeGreaterThanOrEqual(0)
+                expect(q.answer).toBeLessThan(ex.sections.length)
+              }
+              // todas las secciones son respuesta de al menos un enunciado
+              expect(new Set(ex.questions.map((q) => q.answer)).size).toBe(ex.sections.length)
+              break
             case 'error': {
               for (const it of ex.items) {
                 const { wrong } = parseErrorSentence(it.sentence)
@@ -127,17 +165,36 @@ describe('contenido', () => {
             }
           }
         })
-        it(`${ex.id}: las respuestas modelo puntúan 100%`, () => {
-          expect(checkAll(ex, modelAnswers(ex)).every(Boolean)).toBe(true)
-        })
+        if (ex.kind !== 'writing')
+          it(`${ex.id}: las respuestas modelo puntúan 100%`, () => {
+            expect(checkAll(ex, modelAnswers(ex)).every(Boolean)).toBe(true)
+          })
       }
     })
   }
 
+  it('los modelos de writing tienen entre 140 y 190 palabras (sin contar el título)', () => {
+    for (const { p } of allParts) {
+      if (!p.model) continue
+      const lines = p.model.text.split('\n')
+      // los informes y reseñas tienen título y encabezados: Cambridge cuenta todo, pero damos margen
+      const words = countWords(p.model.text)
+      expect(words, `${p.slug}: ${words}`).toBeGreaterThanOrEqual(140)
+      expect(words, `${p.slug}: ${words}`).toBeLessThanOrEqual(190)
+      expect(lines.length).toBeGreaterThan(3)
+    }
+  })
+
   it('las respuestas de elección múltiple no están siempre en la misma posición', () => {
     const pos = new Set(
       allExercises.flatMap((e) =>
-        e.kind === 'mc-cloze' ? e.gaps.map((g) => g.answer) : e.kind === 'choice' ? e.items.map((i) => i.answer) : [],
+        e.kind === 'mc-cloze'
+          ? e.gaps.map((g) => g.answer)
+          : e.kind === 'choice'
+            ? e.items.map((i) => i.answer)
+            : e.kind === 'reading-mc'
+              ? e.questions.map((q) => q.answer)
+              : [],
       ),
     )
     expect(pos.size).toBe(4)

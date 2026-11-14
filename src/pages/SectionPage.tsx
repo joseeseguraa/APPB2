@@ -17,6 +17,13 @@ export default function SectionPage() {
         <span aria-hidden>{section.icon}</span> {section.name}
       </h1>
       <p className="mt-2 text-slate-600">{section.description}</p>
+      {section.intro && (
+        <div className="mt-4 rounded-2xl bg-white border border-navy-100 p-4 sm:p-5 text-sm text-slate-700 space-y-2">
+          {section.intro.map((t, i) => (
+            <p key={i}>{t}</p>
+          ))}
+        </div>
+      )}
 
       <div className="mt-6 grid gap-3">
         {section.parts.map((p, idx) => {

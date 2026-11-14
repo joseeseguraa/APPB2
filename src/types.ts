@@ -118,6 +118,58 @@ export interface ErrorExercise {
   items: ErrorItem[]
 }
 
+/* ---------- Reading ---------- */
+
+/** Reading Part 5 — texto largo + 6 preguntas de 4 opciones. Párrafos separados por línea en blanco. */
+export interface ReadingMcExercise {
+  id: string
+  kind: 'reading-mc'
+  title: string
+  focus: string
+  text: string
+  questions: { question: string; options: [string, string, string, string]; answer: number; explanation: string }[]
+}
+
+/** Reading Part 6 — texto con 6 huecos {1}..{6} y 7 frases (A–G), sobra una. */
+export interface GappedTextExercise {
+  id: string
+  kind: 'gapped-text'
+  title: string
+  focus: string
+  text: string
+  /** 7 frases; se muestran como A–G en este orden */
+  sentences: string[]
+  /** para cada hueco, índice de la frase correcta */
+  answers: number[]
+  explanations: string[]
+}
+
+/** Reading Part 7 — 4 o 5 secciones (A, B…) y 10 enunciados para emparejar. */
+export interface MatchingExercise {
+  id: string
+  kind: 'matching'
+  title: string
+  focus: string
+  intro: string
+  sections: { title: string; text: string }[]
+  questions: { statement: string; answer: number; explanation: string }[]
+}
+
+/* ---------- Writing ---------- */
+
+export interface WritingTask {
+  id: string
+  kind: 'writing'
+  title: string
+  focus: string
+  /** enunciado tal como aparece en el examen (en inglés) */
+  prompt: string
+  /** solo essay: las notas 1, 2 y "your own idea" */
+  notes?: string[]
+  /** plan sugerido párrafo a párrafo (en español) */
+  plan: string[]
+}
+
 export type Exercise =
   | McClozeExercise
   | OpenClozeExercise
@@ -126,6 +178,17 @@ export type Exercise =
   | ChoiceExercise
   | GapExercise
   | ErrorExercise
+  | ReadingMcExercise
+  | GappedTextExercise
+  | MatchingExercise
+  | WritingTask
+
+/** Modelo de respuesta comentado para un tipo de writing */
+export interface WritingModel {
+  prompt: string
+  text: string
+  comments: string[]
+}
 
 /** Bloque de teoría de un tema de gramática o vocabulario */
 export interface TheoryBlock {
@@ -165,6 +228,9 @@ export interface PartInfo {
   theory?: TheoryBlock[]
   /** frase corta para la lista de temas */
   summary?: string
+  /** writing: modelo comentado y checklist de autoevaluación */
+  model?: WritingModel
+  checklist?: string[]
   exercises: Exercise[]
 }
 
@@ -175,5 +241,7 @@ export interface SectionInfo {
   description: string
   icon: string
   available: boolean
+  /** texto introductorio de la sección (en español) */
+  intro?: string[]
   parts: PartInfo[]
 }

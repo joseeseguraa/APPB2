@@ -6,7 +6,10 @@ import type {
   ErrorExercise,
   Exercise,
   GapExercise,
+  GappedTextExercise,
   KwtExercise,
+  MatchingExercise,
+  ReadingMcExercise,
   McClozeExercise,
   OpenClozeExercise,
   WordFormationExercise,
@@ -26,6 +29,7 @@ import { saveAttempt } from '../lib/progress'
 import { Breadcrumbs } from '../components/Layout'
 import { TimerBadge, useCountdown } from '../components/Timer'
 import NotFound from './NotFound'
+import WritingRunner from '../components/WritingRunner'
 
 type Mode = 'practice' | 'exam'
 
@@ -53,6 +57,16 @@ export default function ExercisePage() {
         ]}
       />
       {/* key: reinicia el estado al cambiar de ejercicio o de modo */}
+      {ex.kind === 'writing' ? (
+        <WritingRunner
+          key={`${ex.id}-${mode}`}
+          task={ex}
+          part={part}
+          mode={mode}
+          partUrl={partUrl}
+          nextUrl={next ? `${partUrl}/${next.id}?mode=${mode}` : undefined}
+        />
+      ) : (
       <Runner
         key={`${ex.id}-${mode}`}
         ex={ex}
@@ -62,6 +76,7 @@ export default function ExercisePage() {
         partUrl={partUrl}
         nextUrl={next ? `${partUrl}/${next.id}?mode=${mode}` : undefined}
       />
+      )}
     </div>
   )
 }
@@ -160,20 +175,7 @@ function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps)
         <ScoreBanner score={score} total={n} />
       )}
 
-      {ex.kind === 'mc-cloze' && (
-        <McCloze ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
-      )}
-      {(ex.kind === 'open-cloze' || ex.kind === 'word-formation') && (
-        <OpenCloze ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
-      )}
-      {ex.kind === 'kwt' && <Kwt ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />}
-      {ex.kind === 'choice' && (
-        <Choice ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
-      )}
-      {ex.kind === 'gap' && <Gap ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />}
-      {ex.kind === 'error' && (
-        <ErrorSpot ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
-      )}
+      <ExerciseBody ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
 
       {/* Barra de acciones */}
       <div
@@ -236,7 +238,7 @@ function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps)
   )
 }
 
-function ScoreBanner({ score, total }: { score: number; total: number }) {
+export function ScoreBanner({ score, total }: { score: number; total: number }) {
   const pct = score / total
   const msg =
     pct === 1 ? '¡Perfecto! 🎉' : pct >= 0.75 ? '¡Muy bien!' : pct >= 0.5 ? 'Vas bien, repasa los fallos.' : 'Sigue practicando: lee las explicaciones.'
@@ -275,7 +277,35 @@ function Feedback({ ex, i, value, ok }: { ex: Exercise; i: number; value: string
   )
 }
 
-interface PartProps<E> {
+/** Pinta cualquier ejercicio (sin barra de acciones). Se reutiliza en el simulacro. */
+export function ExerciseBody(props: PartProps<Exercise>) {
+  const { ex } = props
+  switch (ex.kind) {
+    case 'mc-cloze':
+      return <McCloze {...props} ex={ex} />
+    case 'open-cloze':
+    case 'word-formation':
+      return <OpenCloze {...props} ex={ex} />
+    case 'kwt':
+      return <Kwt {...props} ex={ex} />
+    case 'choice':
+      return <Choice {...props} ex={ex} />
+    case 'gap':
+      return <Gap {...props} ex={ex} />
+    case 'error':
+      return <ErrorSpot {...props} ex={ex} />
+    case 'reading-mc':
+      return <ReadingMc {...props} ex={ex} />
+    case 'gapped-text':
+      return <GappedText {...props} ex={ex} />
+    case 'matching':
+      return <Matching {...props} ex={ex} />
+    case 'writing':
+      return null
+  }
+}
+
+export interface PartProps<E> {
   ex: E
   answers: string[]
   results: boolean[] | null
@@ -634,6 +664,224 @@ function ErrorSpot({ ex, answers, results, onChange, disabled }: PartProps<Error
           )
         })}
       </div>
+    </>
+  )
+}
+
+/* ---------- Reading ---------- */
+
+function Paragraphs({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/\n\s*\n/).map((p, i) => (
+        <p key={i} className="mb-4 last:mb-0">
+          {p}
+        </p>
+      ))}
+    </>
+  )
+}
+
+/** Dos columnas en pantallas grandes: texto (con scroll propio) y preguntas. */
+function SplitLayout({ text, children }: { text: ReactNode; children: ReactNode }) {
+  return (
+    <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
+      <article className="rounded-2xl bg-white border border-navy-100 p-5 sm:p-7 font-serif text-[1.05rem] leading-8 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
+        {text}
+      </article>
+      <div className="mt-5 lg:mt-0 grid gap-3">{children}</div>
+    </div>
+  )
+}
+
+function OptionList({
+  options,
+  answer,
+  value,
+  results,
+  onPick,
+  disabled,
+  letters = true,
+}: {
+  options: string[]
+  answer: number
+  value: string
+  results: boolean
+  onPick: (j: number) => void
+  disabled: boolean
+  letters?: boolean
+}) {
+  return (
+    <div className="grid gap-2">
+      {options.map((opt, j) => {
+        const selected = value === String(j)
+        let cls = selected ? 'border-navy-700 bg-navy-800 text-white' : 'border-navy-200 bg-white hover:border-navy-500'
+        if (results) {
+          if (j === answer) cls = 'border-emerald-500 bg-emerald-50 text-emerald-900'
+          else if (selected) cls = 'border-red-400 bg-red-50 text-red-800'
+          else cls = 'border-slate-200 bg-white text-slate-400'
+        }
+        return (
+          <button
+            key={j}
+            disabled={disabled}
+            onClick={() => onPick(j)}
+            className={`rounded-xl border px-3 py-2 text-left text-sm transition flex gap-2 ${cls}`}
+          >
+            {letters && <b className="shrink-0">{LETTERS[j]}</b>}
+            <span>{opt}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+function ReadingMc({ ex, answers, results, onChange, disabled }: PartProps<ReadingMcExercise>) {
+  return (
+    <>
+      <p className="text-sm text-slate-600 mb-3">Lee el texto y elige la mejor respuesta (A, B, C o D) para cada pregunta.</p>
+      <SplitLayout text={<Paragraphs text={ex.text} />}>
+        {ex.questions.map((q, i) => (
+          <Card key={i} n={i + 1}>
+            <p className="font-medium text-navy-900 mb-2">{q.question}</p>
+            <OptionList
+              options={q.options}
+              answer={q.answer}
+              value={answers[i]}
+              results={!!results}
+              onPick={(j) => onChange(i, String(j))}
+              disabled={disabled}
+            />
+            {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+          </Card>
+        ))}
+      </SplitLayout>
+    </>
+  )
+}
+
+function GappedText({ ex, answers, results, onChange, disabled }: PartProps<GappedTextExercise>) {
+  const used = new Set(answers.filter((a) => a !== ''))
+  const paragraphs = ex.text.split(/\n\s*\n/)
+  return (
+    <>
+      <p className="text-sm text-slate-600 mb-3">
+        Faltan {ex.answers.length} frases. Elige la frase (A–{LETTERS[ex.sentences.length - 1]}) que encaja en cada hueco.
+        Sobra una.
+      </p>
+      <SplitLayout
+        text={paragraphs.map((p, k) => (
+          <p key={k} className="mb-4 last:mb-0">
+            {splitGaps(p).map((seg, j) => {
+              if (typeof seg === 'string') return <span key={j}>{seg}</span>
+              const v = answers[seg]
+              const r = results?.[seg]
+              return (
+                <span
+                  key={j}
+                  className={`inline-flex flex-wrap items-center gap-1.5 mx-0.5 my-1 px-2 py-0.5 rounded-lg border font-sans text-sm align-middle ${
+                    r === undefined ? 'border-navy-200 bg-navy-50' : r ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50'
+                  }`}
+                >
+                  <b className="text-navy-700">{seg + 1}</b>
+                  <select
+                    value={v}
+                    disabled={disabled}
+                    onChange={(e) => onChange(seg, e.target.value)}
+                    aria-label={`Hueco ${seg + 1}`}
+                    className="bg-white border border-navy-200 rounded px-1 py-0.5"
+                  >
+                    <option value="">—</option>
+                    {ex.sentences.map((_, si) => (
+                      <option key={si} value={String(si)}>
+                        {LETTERS[si]}
+                      </option>
+                    ))}
+                  </select>
+                  {v !== '' && <i className="font-serif text-[0.95rem] text-slate-700">{ex.sentences[Number(v)]}</i>}
+                </span>
+              )
+            })}
+          </p>
+        ))}
+      >
+        <div className="rounded-2xl bg-white border border-navy-100 p-4">
+          <p className="text-sm font-semibold text-navy-800 mb-2">Frases</p>
+          <ul className="grid gap-2">
+            {ex.sentences.map((s, si) => (
+              <li
+                key={si}
+                className={`flex gap-2 text-sm rounded-lg px-2 py-1.5 ${used.has(String(si)) ? 'bg-navy-50 text-slate-400' : 'text-slate-800'}`}
+              >
+                <b className="text-navy-700 shrink-0">{LETTERS[si]}</b>
+                <span>{s}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {results &&
+          ex.answers.map((_, i) => (
+            <Card key={i} n={i + 1}>
+              <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />
+            </Card>
+          ))}
+      </SplitLayout>
+    </>
+  )
+}
+
+function Matching({ ex, answers, results, onChange, disabled }: PartProps<MatchingExercise>) {
+  const letters = ex.sections.map((_, i) => LETTERS[i])
+  return (
+    <>
+      <p className="text-sm text-slate-600 mb-3">{ex.intro}</p>
+      <SplitLayout
+        text={ex.sections.map((sec, i) => (
+          <section key={i} className="mb-5 last:mb-0">
+            <h3 className="font-sans font-semibold text-navy-900 mb-1">
+              <span className="inline-grid place-items-center w-6 h-6 mr-2 rounded bg-navy-800 text-gold-400 text-sm">
+                {letters[i]}
+              </span>
+              {sec.title}
+            </h3>
+            <p>{sec.text}</p>
+          </section>
+        ))}
+      >
+        <p className="text-sm font-semibold text-navy-800">Which person / text…</p>
+        {ex.questions.map((q, i) => (
+          <div key={i} className="rounded-2xl bg-white border border-navy-100 p-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="flex-1 min-w-[12rem] text-sm">
+                <b className="text-navy-800 mr-1">{i + 1}.</b> {q.statement}
+              </p>
+              <div className="flex gap-1.5">
+                {letters.map((L, j) => {
+                  const selected = answers[i] === String(j)
+                  let cls = selected ? 'bg-navy-800 text-white border-navy-800' : 'bg-white border-navy-200 hover:border-navy-500'
+                  if (results) {
+                    if (j === q.answer) cls = 'bg-emerald-50 border-emerald-500 text-emerald-900'
+                    else if (selected) cls = 'bg-red-50 border-red-400 text-red-800'
+                    else cls = 'bg-white border-slate-200 text-slate-300'
+                  }
+                  return (
+                    <button
+                      key={j}
+                      disabled={disabled}
+                      onClick={() => onChange(i, String(j))}
+                      className={`w-9 h-9 rounded-lg border text-sm font-semibold transition ${cls}`}
+                    >
+                      {L}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+            {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+          </div>
+        ))}
+      </SplitLayout>
     </>
   )
 }

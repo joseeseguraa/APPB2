@@ -46,3 +46,26 @@ export function g(sentence: string, answers: string[], explanation: string): Gap
 export function er(sentence: string, correction: string | null, explanation: string): ErrorItem {
   return { sentence, correction, explanation }
 }
+
+/** Pregunta de Reading Part 5: respuesta correcta primero; se barajan las 4 opciones. */
+export function rq(question: string, correct: string, distractors: [string, string, string], explanation: string) {
+  const all = [correct, ...distractors]
+  const order = all.map((_, i) => i).sort((a, b) => hash(`${question}:${all[a]}`) - hash(`${question}:${all[b]}`))
+  return {
+    question,
+    options: order.map((i) => all[i]) as [string, string, string, string],
+    answer: order.indexOf(0),
+    explanation,
+  }
+}
+
+/**
+ * Reading Part 6: se escriben las frases en el orden de los huecos (la última es la que sobra)
+ * y se barajan como A–G de forma determinista.
+ */
+export function gapped(seed: string, inOrder: string[], explanations: string[]) {
+  const order = inOrder.map((_, i) => i).sort((a, b) => hash(`${seed}:${inOrder[a]}`) - hash(`${seed}:${inOrder[b]}`))
+  const sentences = order.map((i) => inOrder[i])
+  const answers = inOrder.slice(0, inOrder.length - 1).map((_, gap) => order.indexOf(gap))
+  return { sentences, answers, explanations }
+}

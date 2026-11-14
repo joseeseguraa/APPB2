@@ -8,6 +8,11 @@ import { conditionals, passive, reportedSpeech } from './grammar/structures'
 import { gerunds, modals, relatives } from './grammar/more'
 import { collocations, phrasalVerbs, prepositions } from './vocabulary/words'
 import { confusingWords, expressions, falseFriends } from './vocabulary/traps'
+import { part5Exercises } from './reading/part5'
+import { part6Exercises } from './reading/part6'
+import { part7Exercises } from './reading/part7'
+import { article, essay, informalEmail } from './writing/types1'
+import { formalLetter, report, review } from './writing/types2'
 
 export const sections: SectionInfo[] = [
   {
@@ -183,19 +188,121 @@ export const sections: SectionInfo[] = [
     slug: 'reading',
     name: 'Reading',
     nameEs: 'Comprensión lectora',
-    description: 'Partes 5–7: opción múltiple, texto con huecos y emparejar.',
+    description: 'Partes 5–7 del Reading & Use of English: opción múltiple, texto con huecos y emparejar.',
     icon: '📖',
-    available: false,
-    parts: [],
+    available: true,
+    parts: [
+      {
+        slug: 'part-5',
+        number: 5,
+        name: 'Multiple choice',
+        nameEs: 'Texto largo con preguntas de opción múltiple',
+        questions: 6,
+        suggestedMinutes: 15,
+        guide: {
+          format: [
+            'Un texto largo (unas 550–650 palabras): un artículo, una novela o un relato en primera persona.',
+            '6 preguntas con 4 opciones (A–D). Cada acierto vale 2 puntos.',
+            'Las preguntas siguen el orden del texto.',
+          ],
+          tests: [
+            'Comprensión detallada, opiniones y actitudes del autor o de los personajes.',
+            'Significado de una palabra o expresión por el contexto.',
+            'Referencias: a qué se refiere "it", "this" o "they".',
+            'Propósito de un párrafo o idea principal.',
+          ],
+          strategy: [
+            'Lee el texto entero rápido para entender la idea general (2–3 minutos).',
+            'Lee la primera pregunta SIN mirar las opciones y localiza la parte del texto que responde.',
+            'Contesta con tus palabras y después busca la opción que mejor coincida.',
+            'Comprueba por qué las otras tres opciones son incorrectas: suelen usar palabras del texto pero decir otra cosa.',
+            'Sigue con la siguiente pregunta: la respuesta estará más adelante en el texto.',
+          ],
+          pitfalls: [
+            'Elegir la opción que repite palabras exactas del texto: la correcta suele ser una paráfrasis.',
+            'Elegir algo verdadero que no responde a la pregunta.',
+            'Usar tu opinión o tu conocimiento del mundo en vez de lo que dice el texto.',
+          ],
+        },
+        exercises: part5Exercises,
+      },
+      {
+        slug: 'part-6',
+        number: 6,
+        name: 'Gapped text',
+        nameEs: 'Texto con frases que faltan',
+        questions: 6,
+        suggestedMinutes: 15,
+        guide: {
+          format: [
+            'Un texto del que se han quitado 6 frases. Tienes 7 frases (A–G) para colocar: sobra una.',
+            'Cada acierto vale 2 puntos.',
+          ],
+          tests: [
+            'Cómo está organizado un texto: coherencia y cohesión.',
+            'Pronombres y referencias (this, they, these, one, the others).',
+            'Conectores (but, so, instead, also) y secuencia temporal.',
+          ],
+          strategy: [
+            'Lee el texto con huecos entero para entender la estructura y el hilo.',
+            'Lee las 7 frases y subraya pistas: pronombres, conectores, nombres, tiempos verbales.',
+            'En cada hueco, lee lo de ANTES y lo de DESPUÉS: la frase tiene que conectar con las dos partes.',
+            'Empieza por los huecos más fáciles y deja los dudosos para el final.',
+            'Cuando termines, lee el texto completo con tus frases para comprobar que fluye.',
+          ],
+          pitfalls: [
+            'Mirar solo la frase anterior al hueco y olvidar la posterior.',
+            'Elegir una frase solo porque trata el mismo tema, sin comprobar las referencias.',
+          ],
+        },
+        exercises: part6Exercises,
+      },
+      {
+        slug: 'part-7',
+        number: 7,
+        name: 'Multiple matching',
+        nameEs: 'Emparejar enunciados con textos',
+        questions: 10,
+        suggestedMinutes: 15,
+        guide: {
+          format: [
+            'Un texto dividido en secciones (A–D o A–E), o varios textos cortos.',
+            '10 enunciados: tienes que decir en qué sección aparece cada idea. Cada acierto vale 1 punto.',
+            'Una sección puede ser la respuesta de varios enunciados.',
+          ],
+          tests: [
+            'Encontrar información concreta rápidamente (scanning).',
+            'Reconocer una idea expresada con otras palabras (paráfrasis).',
+          ],
+          strategy: [
+            'Lee primero los 10 enunciados y subraya la idea clave de cada uno.',
+            'Lee la sección A y marca qué enunciados aparecen en ella. Después sigue con la B, la C, etc.',
+            'Busca la IDEA, no las palabras: "felt envious" puede aparecer como "I was really jealous".',
+            'Cuidado con las trampas: dos secciones pueden hablar de lo mismo, pero solo una dice exactamente lo que pide el enunciado.',
+          ],
+          pitfalls: [
+            'Elegir una sección porque contiene la misma palabra que el enunciado.',
+            'Dedicar demasiado tiempo a una sola pregunta.',
+          ],
+        },
+        exercises: part7Exercises,
+      },
+    ],
   },
   {
     slug: 'writing',
     name: 'Writing',
     nameEs: 'Expresión escrita',
-    description: 'Essay, article, email/letter, report y review: estructura, frases útiles y modelos.',
+    description: 'Cada tipo de texto por separado, con estructura, frases útiles, modelo comentado y tareas.',
     icon: '✍️',
-    available: false,
-    parts: [],
+    available: true,
+    intro: [
+      'El examen de Writing dura 1 hora y 20 minutos y tiene 2 partes. En cada una escribes entre 140 y 190 palabras.',
+      'Part 1 es obligatoria: un essay. En la Part 2 eliges UNA de tres tareas, que puede ser un article, un email o carta (formal o informal), un report o una review.',
+      'Se corrige con 4 criterios, cada uno de 0 a 5 puntos: Content (has respondido a todo), Communicative Achievement (formato y registro adecuados), Organisation (párrafos y conectores) y Language (variedad y corrección).',
+      'Consejo: dedica unos 40 minutos a cada parte, con 5 minutos para planificar y 5 para revisar.',
+    ],
+    parts: [essay, article, informalEmail, formalLetter, report, review],
   },
   {
     slug: 'speaking',

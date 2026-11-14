@@ -4,6 +4,7 @@ import { findPart, findSection } from '../data/sections'
 import { loadProgress } from '../lib/progress'
 import { Breadcrumbs } from '../components/Layout'
 import NotFound from './NotFound'
+import { WritingModelView } from '../components/WritingModelView'
 
 function GuideBlock({ title, items, tone }: { title: string; items: string[]; tone?: 'warn' }) {
   return (
@@ -53,6 +54,15 @@ export default function PartPage() {
 
       {theory && <Theory blocks={theory} />}
 
+      {part.model && (
+        <details className="mt-6 rounded-2xl bg-white border border-navy-100 p-4 sm:p-5 group">
+          <summary className="cursor-pointer font-semibold text-navy-900">✍️ Modelo de respuesta comentado</summary>
+          <div className="mt-4">
+            <WritingModelView model={part.model} />
+          </div>
+        </details>
+      )}
+
       {guide && (
       <section className="mt-6 rounded-2xl bg-white border border-navy-100">
         <button
@@ -90,7 +100,9 @@ export default function PartPage() {
       </section>
       )}
 
-      <h2 className="mt-8 mb-3 text-lg font-semibold text-navy-900">Ejercicios</h2>
+      <h2 className="mt-8 mb-3 text-lg font-semibold text-navy-900">
+        {part.exercises[0]?.kind === 'writing' ? 'Tareas para practicar' : 'Ejercicios'}
+      </h2>
       <div className="grid gap-3">
         {part.exercises.map((ex, i) => {
           const rec = progress[ex.id]
@@ -101,7 +113,7 @@ export default function PartPage() {
               className="rounded-2xl bg-white border border-navy-100 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-slate-400">Ejercicio {i + 1}</p>
+                <p className="text-xs text-slate-400">{ex.kind === 'writing' ? 'Tarea' : 'Ejercicio'} {i + 1}</p>
                 <h3 className="font-semibold text-navy-900">{ex.title}</h3>
                 <p className="text-sm text-slate-500">{ex.focus}</p>
                 {rec && (

@@ -1,10 +1,28 @@
 import type { Exercise } from '../types'
 import { isCorrect } from './answers'
 
-export const LETTERS = ['A', 'B', 'C', 'D'] as const
+export const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] as const
 
 export function questionCount(ex: Exercise): number {
-  return 'items' in ex ? ex.items.length : ex.gaps.length
+  switch (ex.kind) {
+    case 'reading-mc':
+    case 'matching':
+      return ex.questions.length
+    case 'gapped-text':
+      return ex.answers.length
+    case 'writing':
+      return 0
+    default:
+      return 'items' in ex ? ex.items.length : ex.gaps.length
+  }
+}
+
+/**
+ * Puntos de examen por pregunta (como en el examen real):
+ * Parts 1-3 y 7: 1 punto · Part 4: 2 · Parts 5 y 6: 2. Fuera del examen: 1.
+ */
+export function marksPerQuestion(ex: Exercise): number {
+  return ex.kind === 'kwt' || ex.kind === 'reading-mc' || ex.kind === 'gapped-text' ? 2 : 1
 }
 
 /** Trocea una frase de "detectar el error" en palabras pulsables. La parte entre [ ] es un solo trozo. */
@@ -46,6 +64,18 @@ export function correctDisplay(ex: Exercise, i: number): string {
       const { tokens, wrong } = parseErrorSentence(it.sentence)
       return `"${tokens[wrong]}" → "${it.correction}"`
     }
+    case 'reading-mc': {
+      const q = ex.questions[i]
+      return `${LETTERS[q.answer]}) ${q.options[q.answer]}`
+    }
+    case 'gapped-text': {
+      const s = ex.answers[i]
+      return `${LETTERS[s]}) ${ex.sentences[s]}`
+    }
+    case 'matching':
+      return `${LETTERS[ex.questions[i].answer]} (${ex.sections[ex.questions[i].answer].title})`
+    case 'writing':
+      return ''
   }
 }
 
@@ -57,6 +87,9 @@ export function userDisplay(ex: Exercise, i: number, value: string): string {
     return `${LETTERS[idx]}) ${ex.gaps[i].options[idx]}`
   }
   if (ex.kind === 'choice') return ex.items[i].options[Number(value)]
+  if (ex.kind === 'reading-mc') return `${LETTERS[Number(value)]}) ${ex.questions[i].options[Number(value)]}`
+  if (ex.kind === 'gapped-text') return `${LETTERS[Number(value)]}) ${ex.sentences[Number(value)]}`
+  if (ex.kind === 'matching') return `${LETTERS[Number(value)]} (${ex.sections[Number(value)].title})`
   if (ex.kind === 'error') {
     if (value === '-1') return 'Dijiste que era correcta'
     return `Marcaste "${parseErrorSentence(ex.items[i].sentence).tokens[Number(value)]}"`
@@ -65,7 +98,17 @@ export function userDisplay(ex: Exercise, i: number, value: string): string {
 }
 
 export function explanationFor(ex: Exercise, i: number): string {
-  return 'items' in ex ? ex.items[i].explanation : ex.gaps[i].explanation
+  switch (ex.kind) {
+    case 'reading-mc':
+    case 'matching':
+      return ex.questions[i].explanation
+    case 'gapped-text':
+      return ex.explanations[i]
+    case 'writing':
+      return ''
+    default:
+      return 'items' in ex ? ex.items[i].explanation : ex.gaps[i].explanation
+  }
 }
 
 export function checkOne(ex: Exercise, i: number, value: string): boolean {
@@ -82,6 +125,13 @@ export function checkOne(ex: Exercise, i: number, value: string): boolean {
       return value !== '' && Number(value) === ex.items[i].answer
     case 'error':
       return value !== '' && Number(value) === parseErrorSentence(ex.items[i].sentence).wrong
+    case 'reading-mc':
+    case 'matching':
+      return value !== '' && Number(value) === ex.questions[i].answer
+    case 'gapped-text':
+      return value !== '' && Number(value) === ex.answers[i]
+    case 'writing':
+      return false
   }
 }
 
