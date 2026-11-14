@@ -3,6 +3,9 @@ import { part1Exercises } from './uoe/part1'
 import { part2Exercises } from './uoe/part2'
 import { part3Exercises } from './uoe/part3'
 import { part4Exercises } from './uoe/part4'
+import { future, narrativeTenses, presentPerfect } from './grammar/tenses'
+import { conditionals, passive, reportedSpeech } from './grammar/structures'
+import { gerunds, modals, relatives } from './grammar/more'
 
 export const sections: SectionInfo[] = [
   {
@@ -152,8 +155,18 @@ export const sections: SectionInfo[] = [
     nameEs: 'Gramática',
     description: 'Temas de gramática B2 explicados en español, con ejercicios variados.',
     icon: '📐',
-    available: false,
-    parts: [],
+    available: true,
+    parts: [
+      presentPerfect,
+      narrativeTenses,
+      future,
+      conditionals,
+      passive,
+      reportedSpeech,
+      relatives,
+      modals,
+      gerunds,
+    ],
   },
   {
     slug: 'vocabulary',

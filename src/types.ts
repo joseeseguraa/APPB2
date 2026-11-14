@@ -69,11 +69,70 @@ export interface KwtExercise {
   items: KwtItem[]
 }
 
+/* ---------- Ejercicios de práctica por frases (Grammar / Vocabulary) ---------- */
+
+/** Elegir la opción correcta. El hueco en la frase se marca con ___ */
+export interface ChoiceItem {
+  sentence: string
+  options: string[]
+  /** índice de la opción correcta */
+  answer: number
+  explanation: string
+}
+export interface ChoiceExercise {
+  id: string
+  kind: 'choice'
+  title: string
+  focus: string
+  items: ChoiceItem[]
+}
+
+/** Escribir la respuesta. El hueco se marca con ___ (puede llevar pista entre paréntesis) */
+export interface GapItem {
+  sentence: string
+  answers: string[]
+  explanation: string
+}
+export interface GapExercise {
+  id: string
+  kind: 'gap'
+  title: string
+  focus: string
+  items: GapItem[]
+}
+
+/**
+ * Detectar el error. La parte incorrecta va entre corchetes: "I [have seen] him yesterday."
+ * Si la frase es correcta, no lleva corchetes y `correction` es null.
+ */
+export interface ErrorItem {
+  sentence: string
+  correction: string | null
+  explanation: string
+}
+export interface ErrorExercise {
+  id: string
+  kind: 'error'
+  title: string
+  focus: string
+  items: ErrorItem[]
+}
+
 export type Exercise =
   | McClozeExercise
   | OpenClozeExercise
   | WordFormationExercise
   | KwtExercise
+  | ChoiceExercise
+  | GapExercise
+  | ErrorExercise
+
+/** Bloque de teoría de un tema de gramática o vocabulario */
+export interface TheoryBlock {
+  title: string
+  points: string[]
+  examples?: { en: string; es?: string; wrong?: boolean }[]
+}
 
 /** Guía de una parte del examen (en español) */
 export interface PartGuide {
@@ -87,16 +146,25 @@ export interface PartGuide {
   pitfalls?: string[]
 }
 
+/**
+ * Una "parte" puede ser una parte real del examen (con number, questions y guide)
+ * o un tema de práctica (Grammar/Vocabulary) con teoría.
+ */
 export interface PartInfo {
-  /** slug para la URL, p. ej. "part-1" */
+  /** slug para la URL, p. ej. "part-1" o "conditionals" */
   slug: string
-  number: number
+  /** número de la parte en el examen (solo partes de examen) */
+  number?: number
   name: string
   nameEs: string
-  questions: number
-  /** minutos recomendados en el examen para esta parte */
+  /** nº de preguntas por ejercicio en el examen (solo partes de examen) */
+  questions?: number
+  /** minutos para el modo examen */
   suggestedMinutes: number
-  guide: PartGuide
+  guide?: PartGuide
+  theory?: TheoryBlock[]
+  /** frase corta para la lista de temas */
+  summary?: string
   exercises: Exercise[]
 }
 

@@ -1,8 +1,26 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { findPart, findSection } from '../data/sections'
-import type { Exercise, KwtExercise, McClozeExercise, OpenClozeExercise, WordFormationExercise } from '../types'
-import { checkAll, correctDisplay, explanationFor, LETTERS, questionCount, splitGaps, userDisplay } from '../lib/exercise'
+import type {
+  ChoiceExercise,
+  ErrorExercise,
+  Exercise,
+  GapExercise,
+  KwtExercise,
+  McClozeExercise,
+  OpenClozeExercise,
+  WordFormationExercise,
+} from '../types'
+import {
+  checkAll,
+  correctDisplay,
+  explanationFor,
+  LETTERS,
+  parseErrorSentence,
+  questionCount,
+  splitGaps,
+  userDisplay,
+} from '../lib/exercise'
 import { containsKeyword, countKwtWords } from '../lib/answers'
 import { saveAttempt } from '../lib/progress'
 import { Breadcrumbs } from '../components/Layout'
@@ -22,6 +40,7 @@ export default function ExercisePage() {
   const ex = part.exercises[idx]
   const next = part.exercises[idx + 1]
   const partUrl = `/s/${section.slug}/${part.slug}`
+  const partShort = part.number ? `Part ${part.number}` : part.name
 
   return (
     <div>
@@ -29,7 +48,7 @@ export default function ExercisePage() {
         items={[
           { label: 'Inicio', to: '/' },
           { label: section.name, to: `/s/${section.slug}` },
-          { label: `Part ${part.number}`, to: partUrl },
+          { label: partShort, to: partUrl },
           { label: ex.title },
         ]}
       />
@@ -39,7 +58,7 @@ export default function ExercisePage() {
         ex={ex}
         mode={mode}
         minutes={part.suggestedMinutes}
-        partLabel={`Part ${part.number} · ${part.name}`}
+        partLabel={part.number ? `Part ${part.number} · ${part.name}` : `${section.name} · ${part.name}`}
         partUrl={partUrl}
         nextUrl={next ? `${partUrl}/${next.id}?mode=${mode}` : undefined}
       />
@@ -148,9 +167,18 @@ function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps)
         <OpenCloze ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
       )}
       {ex.kind === 'kwt' && <Kwt ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />}
+      {ex.kind === 'choice' && (
+        <Choice ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
+      )}
+      {ex.kind === 'gap' && <Gap ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />}
+      {ex.kind === 'error' && (
+        <ErrorSpot ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
+      )}
 
       {/* Barra de acciones */}
-      <div className="sticky bottom-0 mt-6 -mx-4 px-4 py-3 bg-navy-50/95 backdrop-blur border-t border-navy-100 flex flex-wrap gap-2 items-center">
+      <div
+        className={`${showFeedback ? '' : 'sticky bottom-0 bg-navy-50/95 backdrop-blur border-t border-navy-100'} mt-6 -mx-4 px-4 py-3 flex flex-wrap gap-2 items-center`}
+      >
         {!finished && !showFeedback && (
           <>
             <button
@@ -433,6 +461,176 @@ function Kwt({ ex, answers, results, onChange, disabled }: PartProps<KwtExercise
               )}
               {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
             </div>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+/* ---------- Frases: elegir / rellenar / detectar error ---------- */
+
+function Card({ n, children }: { n: number; children: ReactNode }) {
+  return (
+    <div className="rounded-2xl bg-white border border-navy-100 p-4 sm:p-5">
+      <p className="text-sm font-semibold text-navy-800 mb-2">{n}.</p>
+      {children}
+    </div>
+  )
+}
+
+/** Pinta una frase con ___ sustituido por `slot`. */
+function SentenceWithSlot({ sentence, slot }: { sentence: string; slot: ReactNode }) {
+  const [a, ...rest] = sentence.split('___')
+  return (
+    <p className="font-serif text-[1.05rem] leading-10">
+      {a}
+      {rest.length > 0 && slot}
+      {rest.join('___')}
+    </p>
+  )
+}
+
+function Choice({ ex, answers, results, onChange, disabled }: PartProps<ChoiceExercise>) {
+  return (
+    <>
+      <p className="text-sm text-slate-600 mb-3">Elige la opción correcta para cada frase.</p>
+      <div className="grid gap-3">
+        {ex.items.map((it, i) => {
+          const chosen = answers[i] !== '' ? it.options[Number(answers[i])] : null
+          return (
+            <Card key={i} n={i + 1}>
+              <SentenceWithSlot
+                sentence={it.sentence}
+                slot={
+                  <span
+                    className={`inline-block min-w-[4.5rem] mx-1 px-2 rounded-md border-b-2 font-sans text-[0.95rem] text-center ${
+                      results ? (results[i] ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50') : 'border-navy-500 bg-navy-50'
+                    }`}
+                  >
+                    {chosen ?? '\u00a0'}
+                  </span>
+                }
+              />
+              <div className="mt-2 flex flex-wrap gap-2">
+                {it.options.map((opt, j) => {
+                  const selected = answers[i] === String(j)
+                  let cls = selected ? 'border-navy-700 bg-navy-800 text-white' : 'border-navy-200 bg-white hover:border-navy-500'
+                  if (results) {
+                    if (j === it.answer) cls = 'border-emerald-500 bg-emerald-50 text-emerald-900'
+                    else if (selected) cls = 'border-red-400 bg-red-50 text-red-800'
+                    else cls = 'border-slate-200 bg-white text-slate-400'
+                  }
+                  return (
+                    <button
+                      key={j}
+                      disabled={disabled}
+                      onClick={() => onChange(i, String(j))}
+                      className={`rounded-xl border px-3 py-1.5 text-sm transition ${cls}`}
+                    >
+                      {opt}
+                    </button>
+                  )
+                })}
+              </div>
+              {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+            </Card>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+function Gap({ ex, answers, results, onChange, disabled }: PartProps<GapExercise>) {
+  return (
+    <>
+      <p className="text-sm text-slate-600 mb-3">
+        Escribe la forma correcta. Si hay una palabra entre paréntesis, úsala.
+      </p>
+      <div className="grid gap-3">
+        {ex.items.map((it, i) => {
+          const r = results?.[i]
+          return (
+            <Card key={i} n={i + 1}>
+              <SentenceWithSlot
+                sentence={it.sentence}
+                slot={
+                  <input
+                    value={answers[i]}
+                    disabled={disabled}
+                    onChange={(e) => onChange(i, e.target.value)}
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    aria-label={`Respuesta ${i + 1}`}
+                    className={`font-sans text-base w-44 h-8 mx-1 px-2 rounded-md border outline-none focus:ring-2 focus:ring-navy-200 align-middle ${
+                      r === undefined ? 'border-navy-200 bg-navy-50' : r ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50'
+                    }`}
+                  />
+                }
+              />
+              {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+            </Card>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+function ErrorSpot({ ex, answers, results, onChange, disabled }: PartProps<ErrorExercise>) {
+  return (
+    <>
+      <p className="text-sm text-slate-600 mb-3">
+        Toca la palabra o expresión que está <b>mal</b>. Si la frase está bien, pulsa <b>“Es correcta”</b>.
+      </p>
+      <div className="grid gap-3">
+        {ex.items.map((it, i) => {
+          const { tokens, wrong } = parseErrorSentence(it.sentence)
+          const sel = answers[i]
+          return (
+            <Card key={i} n={i + 1}>
+              <p className="font-serif text-[1.05rem] leading-9 flex flex-wrap gap-x-0.5">
+                {tokens.map((t, j) => {
+                  const selected = sel === String(j)
+                  let cls = selected ? 'bg-navy-800 text-white' : 'hover:bg-navy-100'
+                  if (results) {
+                    if (j === wrong) cls = 'bg-emerald-100 text-emerald-900 underline decoration-wavy decoration-red-500'
+                    else if (selected) cls = 'bg-red-100 text-red-800'
+                    else cls = ''
+                  }
+                  return (
+                    <button
+                      key={j}
+                      disabled={disabled}
+                      onClick={() => onChange(i, String(j))}
+                      className={`rounded px-1 transition ${cls}`}
+                    >
+                      {t}
+                    </button>
+                  )
+                })}
+              </p>
+              <button
+                disabled={disabled}
+                onClick={() => onChange(i, '-1')}
+                className={`mt-2 rounded-xl border px-3 py-1.5 text-sm transition ${
+                  results && wrong === -1
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
+                    : sel === '-1'
+                    ? results
+                      ? results[i]
+                        ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
+                        : 'border-red-400 bg-red-50 text-red-800'
+                      : 'border-navy-700 bg-navy-800 text-white'
+                    : 'border-navy-200 bg-white hover:border-navy-500'
+                }`}
+              >
+                ✓ Es correcta
+              </button>
+              {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+            </Card>
           )
         })}
       </div>

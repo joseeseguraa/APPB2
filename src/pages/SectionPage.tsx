@@ -19,7 +19,7 @@ export default function SectionPage() {
       <p className="mt-2 text-slate-600">{section.description}</p>
 
       <div className="mt-6 grid gap-3">
-        {section.parts.map((p) => {
+        {section.parts.map((p, idx) => {
           const done = p.exercises.filter((e) => progress[e.id]).length
           return (
             <Link
@@ -28,14 +28,16 @@ export default function SectionPage() {
               className="flex items-center gap-4 rounded-2xl bg-white border border-navy-100 p-4 sm:p-5 hover:border-navy-500 hover:shadow-md transition"
             >
               <span className="grid place-items-center shrink-0 w-12 h-12 rounded-xl bg-navy-800 text-gold-400 font-bold text-lg">
-                {p.number}
+                {p.number ?? idx + 1}
               </span>
               <div className="flex-1 min-w-0">
                 <h2 className="font-semibold text-navy-900">
-                  Part {p.number} · {p.name}
+                  {p.number ? `Part ${p.number} · ${p.name}` : p.name}
                 </h2>
                 <p className="text-sm text-slate-500">
-                  {p.nameEs} · {p.questions} preguntas · ~{p.suggestedMinutes} min
+                  {p.number
+                    ? `${p.nameEs} · ${p.questions} preguntas · ~${p.suggestedMinutes} min`
+                    : p.summary ?? p.nameEs}
                 </p>
               </div>
               <span className="text-xs font-medium text-navy-700 bg-navy-50 rounded-full px-2.5 py-1 shrink-0">

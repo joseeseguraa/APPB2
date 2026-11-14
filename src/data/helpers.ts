@@ -1,4 +1,4 @@
-import type { McClozeGap } from '../types'
+import type { ChoiceItem, ErrorItem, GapItem, McClozeGap } from '../types'
 
 /** Hash simple y determinista (para barajar siempre igual). */
 function hash(s: string): number {
@@ -27,4 +27,22 @@ export function mc(
   )
   const options = order.map((i) => all[i]) as McClozeGap['options']
   return { options, answer: order.indexOf(0), explanation }
+}
+
+
+/** Ítem de "elegir": respuesta correcta primero; las opciones se barajan de forma determinista. */
+export function ch(sentence: string, correct: string, distractors: string[], explanation: string): ChoiceItem {
+  const all = [correct, ...distractors]
+  const order = all.map((_, i) => i).sort((a, b) => hash(`${sentence}:${all[a]}`) - hash(`${sentence}:${all[b]}`))
+  return { sentence, options: order.map((i) => all[i]), answer: order.indexOf(0), explanation }
+}
+
+/** Ítem de "rellenar" (respuesta escrita). */
+export function g(sentence: string, answers: string[], explanation: string): GapItem {
+  return { sentence, answers, explanation }
+}
+
+/** Ítem de "detectar el error": la parte mal va entre [ ]. correction = null si la frase es correcta. */
+export function er(sentence: string, correction: string | null, explanation: string): ErrorItem {
+  return { sentence, correction, explanation }
 }

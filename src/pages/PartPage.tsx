@@ -30,7 +30,8 @@ export default function PartPage() {
   const [guideOpen, setGuideOpen] = useState(true)
   if (!section || !part) return <NotFound />
   const progress = loadProgress()
-  const { guide } = part
+  const { guide, theory } = part
+  const short = part.number ? `Part ${part.number}` : part.name
 
   return (
     <div>
@@ -38,16 +39,21 @@ export default function PartPage() {
         items={[
           { label: 'Inicio', to: '/' },
           { label: section.name, to: `/s/${section.slug}` },
-          { label: `Part ${part.number}` },
+          { label: short },
         ]}
       />
       <h1 className="text-2xl sm:text-3xl font-bold text-navy-900">
-        Part {part.number} · {part.name}
+        {part.number ? `Part ${part.number} · ${part.name}` : part.name}
       </h1>
       <p className="mt-1 text-slate-600">
-        {part.nameEs} · {part.questions} preguntas · ~{part.suggestedMinutes} min en el examen
+        {part.number
+          ? `${part.nameEs} · ${part.questions} preguntas · ~${part.suggestedMinutes} min en el examen`
+          : part.nameEs}
       </p>
 
+      {theory && <Theory blocks={theory} />}
+
+      {guide && (
       <section className="mt-6 rounded-2xl bg-white border border-navy-100">
         <button
           onClick={() => setGuideOpen((o) => !o)}
@@ -82,6 +88,7 @@ export default function PartPage() {
           </div>
         )}
       </section>
+      )}
 
       <h2 className="mt-8 mb-3 text-lg font-semibold text-navy-900">Ejercicios</h2>
       <div className="grid gap-3">
@@ -122,5 +129,53 @@ export default function PartPage() {
         })}
       </div>
     </div>
+  )
+}
+
+function Theory({ blocks }: { blocks: NonNullable<import('../types').PartInfo['theory']> }) {
+  const [open, setOpen] = useState(true)
+  return (
+    <section className="mt-6 rounded-2xl bg-white border border-navy-100">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between p-4 sm:p-5 text-left"
+        aria-expanded={open}
+      >
+        <span className="font-semibold text-navy-900">📘 Teoría</span>
+        <span className="text-slate-400">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className="px-4 sm:px-5 pb-5 grid gap-6">
+          {blocks.map((b, i) => (
+            <div key={i}>
+              <h3 className="font-semibold text-navy-800 mb-2">{b.title}</h3>
+              <ul className="space-y-1.5 text-sm text-slate-700">
+                {b.points.map((t, j) => (
+                  <li key={j} className="flex gap-2">
+                    <span className="text-navy-500" aria-hidden>•</span>
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+              {b.examples && (
+                <div className="mt-3 grid gap-1.5">
+                  {b.examples.map((e, j) => (
+                    <div
+                      key={j}
+                      className={`rounded-lg px-3 py-2 text-sm ${e.wrong ? 'bg-red-50' : 'bg-navy-50'}`}
+                    >
+                      <p className={`font-serif ${e.wrong ? 'text-red-800 line-through decoration-red-400' : 'text-navy-900'}`}>
+                        {e.wrong ? '✗ ' : ''}{e.en}
+                      </p>
+                      {e.es && <p className="text-slate-500 text-xs mt-0.5">{e.es}</p>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   )
 }
