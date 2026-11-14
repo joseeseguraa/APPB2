@@ -55,6 +55,10 @@ src/
   data/writing/types1..2.ts tipos de Writing (teoría, modelo, checklist, tareas)
   components/WritingRunner.tsx  editor de Writing
   lib/writing.ts           borradores (localStorage appb2.writing.v1) y criterios
+  lib/score.ts             conversión a escala Cambridge + resultados de simulacros
+  data/mocks.ts            qué ejercicios forman cada simulacro
+  pages/ProgressPage.tsx   /progreso
+  pages/MockPages.tsx      /simulacro, /simulacro/:n/rue, /simulacro/:n/writing
   lib/answers.ts           normalizar, comprobar, contar palabras
   lib/exercise.ts          utilidades comunes del motor
   lib/progress.ts          localStorage
@@ -74,14 +78,15 @@ src/
 - [x] **F2b – Vocabulary:** 6 temas (phrasal verbs, make/do/have/take, preposiciones dependientes, false friends, confusing words, fixed expressions). Cada uno tiene teoría y 3 ejercicios: 18 ejercicios y 132 preguntas. Más adelante: word families, phrasal verbs II, vocabulario por temas (trabajo, medio ambiente, tecnología…).
 - [x] **F3 – Reading** P5–P7: 3 textos por parte (9 ejercicios). Tipos `reading-mc`, `gapped-text` y `matching`. En pantallas grandes el texto y las preguntas se ven en dos columnas.
 - [x] **F4 – Writing**: 6 tipos separados (essay, article, email informal, carta formal, report, review). Cada uno tiene teoría (qué es, estructura, registro, frases útiles, errores), un modelo comentado de 140–190 palabras y 4 tareas con plan sugerido. El editor tiene contador de palabras, temporizador en modo examen, borrador automático y autoevaluación con los 4 criterios + checklist del tipo.
-- [ ] **F5 – Progreso:** estadísticas por parte, puntos débiles, racha, repaso de fallos, exportar/importar
-- [ ] **F6 – Speaking** P1–P4: prompts, temporizador, grabación de voz, frases útiles
-- [ ] **F7 – Simulacro completo**, sin listening de momento, con puntuación estimada
+- [x] **F5 – Progreso** (`/progreso`): ejercicios hechos, % de aciertos, racha y días de práctica (`appb2.days.v1`), puntos débiles (<75 %), ejercicios con fallos para repetir, tabla por sección, y copia de seguridad (exportar/importar JSON, borrar todo).
+- [ ] **F6 – Speaking** P1–P4: prompts, temporizador, grabación de voz, frases útiles (lo deja José para el final)
+- [x] **F7 – Simulacro** (`/simulacro`): 3 simulacros. Reading & UoE (7 partes, 75 min, pestañas por parte) y Writing (essay + elegir 1 de 3, 80 min, autoevaluación 0–5 × 4 criterios). La nota se estima en la escala Cambridge con los puntos de conversión oficiales de B2 First (`src/lib/score.ts`), interpolando entre ellos. Resultados en `appb2.mocks.v1`. Pendiente: Listening y Speaking en el simulacro.
 - [ ] **F8 – Listening** P1–P4 (al final, cuando todo lo demás esté hecho)
 - [ ] **F9 – Extras:** más ejercicios de UoE (meta: 10+ por parte), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
-- **Fase:** F0–F4 terminadas. Siguiente: **F5 Progreso** y **F7 Simulacro** (Speaking y Listening quedan para el final, como pidió José).
+- **Fase:** está todo hecho menos Speaking (F6) y Listening (F8), que José quiere dejar para el final. Siguiente: lo que decida José (Speaking, Listening o más contenido en F9).
+- **Contenido actual:** 98 ejercicios o tareas: UoE 20, Grammar 27, Vocabulary 18, Reading 9 y Writing 24, más 3 simulacros.
 - **Pendiente de José:** José va a hacer el repo público. Después tiene que ir a Settings → Pages → Source y elegir **GitHub Actions**, y volver a lanzar el workflow.
 - Antes: GitHub Pages no funciona con repos privados en cuentas gratuitas. Las opciones son hacer el repo público, pasar a GitHub Pro, o usar Netlify/Vercel/Cloudflare Pages, que son gratis con repos privados. Mientras tanto, el workflow de Pages fallará en el paso de deploy.
 - Ideas para más adelante: un ejemplo "0" en cada ejercicio, como en el examen real; poder elegir el tiempo en el modo examen.
@@ -95,6 +100,7 @@ src/
 | 2026-11-14 | F2a Grammar: 9 temas con teoría + 3 tipos nuevos de ejercicio (elegir, escribir, detectar error). 114 tests | José hace el repo público · F2b Vocabulary |
 | 2026-11-14 | F2b Vocabulary: 6 temas, 18 ejercicios. 156 tests. Todos los ejercicios revisados en el navegador | F3 Reading |
 | 2026-11-14 | F3 Reading (9 textos) + F4 Writing (6 tipos, 24 tareas, modelos). 208 tests | F5 Progreso + F7 Simulacro |
+| 2026-11-14 | F5 Progreso + F7 Simulacro (3 simulacros con nota estimada). 212 tests. Revisados en el navegador todos los ejercicios, las tareas y los simulacros | Speaking / Listening / más contenido |
 
 ## 7. Comandos
 ```

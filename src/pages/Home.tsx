@@ -17,6 +17,18 @@ export default function Home() {
         </p>
       </section>
 
+      <div className="grid gap-3 sm:grid-cols-2 mb-6">
+        <Link to="/simulacro" className="rounded-2xl bg-navy-800 text-white p-5 hover:bg-navy-700 transition">
+          <p className="text-lg font-semibold">⏱ Simulacro de examen</p>
+          <p className="text-sm text-navy-100">Reading &amp; Use of English y Writing con el tiempo oficial y nota estimada.</p>
+        </Link>
+        <Link to="/progreso" className="rounded-2xl bg-gold-400 text-navy-900 p-5 hover:bg-gold-300 transition">
+          <p className="text-lg font-semibold">📈 Mi progreso</p>
+          <p className="text-sm text-navy-800">Aciertos por parte, puntos débiles, racha y fallos para repasar.</p>
+        </Link>
+      </div>
+
+      <h2 className="text-lg font-semibold text-navy-900 mb-3">Practica por destrezas</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         {sections.map((s) => {
           const exercises = s.parts.flatMap((p) => p.exercises)

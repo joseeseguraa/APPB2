@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -15,8 +15,24 @@ export default function Layout() {
             <span className="grid place-items-center w-8 h-8 rounded-lg bg-gold-400 text-navy-900 text-sm font-bold">
               B2
             </span>
-            <span>First · Práctica</span>
+            <span className="hidden sm:inline">First · Práctica</span>
           </Link>
+          <nav className="flex items-center gap-1 text-sm">
+            {[
+              { to: '/simulacro', label: '⏱ Simulacro' },
+              { to: '/progreso', label: '📈 Progreso' },
+            ].map((l) => (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                className={({ isActive }) =>
+                  `rounded-lg px-3 py-1.5 transition ${isActive ? 'bg-white/15 text-white' : 'text-navy-100 hover:bg-white/10'}`
+                }
+              >
+                {l.label}
+              </NavLink>
+            ))}
+          </nav>
         </div>
       </header>
       <main className="flex-1 mx-auto w-full max-w-4xl px-4 py-6 sm:py-10">
