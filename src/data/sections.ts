@@ -6,6 +6,8 @@ import { part4Exercises } from './uoe/part4'
 import { future, narrativeTenses, presentPerfect } from './grammar/tenses'
 import { conditionals, passive, reportedSpeech } from './grammar/structures'
 import { gerunds, modals, relatives } from './grammar/more'
+import { collocations, phrasalVerbs, prepositions } from './vocabulary/words'
+import { confusingWords, expressions, falseFriends } from './vocabulary/traps'
 
 export const sections: SectionInfo[] = [
   {
@@ -172,10 +174,10 @@ export const sections: SectionInfo[] = [
     slug: 'vocabulary',
     name: 'Vocabulary',
     nameEs: 'Vocabulario',
-    description: 'Phrasal verbs, collocations, familias de palabras y expresiones fijas.',
+    description: 'Phrasal verbs, collocations, preposiciones, falsos amigos y expresiones fijas.',
     icon: '📚',
-    available: false,
-    parts: [],
+    available: true,
+    parts: [phrasalVerbs, collocations, prepositions, falseFriends, confusingWords, expressions],
   },
   {
     slug: 'reading',

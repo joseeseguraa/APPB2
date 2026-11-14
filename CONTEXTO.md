@@ -50,6 +50,7 @@ src/
   data/helpers.ts          mc() para Part 1
   data/uoe/part1..4.ts     contenido de Use of English
   data/grammar/*.ts        temas de gramática (teoría + ejercicios)
+  data/vocabulary/*.ts     temas de vocabulario (teoría + ejercicios)
   lib/answers.ts           normalizar, comprobar, contar palabras
   lib/exercise.ts          utilidades comunes del motor
   lib/progress.ts          localStorage
@@ -66,7 +67,7 @@ src/
 - [x] **F0 – Base:** proyecto, navegación, diseño, workflow de despliegue, CONTEXTO.md
 - [x] **F1 – Use of English** P1–P4 + motor (modo práctica / modo examen). Hay 5 ejercicios por parte (20 en total, 140 preguntas), cada uno con una guía de la parte y una explicación por pregunta.
 - [x] **F2a – Grammar:** 9 temas (present perfect, narrativos, futuro, condicionales/wish, pasiva/causativa, estilo indirecto, relativos, modales, gerundio/infinitivo). Cada tema tiene teoría con ejemplos y 3 ejercicios: elegir, escribir y detectar el error. En total 27 ejercicios y 198 preguntas.
-- [ ] **F2b – Vocabulary:** phrasal verbs, collocations (make/do/have/take), word families, preposiciones dependientes, false friends, expresiones fijas
+- [x] **F2b – Vocabulary:** 6 temas (phrasal verbs, make/do/have/take, preposiciones dependientes, false friends, confusing words, fixed expressions). Cada uno tiene teoría y 3 ejercicios: 18 ejercicios y 132 preguntas. Más adelante: word families, phrasal verbs II, vocabulario por temas (trabajo, medio ambiente, tecnología…).
 - [ ] **F3 – Reading** P5–P7
 - [ ] **F4 – Writing**, separado por tipo (essay, article, email/letter formal e informal, report, review). Cada tipo con estructura párrafo a párrafo, registro, frases útiles, modelo comentado, varios enunciados, temporizador, contador de palabras y checklist de los 4 criterios de corrección.
 - [ ] **F5 – Progreso:** estadísticas por parte, puntos débiles, racha, repaso de fallos, exportar/importar
@@ -76,7 +77,7 @@ src/
 - [ ] **F9 – Extras:** más ejercicios de UoE (meta: 10+ por parte), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
-- **Fase:** F0, F1 y F2a (Grammar) terminadas. Siguiente: **F2b (Vocabulary)**, después F3 (Reading).
+- **Fase:** F0, F1, F2a (Grammar) y F2b (Vocabulary) terminadas. Siguiente: **F3 (Reading P5–P7)**.
 - **Pendiente de José:** José va a hacer el repo público. Después tiene que ir a Settings → Pages → Source y elegir **GitHub Actions**, y volver a lanzar el workflow.
 - Antes: GitHub Pages no funciona con repos privados en cuentas gratuitas. Las opciones son hacer el repo público, pasar a GitHub Pro, o usar Netlify/Vercel/Cloudflare Pages, que son gratis con repos privados. Mientras tanto, el workflow de Pages fallará en el paso de deploy.
 - Ideas para más adelante: un ejemplo "0" en cada ejercicio, como en el examen real; poder elegir el tiempo en el modo examen.
@@ -88,6 +89,7 @@ src/
 | 2026-11-14 | Formato verificado, plan detallado por fases | Aprobación + acceso al repo |
 | 2026-11-14 | F0 + F1: app base y Use of English completo (20 ejercicios, guías, modos práctica/examen, 48 tests) | Decidir hosting · F2 Grammar y Vocabulary |
 | 2026-11-14 | F2a Grammar: 9 temas con teoría + 3 tipos nuevos de ejercicio (elegir, escribir, detectar error). 114 tests | José hace el repo público · F2b Vocabulary |
+| 2026-11-14 | F2b Vocabulary: 6 temas, 18 ejercicios. 156 tests. Todos los ejercicios revisados en el navegador | F3 Reading |
 
 ## 7. Comandos
 ```
