@@ -3,8 +3,8 @@ import type { PartInfo } from '../../types'
 export const essay: PartInfo = {
   slug: 'essay',
   name: 'Essay',
-  nameEs: 'Redacción de opinión · Part 1 (obligatoria)',
-  summary: 'Part 1 · obligatorio · 140–190 palabras',
+  nameEs: 'Redacción de opinión, Part 1 (obligatoria)',
+  summary: 'Part 1, obligatorio, 140–190 palabras',
   suggestedMinutes: 40,
   theory: [
     {
@@ -166,8 +166,8 @@ Does social media do more harm than good to young people?`,
 export const article: PartInfo = {
   slug: 'article',
   name: 'Article',
-  nameEs: 'Artículo para una revista o web · Part 2',
-  summary: 'Part 2 · opcional · 140–190 palabras',
+  nameEs: 'Artículo para una revista o web, Part 2',
+  summary: 'Part 2, opcional, 140–190 palabras',
   suggestedMinutes: 40,
   theory: [
     {
@@ -336,8 +336,8 @@ Write your article.`,
 export const informalEmail: PartInfo = {
   slug: 'informal-email',
   name: 'Email / letter (informal)',
-  nameEs: 'Email o carta a un amigo · Part 2',
-  summary: 'Part 2 · opcional · 140–190 palabras',
+  nameEs: 'Email o carta a un amigo, Part 2',
+  summary: 'Part 2, opcional, 140–190 palabras',
   suggestedMinutes: 40,
   theory: [
     {

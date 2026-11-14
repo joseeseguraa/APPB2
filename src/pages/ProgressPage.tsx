@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sections } from '../data/sections'
 import { exportData, importData, loadDays, loadProgress, resetAll, streak, type ProgressMap } from '../lib/progress'
-import { Breadcrumbs } from '../components/Layout'
+import { btn, Meter, PageHeader, Panel } from '../components/ui'
 
 interface PartStat {
   sectionSlug: string
@@ -28,7 +28,7 @@ function computeStats(progress: ProgressMap): PartStat[] {
           sectionSlug: s.slug,
           sectionName: s.name,
           partSlug: p.slug,
-          partName: p.number ? `Part ${p.number} · ${p.name}` : p.name,
+          partName: p.number ? `Part ${p.number}: ${p.name}` : p.name,
           done: recs.length,
           total: p.exercises.length,
           accuracy: tot ? Math.round((score / tot) * 100) : null,
@@ -38,32 +38,17 @@ function computeStats(progress: ProgressMap): PartStat[] {
     )
 }
 
-function Bar({ value, tone = 'navy' }: { value: number; tone?: 'navy' | 'auto' }) {
-  const color =
-    tone === 'navy' ? 'bg-navy-700' : value >= 75 ? 'bg-emerald-500' : value >= 50 ? 'bg-amber-500' : 'bg-red-500'
-  return (
-    <div className="h-2 rounded-full bg-navy-100 overflow-hidden">
-      <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.min(100, value)}%` }} />
-    </div>
-  )
-}
-
-function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
-  return (
-    <div className="rounded-2xl bg-white border border-navy-100 p-4">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-2xl font-bold text-navy-900 tabular-nums">{value}</p>
-      {sub && <p className="text-xs text-slate-400">{sub}</p>}
-    </div>
-  )
+function pctTone(v: number | null) {
+  return v === null ? 'text-ink-3' : v >= 75 ? 'text-ok' : v >= 50 ? 'text-warn' : 'text-bad'
 }
 
 export default function ProgressPage() {
   const [version, setVersion] = useState(0) // para refrescar tras importar o borrar
+  void version
   const progress = loadProgress()
   const days = loadDays()
   const stats = computeStats(progress)
-  void version
+  const st = streak(days)
 
   const allExercises = sections.flatMap((s) => s.parts.flatMap((p) => p.exercises.map((e) => ({ s, p, e }))))
   const doneCount = allExercises.filter(({ e }) => progress[e.id]).length
@@ -73,9 +58,8 @@ export default function ProgressPage() {
   const accuracy = gTotal ? Math.round((gScore / gTotal) * 100) : null
 
   const weak = stats
-    .filter((s) => !s.isWriting && s.accuracy !== null)
+    .filter((s) => !s.isWriting && s.accuracy !== null && s.accuracy < 75)
     .sort((a, b) => (a.accuracy ?? 0) - (b.accuracy ?? 0))
-    .filter((s) => (s.accuracy ?? 100) < 75)
     .slice(0, 4)
 
   const toReview = allExercises
@@ -87,144 +71,122 @@ export default function ProgressPage() {
     .filter((s) => s.available)
     .map((s) => {
       const rows = stats.filter((r) => r.sectionSlug === s.slug)
-      const done = rows.reduce((a, r) => a + r.done, 0)
-      const total = rows.reduce((a, r) => a + r.total, 0)
-      return { s, rows, done, total }
+      return { s, rows, done: rows.reduce((a, r) => a + r.done, 0), total: rows.reduce((a, r) => a + r.total, 0) }
     })
 
-  return (
-    <div>
-      <Breadcrumbs items={[{ label: 'Inicio', to: '/' }, { label: 'Mi progreso' }]} />
-      <h1 className="text-3xl font-bold text-navy-900">📈 Mi progreso</h1>
-      <p className="mt-1 text-slate-600">Se calcula con tu último intento de cada ejercicio. Los datos se guardan en este navegador.</p>
+  const figures = [
+    { value: `${doneCount}`, label: `de ${allExercises.length} ejercicios hechos` },
+    { value: accuracy === null ? '—' : `${accuracy}%`, label: 'de aciertos, sin contar Writing' },
+    { value: `${st}`, label: st === 1 ? 'día seguido practicando' : 'días seguidos practicando' },
+    { value: `${days.length}`, label: days.length === 1 ? 'día de práctica en total' : 'días de práctica en total' },
+  ]
 
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard label="Ejercicios hechos" value={`${doneCount}`} sub={`de ${allExercises.length}`} />
-        <StatCard label="Aciertos" value={accuracy === null ? '—' : `${accuracy}%`} sub="sin contar Writing" />
-        <StatCard label="Racha" value={`${streak(days)} ${streak(days) === 1 ? 'día' : 'días'}`} sub="seguidos practicando" />
-        <StatCard label="Días de práctica" value={`${days.length}`} sub="en total" />
-      </div>
+  return (
+    <div className="max-w-5xl">
+      <PageHeader title="Mi progreso" lead="Se calcula con tu último intento de cada ejercicio y se guarda en este navegador." />
+
+      <Panel className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-line mb-10">
+        {figures.map((f) => (
+          <div key={f.label} className="p-5">
+            <p className="text-[2rem] leading-none font-bold tabular-nums tracking-[-0.03em]">{f.value}</p>
+            <p className="text-sm text-ink-2 mt-2 leading-snug">{f.label}</p>
+          </div>
+        ))}
+      </Panel>
 
       {doneCount === 0 && (
-        <div className="mt-6 rounded-2xl bg-gold-300/30 p-5 text-sm">
-          Todavía no has hecho ningún ejercicio. Empieza por{' '}
-          <Link to="/s/use-of-english" className="font-semibold underline">
-            Use of English
-          </Link>{' '}
-          y vuelve aquí para ver tu evolución.
-        </div>
+        <Panel className="p-6 mb-10 max-w-2xl">
+          <p className="font-bold">Aún no hay nada que mostrar</p>
+          <p className="text-ink-2 mt-1">Haz tu primer ejercicio y aquí verás tus aciertos, tus puntos débiles y lo que conviene repasar.</p>
+          <Link to="/s/use-of-english" className={`${btn('primary', 'sm')} mt-4`}>
+            Empezar con Use of English
+          </Link>
+        </Panel>
       )}
 
-      {weak.length > 0 && (
-        <section className="mt-8">
-          <h2 className="text-lg font-semibold text-navy-900 mb-3">🎯 Tus puntos débiles</h2>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {weak.map((w) => (
-              <Link
-                key={w.sectionSlug + w.partSlug}
-                to={`/s/${w.sectionSlug}/${w.partSlug}`}
-                className="rounded-2xl bg-white border border-red-100 p-4 hover:border-red-300 transition"
-              >
-                <p className="text-xs text-slate-500">{w.sectionName}</p>
-                <p className="font-semibold text-navy-900">{w.partName}</p>
-                <div className="mt-2 flex items-center gap-3">
-                  <div className="flex-1">
-                    <Bar value={w.accuracy ?? 0} tone="auto" />
-                  </div>
-                  <span className="text-sm font-semibold tabular-nums">{w.accuracy}%</span>
-                </div>
-                <p className="mt-1 text-xs text-navy-700">Repasa la teoría y vuelve a practicar →</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {toReview.length > 0 && (
-        <section className="mt-8">
-          <h2 className="text-lg font-semibold text-navy-900 mb-3">🔁 Ejercicios con fallos para repetir</h2>
-          <div className="grid gap-2">
-            {toReview.map(({ s, p, e }) => {
-              const r = progress[e.id]
-              return (
-                <Link
-                  key={e.id}
-                  to={`/s/${s.slug}/${p.slug}/${e.id}?mode=practice`}
-                  className="flex items-center gap-3 rounded-xl bg-white border border-navy-100 px-4 py-3 hover:border-navy-500 transition"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-navy-900 truncate">{e.title}</p>
-                    <p className="text-xs text-slate-500 truncate">
-                      {s.name} · {p.number ? `Part ${p.number}` : p.name}
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-8 mb-10">
+        {weak.length > 0 && (
+          <section>
+            <h2 className="text-lg font-bold mb-1">Dónde más fallas</h2>
+            <p className="text-sm text-ink-2 mb-3">Partes con menos del 75% de aciertos. Repasa la guía antes de volver a practicar.</p>
+            <Panel className="divide-y divide-line">
+              {weak.map((w) => (
+                <Link key={w.sectionSlug + w.partSlug} to={`/s/${w.sectionSlug}/${w.partSlug}`} className="block px-4 sm:px-5 py-3.5 hover:bg-bg/60">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="font-semibold leading-snug">
+                      {w.partName}
+                      <span className="block text-xs font-normal text-ink-3">{w.sectionName}</span>
                     </p>
+                    <span className={`text-lg font-bold tabular-nums ${pctTone(w.accuracy)}`}>{w.accuracy}%</span>
                   </div>
-                  <span className="text-xs text-red-700 bg-red-50 rounded-full px-2 py-0.5 shrink-0">
-                    {r.wrong.length} {r.wrong.length === 1 ? 'fallo' : 'fallos'}
-                  </span>
-                  <span className="text-sm tabular-nums text-slate-500 shrink-0">
-                    {r.score}/{r.total}
-                  </span>
+                  <Meter value={w.accuracy ?? 0} tone="score" className="mt-2" />
                 </Link>
-              )
-            })}
-          </div>
-        </section>
-      )}
+              ))}
+            </Panel>
+          </section>
+        )}
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold text-navy-900 mb-3">Por secciones</h2>
-        <div className="grid gap-3">
+        {toReview.length > 0 && (
+          <section>
+            <h2 className="text-lg font-bold mb-1">Para repetir</h2>
+            <p className="text-sm text-ink-2 mb-3">Ejercicios recientes en los que fallaste alguna pregunta.</p>
+            <Panel className="divide-y divide-line">
+              {toReview.map(({ s, p, e }) => {
+                const r = progress[e.id]
+                return (
+                  <Link key={e.id} to={`/s/${s.slug}/${p.slug}/${e.id}?mode=practice`} className="flex items-center gap-3 px-4 sm:px-5 py-3 hover:bg-bg/60">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold truncate">{e.title}</p>
+                      <p className="text-xs text-ink-3 truncate">
+                        {s.name}, {p.number ? `Part ${p.number}` : p.name}
+                      </p>
+                    </div>
+                    <span className="text-sm tabular-nums text-bad font-semibold shrink-0">
+                      {r.wrong.length} {r.wrong.length === 1 ? 'fallo' : 'fallos'}
+                    </span>
+                  </Link>
+                )
+              })}
+            </Panel>
+          </section>
+        )}
+      </div>
+
+      <section className="mb-10">
+        <h2 className="text-lg font-bold mb-3">Por secciones</h2>
+        <Panel className="divide-y divide-line">
           {bySection.map(({ s, rows, done, total }) => (
-            <details key={s.slug} className="rounded-2xl bg-white border border-navy-100 p-4 group">
-              <summary className="cursor-pointer list-none">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl" aria-hidden>
-                    {s.icon}
-                  </span>
-                  <div className="flex-1">
-                    <div className="flex justify-between text-sm">
-                      <span className="font-semibold text-navy-900">{s.name}</span>
-                      <span className="text-slate-500 tabular-nums">
-                        {done}/{total}
-                      </span>
-                    </div>
-                    <div className="mt-1.5">
-                      <Bar value={total ? (done / total) * 100 : 0} />
-                    </div>
-                  </div>
-                  <span className="text-slate-400 group-open:rotate-180 transition">▾</span>
-                </div>
+            <details key={s.slug} className="group">
+              <summary className="cursor-pointer list-none px-4 sm:px-5 py-4 flex items-center gap-4 hover:bg-bg/60">
+                <span className="w-40 sm:w-48 font-bold shrink-0">{s.name}</span>
+                <Meter value={total ? (done / total) * 100 : 0} className="flex-1" />
+                <span className="text-sm text-ink-3 tabular-nums w-14 text-right shrink-0">
+                  {done}/{total}
+                </span>
+                <svg viewBox="0 0 20 20" className="w-4 h-4 text-ink-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                  <path d="m5 8 5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </summary>
-              <table className="mt-4 w-full text-sm">
+              <table className="w-full text-sm mb-3">
                 <thead>
-                  <tr className="text-left text-xs text-slate-500">
-                    <th className="font-medium pb-1">Parte / tema</th>
-                    <th className="font-medium pb-1 text-right">Hechos</th>
-                    <th className="font-medium pb-1 text-right w-20">{s.slug === 'writing' ? 'Checklist' : 'Aciertos'}</th>
+                  <tr className="text-left text-xs text-ink-3">
+                    <th className="font-medium px-4 sm:px-5 pb-1.5">Parte o tema</th>
+                    <th className="font-medium pb-1.5 text-right">Hechos</th>
+                    <th className="font-medium px-4 sm:px-5 pb-1.5 text-right">{s.slug === 'writing' ? 'Revisión' : 'Aciertos'}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((r) => (
-                    <tr key={r.partSlug} className="border-t border-navy-50">
-                      <td className="py-1.5">
-                        <Link to={`/s/${r.sectionSlug}/${r.partSlug}`} className="hover:underline">
+                    <tr key={r.partSlug} className="border-t border-line">
+                      <td className="px-4 sm:px-5 py-2">
+                        <Link to={`/s/${r.sectionSlug}/${r.partSlug}`} className="hover:underline underline-offset-2">
                           {r.partName}
                         </Link>
                       </td>
-                      <td className="py-1.5 text-right tabular-nums text-slate-500">
+                      <td className="py-2 text-right tabular-nums text-ink-2">
                         {r.done}/{r.total}
                       </td>
-                      <td
-                        className={`py-1.5 text-right tabular-nums font-medium ${
-                          r.accuracy === null
-                            ? 'text-slate-300'
-                            : r.accuracy >= 75
-                              ? 'text-emerald-700'
-                              : r.accuracy >= 50
-                                ? 'text-amber-700'
-                                : 'text-red-700'
-                        }`}
-                      >
+                      <td className={`px-4 sm:px-5 py-2 text-right tabular-nums font-semibold ${pctTone(r.accuracy)}`}>
                         {r.accuracy === null ? '—' : `${r.accuracy}%`}
                       </td>
                     </tr>
@@ -233,7 +195,7 @@ export default function ProgressPage() {
               </table>
             </details>
           ))}
-        </div>
+        </Panel>
       </section>
 
       <Backup onChange={() => setVersion((v) => v + 1)} />
@@ -259,44 +221,31 @@ function Backup({ onChange }: { onChange: () => void }) {
 
   const upload = async (f: File) => {
     const ok = importData(await f.text())
-    setMsg(ok ? '✓ Progreso importado correctamente.' : 'Ese archivo no es una copia válida de esta app.')
+    setMsg(ok ? 'Progreso importado.' : 'Ese archivo no es una copia de esta app. Elige el .json que descargaste desde aquí.')
     if (ok) onChange()
   }
 
   return (
-    <section className="mt-10 rounded-2xl bg-white border border-navy-100 p-5">
-      <h2 className="font-semibold text-navy-900">Copia de seguridad</h2>
-      <p className="mt-1 text-sm text-slate-600">
-        Tu progreso y tus borradores de Writing se guardan solo en este navegador. Descarga una copia para no perderlos o
-        para pasarlos a otro dispositivo.
+    <section className="max-w-2xl">
+      <h2 className="text-lg font-bold">Copia de seguridad</h2>
+      <p className="mt-1 text-ink-2">
+        Tu progreso y tus borradores de Writing solo están en este navegador. Descarga una copia para no perderlos o para pasarlos a otro dispositivo.
       </p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        <button onClick={download} className="rounded-xl bg-navy-800 text-white px-4 py-2 text-sm font-medium hover:bg-navy-700">
-          ⬇ Descargar copia
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button onClick={download} className={btn('primary', 'sm')}>
+          Descargar copia
         </button>
-        <button
-          onClick={() => fileRef.current?.click()}
-          className="rounded-xl border border-navy-800 text-navy-800 px-4 py-2 text-sm font-medium hover:bg-navy-50"
-        >
-          ⬆ Importar copia
+        <button onClick={() => fileRef.current?.click()} className={btn('secondary', 'sm')}>
+          Importar copia
         </button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="application/json,.json"
-          className="hidden"
-          onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])}
-        />
+        <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
         {!confirmReset ? (
-          <button
-            onClick={() => setConfirmReset(true)}
-            className="rounded-xl border border-red-200 text-red-700 px-4 py-2 text-sm font-medium hover:bg-red-50"
-          >
+          <button onClick={() => setConfirmReset(true)} className={btn('danger', 'sm')}>
             Borrar todo
           </button>
         ) : (
-          <span className="flex items-center gap-2 text-sm">
-            ¿Seguro? No se puede deshacer.
+          <span className="flex flex-wrap items-center gap-2 text-sm">
+            Se borrará todo el progreso y no se puede deshacer.
             <button
               onClick={() => {
                 resetAll()
@@ -304,17 +253,17 @@ function Backup({ onChange }: { onChange: () => void }) {
                 setMsg('Progreso borrado.')
                 onChange()
               }}
-              className="rounded-lg bg-red-600 text-white px-3 py-1.5 font-medium"
+              className={`${btn('danger', 'sm')} !bg-bad !text-white`}
             >
-              Sí, borrar
+              Borrar todo
             </button>
-            <button onClick={() => setConfirmReset(false)} className="rounded-lg border px-3 py-1.5">
+            <button onClick={() => setConfirmReset(false)} className={btn('quiet', 'sm')}>
               Cancelar
             </button>
           </span>
         )}
       </div>
-      {msg && <p className="mt-2 text-sm text-slate-600">{msg}</p>}
+      {msg && <p className="mt-3 text-sm text-ink-2">{msg}</p>}
     </section>
   )
 }

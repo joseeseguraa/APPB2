@@ -1,30 +1,31 @@
 import type { WritingModel } from '../types'
 import { countWords } from '../lib/writing'
+import { Panel } from './ui'
 
 export function WritingModelView({ model }: { model: WritingModel }) {
   return (
-    <div className="grid gap-3">
-      <details className="rounded-xl bg-navy-50 p-4 text-sm">
-        <summary className="cursor-pointer font-medium text-navy-800">Ver el enunciado del modelo</summary>
-        <p className="mt-2 whitespace-pre-line font-serif">{model.prompt}</p>
+    <div className="grid gap-5">
+      <details className="text-sm">
+        <summary className="cursor-pointer font-semibold text-ink-2 hover:text-ink">Ver el enunciado de este modelo</summary>
+        <p className="mt-3 passage !text-[1rem] whitespace-pre-line border-l-2 border-line-strong pl-4">{model.prompt}</p>
       </details>
-      <div className="rounded-2xl bg-white border border-navy-100 p-5 sm:p-6">
-        <p className="font-serif text-[1.05rem] leading-7 whitespace-pre-line">{model.text}</p>
-        <p className="mt-3 text-xs text-slate-400">{countWords(model.text)} palabras</p>
-      </div>
-      <div className="rounded-2xl bg-emerald-50 p-5">
-        <p className="font-semibold text-emerald-900 mb-2">¿Por qué funciona?</p>
-        <ul className="space-y-1.5 text-sm text-slate-700">
+      <Panel className="p-6 sm:p-9">
+        <p className="passage whitespace-pre-line">{model.text}</p>
+        <p className="mt-4 text-xs text-ink-3 tabular-nums">{countWords(model.text)} palabras</p>
+      </Panel>
+      <section>
+        <h3 className="font-bold mb-3">Por qué funciona</h3>
+        <ul className="space-y-2.5">
           {model.comments.map((c, i) => (
-            <li key={i} className="flex gap-2">
-              <span className="text-emerald-600" aria-hidden>
-                ✓
-              </span>
+            <li key={i} className="flex gap-3 text-[0.98rem] leading-relaxed">
+              <svg viewBox="0 0 20 20" className="w-5 h-5 shrink-0 mt-0.5 text-ok" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                <path d="m5 10.5 3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
               <span>{c}</span>
             </li>
           ))}
         </ul>
-      </div>
+      </section>
     </div>
   )
 }

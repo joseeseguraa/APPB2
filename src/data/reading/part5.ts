@@ -6,7 +6,7 @@ export const part5Exercises: ReadingMcExercise[] = [
     id: 'rd5-01',
     kind: 'reading-mc',
     title: 'An unexpected hobby',
-    focus: 'Narrativa en primera persona · actitudes y referencias',
+    focus: 'Narrativa en primera persona, actitudes y referencias',
     text: `When my neighbour Margaret asked me if I would like to help her with her bees, my first instinct was to say no. I had been stung once as a child and had spent the rest of my life running away from anything with wings. But Margaret was eighty-one, her hands were no longer steady, and she had nobody else to ask. "Just come and watch," she said. "You don't have to touch anything." Somehow, I found myself agreeing.
 
 That first Saturday, I stood several metres behind her, wearing a borrowed suit that was far too big for me, while she calmly lifted the lid of the hive. I had expected chaos: an angry cloud of insects pouring out to attack us. Instead, the bees carried on with their work as if we weren't there. Margaret talked to them in a low voice, the way you might talk to a nervous horse, and moved so slowly that I began to feel impatient. It was only later that I understood that this slowness was the whole point.
@@ -31,7 +31,7 @@ I didn't understand what she meant at the time. Now, three years after that firs
     id: 'rd5-02',
     kind: 'reading-mc',
     title: 'Working less, achieving more?',
-    focus: 'Artículo de opinión · ideas principales y opiniones',
+    focus: 'Artículo de opinión, ideas principales y opiniones',
     text: `When Tom Hughes, the founder of a small software company in Bristol, announced that his staff would only be working four days a week, several of his clients assumed the business was in trouble. "One of them rang me to ask if we were about to close," he laughs. "The idea that you could cut working hours without cutting anything else just didn't make sense to people."
 
 Two years later, the company is still open – and more profitable than ever. Employees work from Monday to Thursday, with no reduction in pay, and Hughes insists that the amount of work they produce has actually increased. He is not alone. Over the past decade, dozens of trials in different countries have reported similar results: staff who are less stressed, take fewer days off sick, and are less likely to leave for other jobs.
@@ -56,7 +56,7 @@ Whether the four-day week becomes the norm remains to be seen. What is clear is 
     id: 'rd5-03',
     kind: 'reading-mc',
     title: 'The audition',
-    focus: 'Relato · sentimientos del personaje y significado implícito',
+    focus: 'Relato, sentimientos del personaje y significado implícito',
     text: `Leo had been waiting outside the audition room for forty minutes when he finally decided to leave. It was not a decision he was proud of. He had practised the speech every evening for three weeks, recording himself on his phone and watching it back until his flatmate threatened to throw the phone out of the window. He knew every word, every pause. And yet, sitting on the hard plastic chair, listening to the confident voices coming through the door, he had become convinced that he had no business being there.
 
 He had got as far as the stairs when a woman carrying a pile of scripts almost walked into him. "Are you Leo Marsh?" she asked, glancing at the list in her hand. "You're next." He opened his mouth to say that there had been some mistake, that he was just leaving, but she was already holding the door open for him. It seemed easier to go in than to explain.

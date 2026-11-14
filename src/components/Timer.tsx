@@ -27,10 +27,17 @@ export function useCountdown(seconds: number, running: boolean, onEnd: () => voi
 
 export function TimerBadge({ left, total }: { left: number; total: number }) {
   const pct = left / total
-  const tone = pct > 0.25 ? 'bg-navy-800 text-white' : pct > 0.1 ? 'bg-amber-500 text-white' : 'bg-red-600 text-white'
+  const tone = pct > 0.25 ? 'border-line-strong text-ink' : pct > 0.1 ? 'border-warn text-warn' : 'border-bad text-bad'
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-mono font-semibold ${tone}`}>
-      ⏱ {formatTime(left)}
+    <span
+      className={`inline-flex items-center gap-2 h-9 rounded-md border bg-paper px-3 text-[0.95rem] font-semibold tabular-nums ${tone}`}
+      aria-label={`Tiempo restante ${formatTime(left)}`}
+    >
+      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+        <circle cx="12" cy="13" r="7.5" />
+        <path d="M12 9.5V13l2.5 2M9.5 2.5h5" strokeLinecap="round" />
+      </svg>
+      {formatTime(left)}
     </span>
   )
 }

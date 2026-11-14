@@ -5,32 +5,64 @@ import { countWords, CRITERIA, loadDraft, saveDraft } from '../lib/writing'
 import { saveAttempt } from '../lib/progress'
 import { TimerBadge, useCountdown } from './Timer'
 import { WritingModelView } from './WritingModelView'
+import { btn, ModeTag, Panel } from './ui'
 
 export function WordCounter({ words, min = 140, max = 190 }: { words: number; min?: number; max?: number }) {
-  const tone = words === 0 ? 'text-slate-400' : words < min ? 'text-amber-700' : words <= max ? 'text-emerald-700' : 'text-amber-700'
-  const msg = words === 0 ? '' : words < min ? `te faltan ${min - words}` : words <= max ? 'longitud correcta' : `te sobran ${words - max}`
+  const ok = words >= min && words <= max
+  const tone = words === 0 ? 'text-ink-3' : ok ? 'text-ok' : 'text-warn'
+  const msg = words === 0 ? `Entre ${min} y ${max} palabras` : words < min ? `faltan ${min - words}` : words <= max ? 'longitud correcta' : `sobran ${words - max}`
   return (
-    <span className={`text-sm font-medium tabular-nums ${tone}`}>
-      {words} palabras{msg && ` · ${msg}`} <span className="text-slate-400 font-normal">({min}–{max})</span>
+    <span className={`text-sm font-semibold tabular-nums ${tone}`}>
+      {words > 0 && `${words} palabras, `}
+      {msg}
     </span>
   )
 }
 
+/** Enunciado tal como aparece en el cuadernillo del examen. */
 export function PromptBox({ task }: { task: Pick<WritingTask, 'prompt' | 'notes'> }) {
   return (
-    <div className="rounded-2xl bg-white border-2 border-navy-200 p-5 font-serif text-[1.02rem] leading-7 whitespace-pre-line">
-      {task.prompt}
+    <div className="border-l-[3px] border-print pl-5 py-1 max-w-3xl">
+      <p className="passage !text-[1.05rem] whitespace-pre-line">{task.prompt}</p>
       {task.notes && (
-        <div className="mt-3 font-sans text-sm">
-          <p className="font-semibold">Notes — Write about:</p>
-          <ol className="list-decimal list-inside">
+        <div className="mt-3 text-[0.95rem]">
+          <p className="font-semibold">Notes. Write about:</p>
+          <ol className="mt-1 space-y-0.5">
             {task.notes.map((n, i) => (
-              <li key={i}>{n}</li>
+              <li key={i} className="flex gap-2">
+                <span className="text-print font-bold tabular-nums">{i + 1}.</span> {n}
+              </li>
             ))}
           </ol>
         </div>
       )}
     </div>
+  )
+}
+
+/** Área de escritura con aspecto de hoja. */
+export function WritingArea({
+  value,
+  onChange,
+  disabled,
+  placeholder = 'Escribe aquí tu respuesta en inglés',
+  className = '',
+}: {
+  value: string
+  onChange: (v: string) => void
+  disabled?: boolean
+  placeholder?: string
+  className?: string
+}) {
+  return (
+    <textarea
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
+      placeholder={placeholder}
+      spellCheck={false}
+      className={`w-full min-h-[22rem] rounded-[var(--radius-panel)] border border-line bg-paper p-5 sm:p-7 passage outline-none focus:border-ink-3 disabled:text-ink-2 placeholder:text-ink-3 placeholder:font-sans placeholder:text-base ${className}`}
+    />
   )
 }
 
@@ -49,7 +81,7 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
   const [checks, setChecks] = useState<boolean[]>([])
   const [copied, setCopied] = useState(false)
   const [saved, setSaved] = useState(false)
-  const items = [...CRITERIA.map((c) => `${c.name} — ${c.es}`), ...(part.checklist ?? [])]
+  const items = [...CRITERIA.map((c) => ({ title: c.name, text: c.es })), ...(part.checklist ?? []).map((t) => ({ title: '', text: t }))]
 
   // guardado automático del borrador
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -81,134 +113,114 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
 
   return (
     <div>
-      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
-        <div>
-          <p className="text-sm text-slate-500">Writing · {part.name}</p>
-          <h1 className="text-2xl font-bold text-navy-900">{task.title}</h1>
-          <p className="text-sm text-slate-500">{task.focus}</p>
+      <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm text-ink-3">Writing, {part.name}</p>
+          <h1 className="text-[1.75rem] sm:text-[2rem] leading-tight font-bold tracking-[-0.02em]">{task.title}</h1>
+          <p className="text-ink-2 mt-0.5">{task.focus}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span
-            className={`text-xs font-semibold uppercase tracking-wide rounded-full px-2.5 py-1 ${
-              mode === 'exam' ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'
-            }`}
-          >
-            {mode === 'exam' ? 'Modo examen' : 'Modo práctica'}
-          </span>
+        <div className="flex items-center gap-3">
+          <ModeTag mode={mode} />
           {mode === 'exam' && phase === 'writing' && <TimerBadge left={left} total={total} />}
         </div>
-      </div>
+      </header>
 
-      <PromptBox task={task} />
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem] gap-8 items-start">
+        <div className="min-w-0">
+          <PromptBox task={task} />
 
-      {mode === 'practice' && (
-        <div className="mt-3">
-          <button onClick={() => setShowPlan((s) => !s)} className="text-sm font-medium text-navy-700 underline underline-offset-2">
-            {showPlan ? 'Ocultar el plan sugerido' : '💡 Ver un plan sugerido párrafo a párrafo'}
-          </button>
-          {showPlan && (
-            <ol className="mt-2 rounded-xl bg-gold-300/30 p-4 text-sm space-y-1.5 list-decimal list-inside">
-              {task.plan.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ol>
-          )}
+          <div className="mt-6">
+            <WritingArea value={text} onChange={setText} disabled={phase === 'review' && mode === 'exam'} />
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+              <WordCounter words={words} />
+              <span className="text-xs text-ink-3">El borrador se guarda solo en este navegador.</span>
+            </div>
+          </div>
         </div>
-      )}
 
-      <div className="mt-4">
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          disabled={phase === 'review' && mode === 'exam'}
-          placeholder="Escribe aquí tu respuesta en inglés…"
-          spellCheck={false}
-          className="w-full min-h-[22rem] rounded-2xl border border-navy-200 bg-white p-4 sm:p-5 font-serif text-[1.05rem] leading-7 outline-none focus:ring-2 focus:ring-navy-200 disabled:bg-slate-50"
-        />
-        <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
-          <WordCounter words={words} />
-          <span className="text-xs text-slate-400">El borrador se guarda solo en este navegador.</span>
-        </div>
+        {mode === 'practice' && (
+          <aside className="lg:sticky lg:top-20">
+            <button onClick={() => setShowPlan((s) => !s)} className={btn('secondary', 'sm')} aria-expanded={showPlan}>
+              {showPlan ? 'Ocultar el plan' : 'Ver un plan párrafo a párrafo'}
+            </button>
+            {showPlan && (
+              <ol className="mt-4 space-y-3">
+                {task.plan.map((p, i) => (
+                  <li key={i} className="flex gap-3 text-[0.95rem] leading-relaxed">
+                    <span className="shrink-0 grid place-items-center w-6 h-6 rounded-full border-[1.5px] border-print text-print text-xs font-bold">
+                      {i + 1}
+                    </span>
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </aside>
+        )}
       </div>
 
       {phase === 'writing' ? (
-        <div className="sticky bottom-0 mt-6 -mx-4 px-4 py-3 bg-navy-50/95 backdrop-blur border-t border-navy-100 flex flex-wrap gap-2 items-center">
-          <button
-            onClick={() => setPhase('review')}
-            disabled={words === 0}
-            className="rounded-xl bg-navy-800 text-white px-5 py-2.5 font-medium hover:bg-navy-700 disabled:opacity-40"
-          >
-            He terminado · autoevaluar
+        <div className="sticky bottom-[calc(3.9rem+env(safe-area-inset-bottom))] sm:bottom-0 z-20 mt-8 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-bg/95 backdrop-blur border-t border-line flex gap-2">
+          <button onClick={() => setPhase('review')} disabled={words === 0} className={btn('primary')}>
+            He terminado, quiero revisarlo
           </button>
         </div>
       ) : (
-        <section className="mt-6 grid gap-5">
-          <div className="rounded-2xl bg-white border border-navy-100 p-5">
-            <h2 className="font-semibold text-navy-900 mb-1">Autoevaluación</h2>
-            <p className="text-sm text-slate-600 mb-3">
-              Relee tu texto con calma y marca lo que cumples. Son los 4 criterios oficiales de Cambridge y los puntos clave
-              de este tipo de texto.
+        <section className="mt-10 grid gap-10 max-w-3xl">
+          <div>
+            <h2 className="text-xl font-bold">Revisa tu texto</h2>
+            <p className="text-ink-2 mt-1 mb-4">
+              Relee con calma y marca lo que cumples. Los cuatro primeros puntos son los criterios oficiales de Cambridge.
             </p>
-            <ul className="grid gap-2">
+            <Panel className="divide-y divide-line">
               {items.map((it, i) => (
-                <li key={i}>
-                  <label className="flex gap-3 items-start text-sm cursor-pointer rounded-lg p-2 hover:bg-navy-50">
-                    <input
-                      type="checkbox"
-                      checked={!!checks[i]}
-                      onChange={(e) => {
-                        setSaved(false)
-                        setChecks((c) => Object.assign([...c], { [i]: e.target.checked }))
-                      }}
-                      className="mt-0.5 w-4 h-4 accent-navy-800"
-                    />
-                    <span className={i < CRITERIA.length ? 'font-medium' : ''}>{it}</span>
-                  </label>
-                </li>
+                <label key={i} className="flex gap-3 items-start px-4 sm:px-5 py-3 cursor-pointer hover:bg-bg/60">
+                  <input
+                    type="checkbox"
+                    checked={!!checks[i]}
+                    onChange={(e) => {
+                      setSaved(false)
+                      setChecks((c) => Object.assign([...c], { [i]: e.target.checked }))
+                    }}
+                    className="mt-1 w-4 h-4 accent-[var(--color-ink)]"
+                  />
+                  <span className="text-[0.97rem] leading-snug">
+                    {it.title && <b className="block">{it.title}</b>}
+                    <span className={it.title ? 'text-ink-2' : ''}>{it.text}</span>
+                  </span>
+                </label>
               ))}
-            </ul>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <button
-                onClick={finishReview}
-                className="rounded-xl bg-navy-800 text-white px-4 py-2 text-sm font-medium hover:bg-navy-700"
-              >
-                {saved ? '✓ Guardada' : `Guardar autoevaluación (${checks.filter(Boolean).length}/${items.length})`}
+            </Panel>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button onClick={finishReview} className={btn('primary')}>
+                {saved ? 'Revisión guardada' : `Guardar revisión (${checks.filter(Boolean).length} de ${items.length})`}
               </button>
-              <button onClick={copy} className="rounded-xl border border-navy-800 text-navy-800 px-4 py-2 text-sm font-medium hover:bg-navy-50">
-                {copied ? '✓ Copiado' : 'Copiar mi texto'}
+              <button onClick={copy} className={btn('secondary')}>
+                {copied ? 'Texto copiado' : 'Copiar mi texto'}
               </button>
               {mode === 'practice' && (
-                <button
-                  onClick={() => setPhase('writing')}
-                  className="rounded-xl border border-navy-200 text-navy-800 px-4 py-2 text-sm font-medium hover:bg-navy-50"
-                >
+                <button onClick={() => setPhase('writing')} className={btn('quiet')}>
                   Seguir editando
                 </button>
               )}
             </div>
-            <p className="mt-3 text-xs text-slate-500">
-              Consejo: si quieres una corrección detallada, copia tu texto y pídesela a un profesor o a Claude indicando
-              que es un {part.name.toLowerCase()} para el B2 First.
+            <p className="mt-3 text-sm text-ink-3">
+              Para una corrección detallada, copia el texto y pásaselo a un profesor o a Claude indicando que es un{' '}
+              {part.name.toLowerCase()} para el B2 First.
             </p>
           </div>
 
           {part.model && (
             <div>
-              <h2 className="font-semibold text-navy-900 mb-2">Compara con un modelo comentado</h2>
+              <h2 className="text-xl font-bold mb-4">Compara con un modelo comentado</h2>
               <WritingModelView model={part.model} />
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2">
-            {nextUrl ? (
-              <Link to={nextUrl} className="rounded-xl bg-gold-400 text-navy-900 px-5 py-2.5 font-medium hover:bg-gold-300">
-                Siguiente tarea →
-              </Link>
-            ) : (
-              <Link to={partUrl} className="rounded-xl bg-gold-400 text-navy-900 px-5 py-2.5 font-medium hover:bg-gold-300">
-                Volver a {part.name}
-              </Link>
-            )}
+          <div>
+            <Link to={nextUrl ?? partUrl} className={btn('accent')}>
+              {nextUrl ? 'Siguiente tarea' : `Volver a ${part.name}`}
+            </Link>
           </div>
         </section>
       )}

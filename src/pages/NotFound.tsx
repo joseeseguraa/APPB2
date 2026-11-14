@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
+import { btn } from '../components/ui'
 
 export default function NotFound() {
   return (
-    <div className="text-center py-16">
-      <p className="text-5xl mb-4" aria-hidden>🤔</p>
-      <h1 className="text-xl font-semibold text-navy-900">No hemos encontrado esta página</h1>
-      <Link to="/" className="inline-block mt-4 text-navy-700 underline">
-        Volver al inicio
+    <div className="py-16 max-w-md">
+      <h1 className="text-2xl font-bold">Esta página no existe</h1>
+      <p className="mt-2 text-ink-2">Puede que el enlace esté mal escrito o que el ejercicio haya cambiado de sitio.</p>
+      <Link to="/" className={`${btn('primary')} mt-6`}>
+        Ir al inicio
       </Link>
     </div>
   )

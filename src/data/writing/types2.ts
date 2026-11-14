@@ -3,8 +3,8 @@ import type { PartInfo } from '../../types'
 export const formalLetter: PartInfo = {
   slug: 'formal-letter',
   name: 'Email / letter (formal)',
-  nameEs: 'Carta o email formal: solicitud o queja · Part 2',
-  summary: 'Part 2 · opcional · 140–190 palabras',
+  nameEs: 'Carta o email formal: solicitud o queja, Part 2',
+  summary: 'Part 2, opcional, 140–190 palabras',
   suggestedMinutes: 40,
   theory: [
     {
@@ -175,8 +175,8 @@ Write a letter to the hotel manager explaining what was wrong and what you expec
 export const report: PartInfo = {
   slug: 'report',
   name: 'Report',
-  nameEs: 'Informe con apartados · Part 2',
-  summary: 'Part 2 · opcional · 140–190 palabras',
+  nameEs: 'Informe con apartados, Part 2',
+  summary: 'Part 2, opcional, 140–190 palabras',
   suggestedMinutes: 40,
   theory: [
     {
@@ -337,8 +337,8 @@ Write your report.`,
 export const review: PartInfo = {
   slug: 'review',
   name: 'Review',
-  nameEs: 'Reseña de una película, libro, restaurante… · Part 2',
-  summary: 'Part 2 · opcional · 140–190 palabras',
+  nameEs: 'Reseña de una película, libro, restaurante…, Part 2',
+  summary: 'Part 2, opcional, 140–190 palabras',
   suggestedMinutes: 40,
   theory: [
     {

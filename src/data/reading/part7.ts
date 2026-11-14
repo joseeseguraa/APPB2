@@ -5,7 +5,7 @@ export const part7Exercises: MatchingExercise[] = [
     id: 'rd7-01',
     kind: 'matching',
     title: 'Young entrepreneurs',
-    focus: 'Cuatro testimonios · paráfrasis de ideas',
+    focus: 'Cuatro testimonios, paráfrasis de ideas',
     intro: 'Four young people talk about starting their own business. For questions 1–10, choose from the people (A–D).',
     sections: [
       {
@@ -42,7 +42,7 @@ export const part7Exercises: MatchingExercise[] = [
     id: 'rd7-02',
     kind: 'matching',
     title: 'Four museums worth a visit',
-    focus: 'Reseñas · información concreta y opiniones',
+    focus: 'Reseñas, información concreta y opiniones',
     intro: 'A travel writer describes four museums. For questions 1–10, choose from the museums (A–D).',
     sections: [
       {
@@ -79,7 +79,7 @@ export const part7Exercises: MatchingExercise[] = [
     id: 'rd7-03',
     kind: 'matching',
     title: 'My gap year',
-    focus: 'Experiencias personales · sentimientos y consecuencias',
+    focus: 'Experiencias personales, sentimientos y consecuencias',
     intro: 'Four people describe the year they took off between school and university. For questions 1–10, choose from the people (A–D).',
     sections: [
       {

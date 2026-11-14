@@ -26,8 +26,9 @@ import {
 } from '../lib/exercise'
 import { containsKeyword, countKwtWords } from '../lib/answers'
 import { saveAttempt } from '../lib/progress'
-import { Breadcrumbs } from '../components/Layout'
+import { BackLink } from '../components/Layout'
 import { TimerBadge, useCountdown } from '../components/Timer'
+import { btn, Lozenge, ModeTag, Panel, type MarkState } from '../components/ui'
 import NotFound from './NotFound'
 import WritingRunner from '../components/WritingRunner'
 
@@ -44,18 +45,11 @@ export default function ExercisePage() {
   const ex = part.exercises[idx]
   const next = part.exercises[idx + 1]
   const partUrl = `/s/${section.slug}/${part.slug}`
-  const partShort = part.number ? `Part ${part.number}` : part.name
+  const partLabel = part.number ? `Part ${part.number}: ${part.name}` : part.name
 
   return (
     <div>
-      <Breadcrumbs
-        items={[
-          { label: 'Inicio', to: '/' },
-          { label: section.name, to: `/s/${section.slug}` },
-          { label: partShort, to: partUrl },
-          { label: ex.title },
-        ]}
-      />
+      <BackLink to={partUrl} label={partLabel} />
       {/* key: reinicia el estado al cambiar de ejercicio o de modo */}
       {ex.kind === 'writing' ? (
         <WritingRunner
@@ -67,15 +61,15 @@ export default function ExercisePage() {
           nextUrl={next ? `${partUrl}/${next.id}?mode=${mode}` : undefined}
         />
       ) : (
-      <Runner
-        key={`${ex.id}-${mode}`}
-        ex={ex}
-        mode={mode}
-        minutes={part.suggestedMinutes}
-        partLabel={part.number ? `Part ${part.number} · ${part.name}` : `${section.name} · ${part.name}`}
-        partUrl={partUrl}
-        nextUrl={next ? `${partUrl}/${next.id}?mode=${mode}` : undefined}
-      />
+        <Runner
+          key={`${ex.id}-${mode}`}
+          ex={ex}
+          mode={mode}
+          minutes={part.suggestedMinutes}
+          partUrl={partUrl}
+          nextUrl={next ? `${partUrl}/${next.id}?mode=${mode}` : undefined}
+          position={`${idx + 1} de ${part.exercises.length}`}
+        />
       )}
     </div>
   )
@@ -85,12 +79,25 @@ interface RunnerProps {
   ex: Exercise
   mode: Mode
   minutes: number
-  partLabel: string
   partUrl: string
   nextUrl?: string
+  position: string
 }
 
-function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps) {
+/** Barra de acciones fija abajo (por encima de la barra de navegación del móvil). */
+export function ActionBar({ children, sticky = true }: { children: ReactNode; sticky?: boolean }) {
+  return (
+    <div
+      className={`${
+        sticky ? 'sticky bottom-[calc(3.9rem+env(safe-area-inset-bottom))] sm:bottom-0 z-20 bg-bg/95 backdrop-blur border-t border-line' : ''
+      } mt-8 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 flex flex-wrap gap-2 items-center`}
+    >
+      {children}
+    </div>
+  )
+}
+
+function Runner({ ex, mode, minutes, partUrl, nextUrl, position }: RunnerProps) {
   const n = questionCount(ex)
   const [answers, setAnswers] = useState<string[]>(() => Array(n).fill(''))
   const [results, setResults] = useState<boolean[] | null>(null)
@@ -99,7 +106,7 @@ function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps)
   const setAnswer = (i: number, v: string) => {
     if (finished) return
     setAnswers((a) => a.map((x, j) => (j === i ? v : x)))
-    // en práctica, al cambiar una respuesta se oculta su corrección anterior
+    // en práctica, al cambiar una respuesta se oculta la corrección anterior
     if (results) setResults(null)
   }
 
@@ -140,57 +147,38 @@ function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps)
 
   return (
     <div>
-      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
-        <div>
-          <p className="text-sm text-slate-500">{partLabel}</p>
-          <h1 className="text-2xl font-bold text-navy-900">{ex.title}</h1>
-          <p className="text-sm text-slate-500">{ex.focus}</p>
+      <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm text-ink-3">Ejercicio {position}</p>
+          <h1 className="text-[1.75rem] sm:text-[2rem] leading-tight font-bold tracking-[-0.02em]">{ex.title}</h1>
+          <p className="text-ink-2 mt-0.5">{ex.focus}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span
-            className={`text-xs font-semibold uppercase tracking-wide rounded-full px-2.5 py-1 ${
-              mode === 'exam' ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'
-            }`}
-          >
-            {mode === 'exam' ? 'Modo examen' : 'Modo práctica'}
-          </span>
+        <div className="flex items-center gap-3">
+          <ModeTag mode={mode} />
           {mode === 'exam' && !finished && <TimerBadge left={left} total={totalSeconds} />}
         </div>
-      </div>
+      </header>
 
-      {mode === 'practice' && !showFeedback && (
-        <p className="text-sm text-slate-600 mb-4">
-          Sin límite de tiempo. Pulsa <b>Comprobar</b> cuando quieras para ver qué tienes bien y la explicación de cada
-          respuesta.
-        </p>
-      )}
-      {mode === 'exam' && !finished && (
-        <p className="text-sm text-slate-600 mb-4">
-          Tienes {minutes} minutos, el tiempo recomendado para esta parte en el examen. La corrección aparece al
-          entregar o cuando se acabe el tiempo.
-        </p>
-      )}
-
-      {showFeedback && (
+      {showFeedback ? (
         <ScoreBanner score={score} total={n} />
+      ) : (
+        <p className="text-[0.95rem] text-ink-2 mb-5 max-w-2xl">
+          {mode === 'practice'
+            ? 'Sin límite de tiempo. Cuando quieras, pulsa Comprobar para ver qué tienes bien y la explicación de cada respuesta.'
+            : `Tienes ${minutes} minutos, el tiempo recomendado para esta parte. La corrección aparece al entregar o cuando se acabe el tiempo.`}
+        </p>
       )}
 
       <ExerciseBody ex={ex} answers={answers} results={results} onChange={setAnswer} disabled={finished} />
 
-      {/* Barra de acciones */}
-      <div
-        className={`${showFeedback ? '' : 'sticky bottom-0 bg-navy-50/95 backdrop-blur border-t border-navy-100'} mt-6 -mx-4 px-4 py-3 flex flex-wrap gap-2 items-center`}
-      >
+      <ActionBar sticky={!showFeedback}>
         {!finished && !showFeedback && (
           <>
-            <button
-              onClick={check}
-              className="rounded-xl bg-navy-800 text-white px-5 py-2.5 font-medium hover:bg-navy-700"
-            >
+            <button onClick={check} className={btn('primary')}>
               {mode === 'exam' ? 'Entregar' : 'Comprobar'}
             </button>
             {blanks > 0 && (
-              <span className="text-sm text-slate-500">
+              <span className="text-sm text-ink-3">
                 {blanks} {blanks === 1 ? 'pregunta' : 'preguntas'} sin responder
               </span>
             )}
@@ -199,41 +187,27 @@ function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps)
         {mode === 'practice' && showFeedback && (
           <>
             {score < n && (
-              <button
-                onClick={retryWrong}
-                className="rounded-xl bg-navy-800 text-white px-5 py-2.5 font-medium hover:bg-navy-700"
-              >
+              <button onClick={retryWrong} className={btn('primary')}>
                 Reintentar los fallos
               </button>
             )}
-            <button
-              onClick={restart}
-              className="rounded-xl border border-navy-800 text-navy-800 px-5 py-2.5 font-medium hover:bg-white"
-            >
+            <button onClick={restart} className={btn('secondary')}>
               Empezar de nuevo
             </button>
           </>
         )}
         {mode === 'exam' && finished && (
-          <Link
-            to={`?mode=practice`}
-            className="rounded-xl border border-navy-800 text-navy-800 px-5 py-2.5 font-medium hover:bg-white"
-          >
-            Repetir en modo práctica
+          <Link to="?mode=practice" className={btn('secondary')}>
+            Repetir sin tiempo
           </Link>
         )}
         <span className="flex-1" />
-        {showFeedback && nextUrl && (
-          <Link to={nextUrl} className="rounded-xl bg-gold-400 text-navy-900 px-5 py-2.5 font-medium hover:bg-gold-300">
-            Siguiente ejercicio →
+        {showFeedback && (
+          <Link to={nextUrl ?? partUrl} className={btn('accent')}>
+            {nextUrl ? 'Siguiente ejercicio' : 'Volver a la lista'}
           </Link>
         )}
-        {showFeedback && !nextUrl && (
-          <Link to={partUrl} className="rounded-xl bg-gold-400 text-navy-900 px-5 py-2.5 font-medium hover:bg-gold-300">
-            Volver a la parte
-          </Link>
-        )}
-      </div>
+      </ActionBar>
     </div>
   )
 }
@@ -241,39 +215,22 @@ function Runner({ ex, mode, minutes, partLabel, partUrl, nextUrl }: RunnerProps)
 export function ScoreBanner({ score, total }: { score: number; total: number }) {
   const pct = score / total
   const msg =
-    pct === 1 ? '¡Perfecto! 🎉' : pct >= 0.75 ? '¡Muy bien!' : pct >= 0.5 ? 'Vas bien, repasa los fallos.' : 'Sigue practicando: lee las explicaciones.'
+    pct === 1
+      ? 'Todo correcto.'
+      : pct >= 0.75
+        ? 'Muy bien. Repasa las explicaciones de los fallos.'
+        : pct >= 0.5
+          ? 'Vas por buen camino. Lee las explicaciones antes de reintentar.'
+          : 'Lee con calma las explicaciones y vuelve a intentarlo.'
+  const color = pct >= 0.75 ? 'text-ok' : pct >= 0.5 ? 'text-warn' : 'text-bad'
   return (
-    <div
-      className={`mb-5 rounded-2xl p-4 flex items-center gap-4 ${
-        pct >= 0.75 ? 'bg-emerald-50 text-emerald-900' : pct >= 0.5 ? 'bg-amber-50 text-amber-900' : 'bg-red-50 text-red-900'
-      }`}
-    >
-      <span className="text-3xl font-bold tabular-nums">
-        {score}/{total}
-      </span>
-      <span className="font-medium">{msg}</span>
-    </div>
-  )
-}
-
-/* ---------- Feedback reutilizable ---------- */
-
-function Feedback({ ex, i, value, ok }: { ex: Exercise; i: number; value: string; ok: boolean }) {
-  return (
-    <div className={`mt-2 rounded-xl p-3 text-sm ${ok ? 'bg-emerald-50' : 'bg-red-50'}`}>
-      {ok ? (
-        <p className="font-medium text-emerald-800">✓ Correcto: {correctDisplay(ex, i)}</p>
-      ) : (
-        <>
-          <p className="text-red-800">
-            ✗ Tu respuesta:{' '}
-            {value.trim() ? <span className="line-through">{userDisplay(ex, i, value)}</span> : <i>en blanco</i>}
-          </p>
-          <p className="font-medium text-emerald-800">Correcta: {correctDisplay(ex, i)}</p>
-        </>
-      )}
-      <p className="mt-1.5 text-slate-700">{explanationFor(ex, i)}</p>
-    </div>
+    <Panel className="mb-6 p-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+      <p className={`text-[2.5rem] leading-none font-bold tabular-nums tracking-[-0.03em] ${color}`}>
+        {score}
+        <span className="text-ink-3 text-2xl font-semibold">/{total}</span>
+      </p>
+      <p className="text-ink-2 max-w-md">{msg}</p>
+    </Panel>
   )
 }
 
@@ -313,132 +270,204 @@ export interface PartProps<E> {
   disabled: boolean
 }
 
+/* ---------- Piezas comunes ---------- */
+
+function Feedback({ ex, i, value, ok }: { ex: Exercise; i: number; value: string; ok: boolean }) {
+  return (
+    <div className={`mt-3 border-l-[3px] pl-4 py-1 text-[0.95rem] leading-relaxed ${ok ? 'border-ok' : 'border-bad'}`}>
+      {ok ? (
+        <p className="font-semibold text-ok">Correcto: {correctDisplay(ex, i)}</p>
+      ) : (
+        <>
+          <p className="text-bad">
+            Tu respuesta:{' '}
+            {value.trim() ? <span className="line-through decoration-1">{userDisplay(ex, i, value)}</span> : <i>en blanco</i>}
+          </p>
+          <p className="font-semibold text-ok">Correcta: {correctDisplay(ex, i)}</p>
+        </>
+      )}
+      <p className="mt-1 text-ink-2">{explanationFor(ex, i)}</p>
+    </div>
+  )
+}
+
+/** Estado de una casilla según la respuesta y la corrección. */
+function markFor(j: number, value: string, answer: number, checked: boolean): MarkState {
+  const selected = value === String(j)
+  if (!checked) return selected ? 'marked' : 'empty'
+  if (j === answer) return selected ? 'correct' : 'missed'
+  return selected ? 'wrong' : 'dim'
+}
+
+/** Opción con casilla de hoja de respuestas. */
+function OptionButton({
+  letter,
+  label,
+  state,
+  onClick,
+  disabled,
+  block = false,
+}: {
+  letter: string
+  label: ReactNode
+  state: MarkState
+  onClick: () => void
+  disabled: boolean
+  block?: boolean
+}) {
+  const text =
+    state === 'dim' ? 'text-ink-3' : state === 'wrong' ? 'text-bad' : state === 'correct' || state === 'missed' ? 'text-ok font-semibold' : 'text-ink'
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      aria-pressed={state === 'marked' || state === 'correct' || state === 'wrong'}
+      className={`group flex items-start gap-2.5 rounded-md px-2 py-1.5 -mx-2 text-left transition-colors enabled:hover:bg-bg ${block ? 'w-full' : ''}`}
+    >
+      <span className="pt-[0.1rem]">
+        <Lozenge letter={letter} state={state} />
+      </span>
+      <span className={`text-[0.98rem] leading-snug ${text}`}>{label}</span>
+    </button>
+  )
+}
+
+/** Número de hueco impreso (como en el cuadernillo). */
+function GapNo({ n }: { n: number }) {
+  return (
+    <span className="inline-grid place-items-center min-w-[1.4rem] h-[1.4rem] px-1 rounded-full border-[1.5px] border-print text-print font-sans text-[0.7rem] font-bold align-[0.15em]">
+      {n}
+    </span>
+  )
+}
+
+function inputTone(r: boolean | undefined) {
+  return r === undefined
+    ? 'border-ink-3 focus:border-ink bg-transparent'
+    : r
+      ? 'border-ok bg-ok-soft text-ok'
+      : 'border-bad bg-bad-soft text-bad'
+}
+
+function QuestionRow({ n, children }: { n: number; children: ReactNode }) {
+  return (
+    <div className="flex gap-4 px-4 sm:px-5 py-4">
+      <span className="shrink-0 w-6 text-print font-bold tabular-nums pt-0.5">{n}</span>
+      <div className="flex-1 min-w-0">{children}</div>
+    </div>
+  )
+}
+
 /* ---------- Part 1: Multiple-choice cloze ---------- */
 
 function McCloze({ ex, answers, results, onChange, disabled }: PartProps<McClozeExercise>) {
   return (
-    <>
-      <article className="rounded-2xl bg-white border border-navy-100 p-5 sm:p-7 font-serif text-[1.05rem] leading-8">
-        {splitGaps(ex.text).map((seg, k) =>
-          typeof seg === 'string' ? (
-            <span key={k}>{seg}</span>
-          ) : (
-            <a
-              key={k}
-              href={`#q-${seg}`}
-              onClick={(e) => {
-                e.preventDefault()
-                document.getElementById(`q-${seg}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-              }}
-              className={`inline-flex items-baseline gap-1 mx-0.5 px-2 rounded-md font-sans text-[0.95rem] border ${
-                results ? (results[seg] ? 'border-emerald-400 bg-emerald-50' : 'border-red-400 bg-red-50') : 'border-navy-200 bg-navy-50'
-              }`}
-            >
-              <b className="text-navy-700">{seg + 1}</b>
-              <span className="min-w-[3.5rem] text-slate-800">
-                {answers[seg] !== '' ? ex.gaps[seg].options[Number(answers[seg])] : '……'}
-              </span>
-            </a>
-          ),
-        )}
-      </article>
+    <div className="grid lg:grid-cols-[minmax(0,1fr)_22rem] gap-6 items-start">
+      <Panel className="p-5 sm:p-8 lg:sticky lg:top-20">
+        <p className="passage">
+          {splitGaps(ex.text).map((seg, k) =>
+            typeof seg === 'string' ? (
+              <span key={k}>{seg}</span>
+            ) : (
+              <a
+                key={k}
+                href={`#q-${seg}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  document.getElementById(`q-${seg}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                }}
+                className="whitespace-nowrap"
+              >
+                <GapNo n={seg + 1} />{' '}
+                <span
+                  className={`inline-block min-w-[4.5rem] border-b-2 font-sans text-[0.95rem] font-semibold text-center ${
+                    results ? (results[seg] ? 'border-ok text-ok' : 'border-bad text-bad') : answers[seg] ? 'border-ink' : 'border-line-strong'
+                  }`}
+                >
+                  {answers[seg] !== '' ? ex.gaps[seg].options[Number(answers[seg])] : ' '}
+                </span>
+              </a>
+            ),
+          )}
+        </p>
+      </Panel>
 
-      <div className="mt-5 grid gap-3">
+      <Panel className="divide-y divide-line">
         {ex.gaps.map((g, i) => (
-          <div key={i} id={`q-${i}`} className="rounded-2xl bg-white border border-navy-100 p-4 scroll-mt-20">
-            <p className="text-sm font-semibold text-navy-800 mb-2">Hueco {i + 1}</p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {g.options.map((opt, j) => {
-                const selected = answers[i] === String(j)
-                let cls = selected ? 'border-navy-700 bg-navy-800 text-white' : 'border-navy-200 bg-white hover:border-navy-500'
-                if (results) {
-                  if (j === g.answer) cls = 'border-emerald-500 bg-emerald-50 text-emerald-900'
-                  else if (selected) cls = 'border-red-400 bg-red-50 text-red-800'
-                  else cls = 'border-slate-200 bg-white text-slate-400'
-                }
-                return (
-                  <button
+          <div key={i} id={`q-${i}`} className="scroll-mt-24">
+            <QuestionRow n={i + 1}>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+                {g.options.map((opt, j) => (
+                  <OptionButton
                     key={j}
-                    disabled={disabled}
+                    letter={LETTERS[j]}
+                    label={opt}
+                    state={markFor(j, answers[i], g.answer, !!results)}
                     onClick={() => onChange(i, String(j))}
-                    className={`rounded-xl border px-3 py-2 text-left text-sm transition ${cls}`}
-                  >
-                    <b className="mr-1.5">{LETTERS[j]}</b>
-                    {opt}
-                  </button>
-                )
-              })}
-            </div>
-            {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+                    disabled={disabled}
+                  />
+                ))}
+              </div>
+              {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+            </QuestionRow>
           </div>
         ))}
-      </div>
-    </>
+      </Panel>
+    </div>
   )
 }
 
 /* ---------- Part 2 y 3: Open cloze / Word formation ---------- */
 
-function OpenCloze({
-  ex,
-  answers,
-  results,
-  onChange,
-  disabled,
-}: PartProps<OpenClozeExercise | WordFormationExercise>) {
+function OpenCloze({ ex, answers, results, onChange, disabled }: PartProps<OpenClozeExercise | WordFormationExercise>) {
   const isWf = ex.kind === 'word-formation'
   return (
     <>
-      {ex.kind === 'open-cloze' && (
-        <p className="text-sm text-slate-600 mb-3">Escribe <b>una sola palabra</b> en cada hueco.</p>
-      )}
-      {isWf && (
-        <p className="text-sm text-slate-600 mb-3">
-          Transforma la palabra en <b>MAYÚSCULAS</b> para que encaje en el hueco.
+      <p className="text-sm text-ink-2 mb-3">
+        {isWf ? 'Transforma la palabra en mayúsculas para que encaje en el hueco.' : 'Escribe una sola palabra en cada hueco.'}
+      </p>
+      <Panel className="p-5 sm:p-8 max-w-3xl">
+        <p className="passage !leading-[2.4]">
+          {splitGaps(ex.text).map((seg, k) => {
+            if (typeof seg === 'string') return <span key={k}>{seg}</span>
+            const r = results?.[seg]
+            return (
+              <span key={k} className="inline-flex items-baseline gap-1.5 mx-0.5 whitespace-nowrap">
+                <GapNo n={seg + 1} />
+                <input
+                  value={answers[seg]}
+                  disabled={disabled}
+                  onChange={(e) => onChange(seg, e.target.value)}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  aria-label={`Hueco ${seg + 1}`}
+                  className={`font-sans text-[1rem] font-medium w-32 sm:w-36 h-8 px-1.5 border-0 border-b-2 rounded-none outline-none ${inputTone(r)}`}
+                />
+                {isWf && (
+                  <span className="font-sans text-[0.72rem] font-bold tracking-wide text-print">
+                    {(ex as WordFormationExercise).gaps[seg].stem}
+                  </span>
+                )}
+              </span>
+            )
+          })}
         </p>
-      )}
-      <article className="rounded-2xl bg-white border border-navy-100 p-5 sm:p-7 font-serif text-[1.05rem] leading-[2.6rem]">
-        {splitGaps(ex.text).map((seg, k) => {
-          if (typeof seg === 'string') return <span key={k}>{seg}</span>
-          const r = results?.[seg]
-          return (
-            <span key={k} className="inline-flex items-center gap-1 mx-0.5 align-middle">
-              <b className="font-sans text-xs text-navy-700">{seg + 1}</b>
-              <input
-                value={answers[seg]}
-                disabled={disabled}
-                onChange={(e) => onChange(seg, e.target.value)}
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck={false}
-                aria-label={`Hueco ${seg + 1}`}
-                className={`font-sans text-base w-32 sm:w-36 h-8 px-2 rounded-md border outline-none focus:ring-2 focus:ring-navy-200 ${
-                  r === undefined ? 'border-navy-200 bg-navy-50' : r ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50'
-                }`}
-              />
-              {isWf && (
-                <span className="font-sans text-xs font-bold tracking-wide text-gold-500 bg-navy-800 rounded px-1.5 py-0.5">
-                  {(ex as WordFormationExercise).gaps[seg].stem}
-                </span>
-              )}
-            </span>
-          )
-        })}
-      </article>
+      </Panel>
 
       {results && (
-        <div className="mt-5 grid gap-3">
-          <h2 className="font-semibold text-navy-900">Corrección</h2>
-          {ex.gaps.map((_, i) => (
-            <div key={i} className="rounded-2xl bg-white border border-navy-100 p-4">
-              <p className="text-sm font-semibold text-navy-800">
-                Hueco {i + 1}
-                {isWf && <span className="ml-2 text-slate-400 font-normal">({(ex as WordFormationExercise).gaps[i].stem})</span>}
-              </p>
-              <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />
-            </div>
-          ))}
-        </div>
+        <>
+          <h2 className="mt-8 mb-3 text-lg font-bold">Corrección</h2>
+          <Panel className="divide-y divide-line max-w-3xl">
+            {ex.gaps.map((_, i) => (
+              <QuestionRow key={i} n={i + 1}>
+                {isWf && <p className="text-xs font-bold tracking-wide text-print">{(ex as WordFormationExercise).gaps[i].stem}</p>}
+                <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />
+              </QuestionRow>
+            ))}
+          </Panel>
+        </>
       )}
     </>
   )
@@ -449,24 +478,25 @@ function OpenCloze({
 function Kwt({ ex, answers, results, onChange, disabled }: PartProps<KwtExercise>) {
   return (
     <>
-      <p className="text-sm text-slate-600 mb-3">
-        Completa la segunda frase con <b>2 a 5 palabras</b>, incluida la palabra clave, sin cambiarla. Las contracciones
-        cuentan como 2 palabras.
+      <p className="text-sm text-ink-2 mb-3 max-w-2xl">
+        Completa la segunda frase con 2 a 5 palabras, incluida la palabra clave, sin cambiarla. Las contracciones cuentan como
+        dos palabras.
       </p>
-      <div className="grid gap-3">
+      <Panel className="divide-y divide-line max-w-3xl">
         {ex.items.map((it, i) => {
           const words = countKwtWords(answers[i])
           const r = results?.[i]
+          const badLen = words < 2 || words > 5
+          const noKey = !containsKeyword(answers[i], it.keyword)
           return (
-            <div key={i} className="rounded-2xl bg-white border border-navy-100 p-4 sm:p-5">
-              <p className="text-sm font-semibold text-navy-800 mb-2">{i + 1}.</p>
-              <p className="font-serif text-[1.05rem]">{it.original}</p>
-              <p className="my-2">
-                <span className="inline-block font-bold tracking-widest text-sm text-gold-400 bg-navy-800 rounded-md px-2.5 py-1">
+            <QuestionRow key={i} n={i + 1}>
+              <p className="passage !text-[1.05rem]">{it.original}</p>
+              <p className="my-2.5">
+                <span className="inline-block font-bold tracking-[0.12em] text-sm text-print border-[1.5px] border-print rounded px-2 py-0.5">
                   {it.keyword}
                 </span>
               </p>
-              <div className="font-serif text-[1.05rem] leading-10 flex flex-wrap items-center gap-x-2">
+              <div className="passage !text-[1.05rem] flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 {it.before && <span>{it.before}</span>}
                 <input
                   value={answers[i]}
@@ -476,44 +506,33 @@ function Kwt({ ex, answers, results, onChange, disabled }: PartProps<KwtExercise
                   autoCorrect="off"
                   spellCheck={false}
                   aria-label={`Respuesta ${i + 1}`}
-                  className={`font-sans text-base flex-1 min-w-[12rem] h-9 px-2 rounded-md border outline-none focus:ring-2 focus:ring-navy-200 ${
-                    r === undefined ? 'border-navy-200 bg-navy-50' : r ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50'
-                  }`}
+                  className={`font-sans text-[1rem] font-medium flex-1 min-w-[12rem] h-9 px-1.5 border-0 border-b-2 rounded-none outline-none ${inputTone(r)}`}
                 />
-                {it.after !== '.' ? <span>{it.after}</span> : <span>.</span>}
+                <span>{it.after}</span>
               </div>
               {!results && answers[i].trim() && (
-                <p className={`text-xs mt-1 ${words < 2 || words > 5 ? 'text-red-600' : 'text-slate-400'}`}>
+                <p className={`text-xs mt-1.5 ${badLen || noKey ? 'text-bad' : 'text-ink-3'}`}>
                   {words} {words === 1 ? 'palabra' : 'palabras'}
-                  {(words < 2 || words > 5) && ' — tienen que ser entre 2 y 5'}
-                  {!containsKeyword(answers[i], it.keyword) && ` · falta la palabra clave ${it.keyword}`}
+                  {badLen && ', tienen que ser entre 2 y 5'}
+                  {noKey && `. Falta la palabra clave ${it.keyword}`}
                 </p>
               )}
               {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
-            </div>
+            </QuestionRow>
           )
         })}
-      </div>
+      </Panel>
     </>
   )
 }
 
 /* ---------- Frases: elegir / rellenar / detectar error ---------- */
 
-function Card({ n, children }: { n: number; children: ReactNode }) {
-  return (
-    <div className="rounded-2xl bg-white border border-navy-100 p-4 sm:p-5">
-      <p className="text-sm font-semibold text-navy-800 mb-2">{n}.</p>
-      {children}
-    </div>
-  )
-}
-
 /** Pinta una frase con ___ sustituido por `slot`. */
 function SentenceWithSlot({ sentence, slot }: { sentence: string; slot: ReactNode }) {
   const [a, ...rest] = sentence.split('___')
   return (
-    <p className="font-serif text-[1.05rem] leading-10">
+    <p className="passage !text-[1.08rem] !leading-[2.1]">
       {a}
       {rest.length > 0 && slot}
       {rest.join('___')}
@@ -524,50 +543,41 @@ function SentenceWithSlot({ sentence, slot }: { sentence: string; slot: ReactNod
 function Choice({ ex, answers, results, onChange, disabled }: PartProps<ChoiceExercise>) {
   return (
     <>
-      <p className="text-sm text-slate-600 mb-3">Elige la opción correcta para cada frase.</p>
-      <div className="grid gap-3">
+      <p className="text-sm text-ink-2 mb-3">Elige la opción correcta para cada frase.</p>
+      <Panel className="divide-y divide-line max-w-3xl">
         {ex.items.map((it, i) => {
           const chosen = answers[i] !== '' ? it.options[Number(answers[i])] : null
           return (
-            <Card key={i} n={i + 1}>
+            <QuestionRow key={i} n={i + 1}>
               <SentenceWithSlot
                 sentence={it.sentence}
                 slot={
                   <span
-                    className={`inline-block min-w-[4.5rem] mx-1 px-2 rounded-md border-b-2 font-sans text-[0.95rem] text-center ${
-                      results ? (results[i] ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50') : 'border-navy-500 bg-navy-50'
+                    className={`inline-block min-w-[5rem] mx-1 border-b-2 font-sans text-[0.98rem] font-semibold text-center ${
+                      results ? (results[i] ? 'border-ok text-ok' : 'border-bad text-bad') : chosen ? 'border-ink' : 'border-line-strong'
                     }`}
                   >
-                    {chosen ?? '\u00a0'}
+                    {chosen ?? ' '}
                   </span>
                 }
               />
-              <div className="mt-2 flex flex-wrap gap-2">
-                {it.options.map((opt, j) => {
-                  const selected = answers[i] === String(j)
-                  let cls = selected ? 'border-navy-700 bg-navy-800 text-white' : 'border-navy-200 bg-white hover:border-navy-500'
-                  if (results) {
-                    if (j === it.answer) cls = 'border-emerald-500 bg-emerald-50 text-emerald-900'
-                    else if (selected) cls = 'border-red-400 bg-red-50 text-red-800'
-                    else cls = 'border-slate-200 bg-white text-slate-400'
-                  }
-                  return (
-                    <button
-                      key={j}
-                      disabled={disabled}
-                      onClick={() => onChange(i, String(j))}
-                      className={`rounded-xl border px-3 py-1.5 text-sm transition ${cls}`}
-                    >
-                      {opt}
-                    </button>
-                  )
-                })}
+              <div className="mt-1.5 flex flex-wrap gap-x-5 gap-y-0.5">
+                {it.options.map((opt, j) => (
+                  <OptionButton
+                    key={j}
+                    letter={LETTERS[j]}
+                    label={opt}
+                    state={markFor(j, answers[i], it.answer, !!results)}
+                    onClick={() => onChange(i, String(j))}
+                    disabled={disabled}
+                  />
+                ))}
               </div>
               {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
-            </Card>
+            </QuestionRow>
           )
         })}
-      </div>
+      </Panel>
     </>
   )
 }
@@ -575,36 +585,29 @@ function Choice({ ex, answers, results, onChange, disabled }: PartProps<ChoiceEx
 function Gap({ ex, answers, results, onChange, disabled }: PartProps<GapExercise>) {
   return (
     <>
-      <p className="text-sm text-slate-600 mb-3">
-        Escribe la forma correcta. Si hay una palabra entre paréntesis, úsala.
-      </p>
-      <div className="grid gap-3">
-        {ex.items.map((it, i) => {
-          const r = results?.[i]
-          return (
-            <Card key={i} n={i + 1}>
-              <SentenceWithSlot
-                sentence={it.sentence}
-                slot={
-                  <input
-                    value={answers[i]}
-                    disabled={disabled}
-                    onChange={(e) => onChange(i, e.target.value)}
-                    autoCapitalize="off"
-                    autoCorrect="off"
-                    spellCheck={false}
-                    aria-label={`Respuesta ${i + 1}`}
-                    className={`font-sans text-base w-44 h-8 mx-1 px-2 rounded-md border outline-none focus:ring-2 focus:ring-navy-200 align-middle ${
-                      r === undefined ? 'border-navy-200 bg-navy-50' : r ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50'
-                    }`}
-                  />
-                }
-              />
-              {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
-            </Card>
-          )
-        })}
-      </div>
+      <p className="text-sm text-ink-2 mb-3">Escribe la forma correcta. Si hay una pista entre paréntesis, úsala.</p>
+      <Panel className="divide-y divide-line max-w-3xl">
+        {ex.items.map((it, i) => (
+          <QuestionRow key={i} n={i + 1}>
+            <SentenceWithSlot
+              sentence={it.sentence}
+              slot={
+                <input
+                  value={answers[i]}
+                  disabled={disabled}
+                  onChange={(e) => onChange(i, e.target.value)}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  aria-label={`Respuesta ${i + 1}`}
+                  className={`font-sans text-[1rem] font-medium w-44 h-8 mx-1 px-1.5 border-0 border-b-2 rounded-none outline-none ${inputTone(results?.[i])}`}
+                />
+              }
+            />
+            {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+          </QuestionRow>
+        ))}
+      </Panel>
     </>
   )
 }
@@ -612,58 +615,37 @@ function Gap({ ex, answers, results, onChange, disabled }: PartProps<GapExercise
 function ErrorSpot({ ex, answers, results, onChange, disabled }: PartProps<ErrorExercise>) {
   return (
     <>
-      <p className="text-sm text-slate-600 mb-3">
-        Toca la palabra o expresión que está <b>mal</b>. Si la frase está bien, pulsa <b>“Es correcta”</b>.
-      </p>
-      <div className="grid gap-3">
+      <p className="text-sm text-ink-2 mb-3">Toca la palabra o expresión que está mal. Si la frase está bien, marca “Es correcta”.</p>
+      <Panel className="divide-y divide-line max-w-3xl">
         {ex.items.map((it, i) => {
           const { tokens, wrong } = parseErrorSentence(it.sentence)
           const sel = answers[i]
+          const noneState: MarkState = markFor(-1, sel, wrong, !!results)
           return (
-            <Card key={i} n={i + 1}>
-              <p className="font-serif text-[1.05rem] leading-9 flex flex-wrap gap-x-0.5">
+            <QuestionRow key={i} n={i + 1}>
+              <p className="passage !text-[1.08rem] flex flex-wrap gap-x-[0.3em] gap-y-1">
                 {tokens.map((t, j) => {
                   const selected = sel === String(j)
-                  let cls = selected ? 'bg-navy-800 text-white' : 'hover:bg-navy-100'
+                  let cls = selected ? 'bg-ink text-white' : 'enabled:hover:bg-print-soft'
                   if (results) {
-                    if (j === wrong) cls = 'bg-emerald-100 text-emerald-900 underline decoration-wavy decoration-red-500'
-                    else if (selected) cls = 'bg-red-100 text-red-800'
-                    else cls = ''
+                    if (j === wrong) cls = selected ? 'bg-ok text-white' : 'underline decoration-bad decoration-wavy decoration-2 underline-offset-4'
+                    else cls = selected ? 'bg-bad text-white' : ''
                   }
                   return (
-                    <button
-                      key={j}
-                      disabled={disabled}
-                      onClick={() => onChange(i, String(j))}
-                      className={`rounded px-1 transition ${cls}`}
-                    >
+                    <button key={j} type="button" disabled={disabled} onClick={() => onChange(i, String(j))} className={`rounded px-0.5 -mx-0.5 transition-colors ${cls}`}>
                       {t}
                     </button>
                   )
                 })}
               </p>
-              <button
-                disabled={disabled}
-                onClick={() => onChange(i, '-1')}
-                className={`mt-2 rounded-xl border px-3 py-1.5 text-sm transition ${
-                  results && wrong === -1
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
-                    : sel === '-1'
-                    ? results
-                      ? results[i]
-                        ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
-                        : 'border-red-400 bg-red-50 text-red-800'
-                      : 'border-navy-700 bg-navy-800 text-white'
-                    : 'border-navy-200 bg-white hover:border-navy-500'
-                }`}
-              >
-                ✓ Es correcta
-              </button>
+              <div className="mt-2">
+                <OptionButton letter="OK" label="Es correcta" state={noneState} onClick={() => onChange(i, '-1')} disabled={disabled} />
+              </div>
               {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
-            </Card>
+            </QuestionRow>
           )
         })}
-      </div>
+      </Panel>
     </>
   )
 }
@@ -674,7 +656,7 @@ function Paragraphs({ text }: { text: string }) {
   return (
     <>
       {text.split(/\n\s*\n/).map((p, i) => (
-        <p key={i} className="mb-4 last:mb-0">
+        <p key={i} className="mb-5 last:mb-0">
           {p}
         </p>
       ))}
@@ -682,57 +664,12 @@ function Paragraphs({ text }: { text: string }) {
   )
 }
 
-/** Dos columnas en pantallas grandes: texto (con scroll propio) y preguntas. */
+/** Dos columnas en pantallas grandes: el texto (con scroll propio) y las preguntas. */
 function SplitLayout({ text, children }: { text: ReactNode; children: ReactNode }) {
   return (
     <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
-      <article className="rounded-2xl bg-white border border-navy-100 p-5 sm:p-7 font-serif text-[1.05rem] leading-8 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
-        {text}
-      </article>
-      <div className="mt-5 lg:mt-0 grid gap-3">{children}</div>
-    </div>
-  )
-}
-
-function OptionList({
-  options,
-  answer,
-  value,
-  results,
-  onPick,
-  disabled,
-  letters = true,
-}: {
-  options: string[]
-  answer: number
-  value: string
-  results: boolean
-  onPick: (j: number) => void
-  disabled: boolean
-  letters?: boolean
-}) {
-  return (
-    <div className="grid gap-2">
-      {options.map((opt, j) => {
-        const selected = value === String(j)
-        let cls = selected ? 'border-navy-700 bg-navy-800 text-white' : 'border-navy-200 bg-white hover:border-navy-500'
-        if (results) {
-          if (j === answer) cls = 'border-emerald-500 bg-emerald-50 text-emerald-900'
-          else if (selected) cls = 'border-red-400 bg-red-50 text-red-800'
-          else cls = 'border-slate-200 bg-white text-slate-400'
-        }
-        return (
-          <button
-            key={j}
-            disabled={disabled}
-            onClick={() => onPick(j)}
-            className={`rounded-xl border px-3 py-2 text-left text-sm transition flex gap-2 ${cls}`}
-          >
-            {letters && <b className="shrink-0">{LETTERS[j]}</b>}
-            <span>{opt}</span>
-          </button>
-        )
-      })}
+      <Panel className="p-5 sm:p-8 passage lg:sticky lg:top-20 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">{text}</Panel>
+      <div className="mt-6 lg:mt-0">{children}</div>
     </div>
   )
 }
@@ -740,22 +677,29 @@ function OptionList({
 function ReadingMc({ ex, answers, results, onChange, disabled }: PartProps<ReadingMcExercise>) {
   return (
     <>
-      <p className="text-sm text-slate-600 mb-3">Lee el texto y elige la mejor respuesta (A, B, C o D) para cada pregunta.</p>
+      <p className="text-sm text-ink-2 mb-3">Lee el texto y elige la mejor respuesta para cada pregunta.</p>
       <SplitLayout text={<Paragraphs text={ex.text} />}>
-        {ex.questions.map((q, i) => (
-          <Card key={i} n={i + 1}>
-            <p className="font-medium text-navy-900 mb-2">{q.question}</p>
-            <OptionList
-              options={q.options}
-              answer={q.answer}
-              value={answers[i]}
-              results={!!results}
-              onPick={(j) => onChange(i, String(j))}
-              disabled={disabled}
-            />
-            {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
-          </Card>
-        ))}
+        <Panel className="divide-y divide-line">
+          {ex.questions.map((q, i) => (
+            <QuestionRow key={i} n={i + 1}>
+              <p className="font-semibold leading-snug mb-2">{q.question}</p>
+              <div className="grid gap-0.5">
+                {q.options.map((opt, j) => (
+                  <OptionButton
+                    key={j}
+                    block
+                    letter={LETTERS[j]}
+                    label={opt}
+                    state={markFor(j, answers[i], q.answer, !!results)}
+                    onClick={() => onChange(i, String(j))}
+                    disabled={disabled}
+                  />
+                ))}
+              </div>
+              {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+            </QuestionRow>
+          ))}
+        </Panel>
       </SplitLayout>
     </>
   )
@@ -766,66 +710,63 @@ function GappedText({ ex, answers, results, onChange, disabled }: PartProps<Gapp
   const paragraphs = ex.text.split(/\n\s*\n/)
   return (
     <>
-      <p className="text-sm text-slate-600 mb-3">
-        Faltan {ex.answers.length} frases. Elige la frase (A–{LETTERS[ex.sentences.length - 1]}) que encaja en cada hueco.
-        Sobra una.
+      <p className="text-sm text-ink-2 mb-3">
+        Faltan {ex.answers.length} frases. Elige la que encaja en cada hueco; sobra una.
       </p>
       <SplitLayout
         text={paragraphs.map((p, k) => (
-          <p key={k} className="mb-4 last:mb-0">
+          <p key={k} className="mb-5 last:mb-0">
             {splitGaps(p).map((seg, j) => {
               if (typeof seg === 'string') return <span key={j}>{seg}</span>
               const v = answers[seg]
               const r = results?.[seg]
+              const tone = r === undefined ? (v ? 'border-ink' : 'border-print/60') : r ? 'border-ok bg-ok-soft' : 'border-bad bg-bad-soft'
               return (
-                <span
-                  key={j}
-                  className={`inline-flex flex-wrap items-center gap-1.5 mx-0.5 my-1 px-2 py-0.5 rounded-lg border font-sans text-sm align-middle ${
-                    r === undefined ? 'border-navy-200 bg-navy-50' : r ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50'
-                  }`}
-                >
-                  <b className="text-navy-700">{seg + 1}</b>
-                  <select
-                    value={v}
-                    disabled={disabled}
-                    onChange={(e) => onChange(seg, e.target.value)}
-                    aria-label={`Hueco ${seg + 1}`}
-                    className="bg-white border border-navy-200 rounded px-1 py-0.5"
-                  >
-                    <option value="">—</option>
-                    {ex.sentences.map((_, si) => (
-                      <option key={si} value={String(si)}>
-                        {LETTERS[si]}
-                      </option>
-                    ))}
-                  </select>
-                  {v !== '' && <i className="font-serif text-[0.95rem] text-slate-700">{ex.sentences[Number(v)]}</i>}
+                <span key={j} className={`block my-3 border-l-[3px] pl-3 py-1.5 ${tone}`}>
+                  <span className="flex items-center gap-2 font-sans text-sm">
+                    <GapNo n={seg + 1} />
+                    <select
+                      value={v}
+                      disabled={disabled}
+                      onChange={(e) => onChange(seg, e.target.value)}
+                      aria-label={`Hueco ${seg + 1}`}
+                      className="h-8 rounded-md border border-line-strong bg-paper px-2 text-sm font-semibold"
+                    >
+                      <option value="">Elegir frase</option>
+                      {ex.sentences.map((_, si) => (
+                        <option key={si} value={String(si)}>
+                          {LETTERS[si]}
+                        </option>
+                      ))}
+                    </select>
+                  </span>
+                  {v !== '' && <span className="block mt-1 italic text-ink-2">{ex.sentences[Number(v)]}</span>}
                 </span>
               )
             })}
           </p>
         ))}
       >
-        <div className="rounded-2xl bg-white border border-navy-100 p-4">
-          <p className="text-sm font-semibold text-navy-800 mb-2">Frases</p>
-          <ul className="grid gap-2">
+        <Panel className="p-4 sm:p-5">
+          <h3 className="font-bold mb-3">Frases</h3>
+          <ul className="grid gap-2.5">
             {ex.sentences.map((s, si) => (
-              <li
-                key={si}
-                className={`flex gap-2 text-sm rounded-lg px-2 py-1.5 ${used.has(String(si)) ? 'bg-navy-50 text-slate-400' : 'text-slate-800'}`}
-              >
-                <b className="text-navy-700 shrink-0">{LETTERS[si]}</b>
+              <li key={si} className={`flex gap-3 text-[0.95rem] leading-snug ${used.has(String(si)) ? 'text-ink-3' : ''}`}>
+                <Lozenge letter={LETTERS[si]} state={used.has(String(si)) ? 'marked' : 'empty'} />
                 <span>{s}</span>
               </li>
             ))}
           </ul>
-        </div>
-        {results &&
-          ex.answers.map((_, i) => (
-            <Card key={i} n={i + 1}>
-              <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />
-            </Card>
-          ))}
+        </Panel>
+        {results && (
+          <Panel className="mt-4 divide-y divide-line">
+            {ex.answers.map((_, i) => (
+              <QuestionRow key={i} n={i + 1}>
+                <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />
+              </QuestionRow>
+            ))}
+          </Panel>
+        )}
       </SplitLayout>
     </>
   )
@@ -835,52 +776,42 @@ function Matching({ ex, answers, results, onChange, disabled }: PartProps<Matchi
   const letters = ex.sections.map((_, i) => LETTERS[i])
   return (
     <>
-      <p className="text-sm text-slate-600 mb-3">{ex.intro}</p>
+      <p className="text-sm text-ink-2 mb-3">{ex.intro}</p>
       <SplitLayout
         text={ex.sections.map((sec, i) => (
-          <section key={i} className="mb-5 last:mb-0">
-            <h3 className="font-sans font-semibold text-navy-900 mb-1">
-              <span className="inline-grid place-items-center w-6 h-6 mr-2 rounded bg-navy-800 text-gold-400 text-sm">
-                {letters[i]}
-              </span>
+          <section key={i} className="mb-7 last:mb-0">
+            <h3 className="font-sans font-bold text-[1rem] mb-1.5 flex items-center gap-2">
+              <Lozenge letter={letters[i]} state="empty" />
               {sec.title}
             </h3>
             <p>{sec.text}</p>
           </section>
         ))}
       >
-        <p className="text-sm font-semibold text-navy-800">Which person / text…</p>
-        {ex.questions.map((q, i) => (
-          <div key={i} className="rounded-2xl bg-white border border-navy-100 p-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="flex-1 min-w-[12rem] text-sm">
-                <b className="text-navy-800 mr-1">{i + 1}.</b> {q.statement}
-              </p>
-              <div className="flex gap-1.5">
-                {letters.map((L, j) => {
-                  const selected = answers[i] === String(j)
-                  let cls = selected ? 'bg-navy-800 text-white border-navy-800' : 'bg-white border-navy-200 hover:border-navy-500'
-                  if (results) {
-                    if (j === q.answer) cls = 'bg-emerald-50 border-emerald-500 text-emerald-900'
-                    else if (selected) cls = 'bg-red-50 border-red-400 text-red-800'
-                    else cls = 'bg-white border-slate-200 text-slate-300'
-                  }
-                  return (
+        <Panel className="divide-y divide-line">
+          {ex.questions.map((q, i) => (
+            <QuestionRow key={i} n={i + 1}>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <p className="flex-1 min-w-[12rem] leading-snug">{q.statement}</p>
+                <div className="flex gap-1">
+                  {letters.map((L, j) => (
                     <button
                       key={j}
+                      type="button"
                       disabled={disabled}
                       onClick={() => onChange(i, String(j))}
-                      className={`w-9 h-9 rounded-lg border text-sm font-semibold transition ${cls}`}
+                      aria-label={`${L}, ${ex.sections[j].title}`}
+                      className="p-1 rounded enabled:hover:bg-bg"
                     >
-                      {L}
+                      <Lozenge letter={L} state={markFor(j, answers[i], q.answer, !!results)} />
                     </button>
-                  )
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
-            {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
-          </div>
-        ))}
+              {results && <Feedback ex={ex} i={i} value={answers[i]} ok={results[i]} />}
+            </QuestionRow>
+          ))}
+        </Panel>
       </SplitLayout>
     </>
   )

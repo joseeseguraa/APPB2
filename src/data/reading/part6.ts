@@ -6,7 +6,7 @@ export const part6Exercises: GappedTextExercise[] = [
     id: 'rd6-01',
     kind: 'gapped-text',
     title: 'My first marathon',
-    focus: 'Narración · secuencia temporal y causa-efecto',
+    focus: 'Narración, secuencia temporal y causa-efecto',
     text: `Three years ago, I couldn't run for a bus without getting out of breath. Last month, I crossed the finish line of the Valencia Marathon. People keep asking me how I did it, as if there must be some secret. {1}
 
 It started almost by accident. A colleague was organising a team for a charity 5K race and was one person short. I agreed mainly because I didn't want to be the only one who said no. {2} By the end of the race I was walking more than running, and I finished second to last, just ahead of a man dressed as a giant banana.
@@ -43,7 +43,7 @@ The race itself was the hardest thing I have ever done. My legs began to ache at
     id: 'rd6-02',
     kind: 'gapped-text',
     title: 'The return of the wolves',
-    focus: 'Artículo divulgativo · referencias (they, these, also)',
+    focus: 'Artículo divulgativo, referencias (they, these, also)',
     text: `For almost a century, there were no wolves in the national park. The last ones had been hunted until they disappeared, and most people assumed they would never come back. {1} In the 1990s, a group of scientists persuaded the authorities to bring a small number of wolves from Canada and release them into the park.
 
 The decision was extremely controversial. {2} Many feared that the wolves would attack their animals, and some threatened to shoot any that came near their land.
@@ -80,7 +80,7 @@ Nevertheless, the project has inspired similar schemes elsewhere. {6} Supporters
     id: 'rd6-03',
     kind: 'gapped-text',
     title: 'A year without social media',
-    focus: 'Experiencia personal · contraste y consecuencias',
+    focus: 'Experiencia personal, contraste y consecuencias',
     text: `When I told my friends I was going to give up social media for a year, most of them laughed. {1} I had checked my phone more than a hundred times a day for as long as I could remember, often without even noticing I was doing it.
 
 The first week was much harder than I had expected. {2} Waiting for a bus or standing in a queue, my hand would automatically reach for my pocket, only to remember that there was nothing to look at.

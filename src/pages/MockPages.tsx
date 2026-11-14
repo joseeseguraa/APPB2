@@ -5,10 +5,11 @@ import { checkAll, marksPerQuestion, questionCount } from '../lib/exercise'
 import { saveAttempt } from '../lib/progress'
 import { gradeFor, loadMocks, MAX_RAW, saveMock, SCALE_POINTS, toScale } from '../lib/score'
 import { countWords, loadDraft, saveDraft } from '../lib/writing'
-import { Breadcrumbs } from '../components/Layout'
+import { BackLink } from '../components/Layout'
 import { TimerBadge, useCountdown } from '../components/Timer'
-import { PromptBox, WordCounter } from '../components/WritingRunner'
-import { ExerciseBody } from './ExercisePage'
+import { PromptBox, WordCounter, WritingArea } from '../components/WritingRunner'
+import { btn, PageHeader, Panel } from '../components/ui'
+import { ActionBar, ExerciseBody } from './ExercisePage'
 import NotFound from './NotFound'
 
 /* ---------- Página principal del simulacro ---------- */
@@ -16,51 +17,57 @@ import NotFound from './NotFound'
 export function MockHome() {
   const results = loadMocks()
   return (
-    <div>
-      <Breadcrumbs items={[{ label: 'Inicio', to: '/' }, { label: 'Simulacro' }]} />
-      <h1 className="text-3xl font-bold text-navy-900">⏱ Simulacro de examen</h1>
-      <div className="mt-3 rounded-2xl bg-white border border-navy-100 p-4 sm:p-5 text-sm text-slate-700 space-y-2">
-        <p>
-          Cada simulacro reproduce dos pruebas del B2 First con el tiempo oficial: <b>Reading &amp; Use of English</b> (7
-          partes, 1 h 15 min) y <b>Writing</b> (essay + una tarea a elegir, 1 h 20 min).
-        </p>
-        <p>
-          Al terminar verás una <b>nota estimada en la escala de Cambridge</b>, calculada con las tablas de conversión que
-          publica Cambridge para B2 First. Es una aproximación: la nota real depende de cada convocatoria. En el Writing la
-          nota sale de tu autoevaluación.
-        </p>
-        <p className="text-slate-500">Listening y Speaking se añadirán más adelante.</p>
-      </div>
+    <div className="max-w-5xl">
+      <PageHeader
+        title="Simulacros"
+        lead="Dos pruebas del B2 First con el tiempo oficial y una nota estimada en la escala de Cambridge."
+      />
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        {Array.from({ length: MOCK_COUNT }, (_, i) => i + 1).map((n) => {
-          const rue = results[`${n}-rue`]
-          const wr = results[`${n}-writing`]
-          return (
-            <div key={n} className="rounded-2xl bg-white border border-navy-100 p-5 flex flex-col gap-3">
-              <h2 className="text-lg font-semibold text-navy-900">Simulacro {n}</h2>
-              <Link to={`/simulacro/${n}/rue`} className="rounded-xl bg-navy-800 text-white px-4 py-2.5 text-sm font-medium text-center hover:bg-navy-700">
-                Reading &amp; Use of English
-                <span className="block text-xs text-navy-200 font-normal">1 h 15 min · 52 preguntas</span>
-              </Link>
-              <Link to={`/simulacro/${n}/writing`} className="rounded-xl border border-navy-800 text-navy-800 px-4 py-2.5 text-sm font-medium text-center hover:bg-navy-50">
-                Writing
-                <span className="block text-xs text-slate-500 font-normal">1 h 20 min · 2 textos</span>
-              </Link>
-              {(rue || wr) && (
-                <div className="text-xs text-slate-600 border-t border-navy-50 pt-2 space-y-0.5">
-                  <p className="font-medium text-slate-500">Tu último resultado:</p>
-                  {rue && (
-                    <>
-                      <p>Reading: {rue.scale.reading ?? '<122'} · Use of English: {rue.scale.useOfEnglish ?? '<122'}</p>
-                    </>
-                  )}
-                  {wr && <p>Writing: {wr.scale.writing ?? '<122'}</p>}
+      <div className="grid gap-8 lg:grid-cols-[1fr_18rem] items-start">
+        <Panel className="divide-y divide-line">
+          {Array.from({ length: MOCK_COUNT }, (_, i) => i + 1).map((n) => {
+            const rue = results[`${n}-rue`]
+            const wr = results[`${n}-writing`]
+            return (
+              <div key={n} className="p-4 sm:p-5 grid sm:grid-cols-[8rem_1fr] gap-4">
+                <div>
+                  <h2 className="text-lg font-bold">Simulacro {n}</h2>
+                  {(rue || wr) && <p className="text-xs text-ink-3 mt-0.5">Último resultado abajo</p>}
                 </div>
-              )}
-            </div>
-          )
-        })}
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Link to={`/simulacro/${n}/rue`} className="block rounded-md border border-line p-4 hover:border-ink transition-colors">
+                    <p className="font-bold">Reading &amp; Use of English</p>
+                    <p className="text-sm text-ink-3">1 h 15 min, 52 preguntas</p>
+                    {rue && (
+                      <p className="mt-2 text-sm tabular-nums">
+                        Reading <b>{rue.scale.reading ?? '<122'}</b>, Use of English <b>{rue.scale.useOfEnglish ?? '<122'}</b>
+                      </p>
+                    )}
+                  </Link>
+                  <Link to={`/simulacro/${n}/writing`} className="block rounded-md border border-line p-4 hover:border-ink transition-colors">
+                    <p className="font-bold">Writing</p>
+                    <p className="text-sm text-ink-3">1 h 20 min, 2 textos</p>
+                    {wr && (
+                      <p className="mt-2 text-sm tabular-nums">
+                        Writing <b>{wr.scale.writing ?? '<122'}</b>
+                      </p>
+                    )}
+                  </Link>
+                </div>
+              </div>
+            )
+          })}
+        </Panel>
+
+        <aside className="text-[0.95rem] leading-relaxed text-ink-2 space-y-3">
+          <h2 className="font-bold text-ink">Cómo se calcula la nota</h2>
+          <p>
+            Usamos las tablas de conversión que publica Cambridge para B2 First. Por ejemplo, 24 de 42 puntos en Reading equivalen
+            a 160, el mínimo para aprobar el B2.
+          </p>
+          <p>Es una estimación: la nota real depende de cada convocatoria. En Writing sale de tu propia revisión.</p>
+          <p className="text-sm text-ink-3">160–172 Grade C, 173–179 Grade B, 180–190 Grade A (C1).</p>
+        </aside>
       </div>
     </div>
   )
@@ -70,13 +77,15 @@ export function MockHome() {
 
 function ScaleCard({ title, raw, max, scale }: { title: string; raw: number; max: number; scale: number | null }) {
   const g = gradeFor(scale)
-  const tone = g.tone === 'green' ? 'bg-emerald-50 text-emerald-900' : g.tone === 'amber' ? 'bg-amber-50 text-amber-900' : 'bg-red-50 text-red-900'
+  const tone = g.tone === 'green' ? 'text-ok' : g.tone === 'amber' ? 'text-warn' : 'text-bad'
   return (
-    <div className={`rounded-2xl p-4 ${tone}`}>
-      <p className="text-sm font-medium">{title}</p>
-      <p className="text-3xl font-bold tabular-nums">{scale ?? '<122'}</p>
-      <p className="text-xs">
-        {raw}/{max} puntos · {g.label} ({g.cefr})
+    <div className="p-5">
+      <p className="text-sm text-ink-2">{title}</p>
+      <p className={`text-[2.75rem] leading-none font-bold tabular-nums tracking-[-0.03em] mt-2 ${tone}`}>{scale ?? '<122'}</p>
+      <p className="text-sm mt-2">
+        <b>{g.label}</b>
+        {g.cefr !== '—' && `, nivel ${g.cefr}`}
+        <span className="text-ink-3">. {raw} de {max} puntos</span>
       </p>
     </div>
   )
@@ -124,42 +133,56 @@ function MockRueRunner({ n }: { n: number }) {
   const left = useCountdown(total, results === null, submit)
   const blanks = answers.reduce((a, arr) => a + arr.filter((x) => !x.trim()).length, 0)
   const cur = parts[tab]
+  const go = (t: number) => {
+    setTab(t)
+    window.scrollTo(0, 0)
+  }
 
   let summary = null
   if (results) {
     const raw = { reading: 0, useOfEnglish: 0 }
     parts.forEach((p, i) => (raw[p.skill] += results[i].filter(Boolean).length * marksPerQuestion(p.ex)))
-    const rs = toScale(raw.reading, SCALE_POINTS.reading)
-    const us = toScale(raw.useOfEnglish, SCALE_POINTS.useOfEnglish)
     summary = (
-      <section className="mb-6">
-        <h2 className="text-xl font-bold text-navy-900 mb-3">Resultado estimado</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
-          <ScaleCard title="Reading (Parts 1, 5, 6, 7)" raw={raw.reading} max={MAX_RAW.reading} scale={rs} />
-          <ScaleCard title="Use of English (Parts 2, 3, 4)" raw={raw.useOfEnglish} max={MAX_RAW.useOfEnglish} scale={us} />
-        </div>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-sm bg-white rounded-2xl border border-navy-100">
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">Resultado estimado</h2>
+        <Panel className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-line">
+          <ScaleCard title="Reading (Parts 1, 5, 6 y 7)" raw={raw.reading} max={MAX_RAW.reading} scale={toScale(raw.reading, SCALE_POINTS.reading)} />
+          <ScaleCard
+            title="Use of English (Parts 2, 3 y 4)"
+            raw={raw.useOfEnglish}
+            max={MAX_RAW.useOfEnglish}
+            scale={toScale(raw.useOfEnglish, SCALE_POINTS.useOfEnglish)}
+          />
+        </Panel>
+        <Panel className="mt-3 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-ink-3">
+                <th className="font-medium px-4 pt-3 pb-1.5">Parte</th>
+                <th className="font-medium pt-3 pb-1.5 text-right">Aciertos</th>
+                <th className="font-medium px-4 pt-3 pb-1.5 text-right">Puntos</th>
+              </tr>
+            </thead>
             <tbody>
               {parts.map((p, i) => (
-                <tr key={i} className="border-t first:border-t-0 border-navy-50">
-                  <td className="px-3 py-2 font-medium">{p.label}</td>
-                  <td className="px-3 py-2 text-slate-500">{p.part.name}</td>
-                  <td className="px-3 py-2 text-right tabular-nums">
+                <tr key={i} className="border-t border-line">
+                  <td className="px-4 py-2">
+                    <button onClick={() => go(i)} className="text-left hover:underline underline-offset-2">
+                      <b className="text-print">{p.label}</b> {p.part.name}
+                    </button>
+                  </td>
+                  <td className="py-2 text-right tabular-nums">
                     {results[i].filter(Boolean).length}/{results[i].length}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums text-slate-500">
-                    {results[i].filter(Boolean).length * marksPerQuestion(p.ex)} pts
-                  </td>
+                  <td className="px-4 py-2 text-right tabular-nums text-ink-2">{results[i].filter(Boolean).length * marksPerQuestion(p.ex)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-        <p className="mt-2 text-xs text-slate-500">
-          Puntuación como en el examen: Parts 1, 2, 3 y 7 valen 1 punto por pregunta; Parts 4, 5 y 6, 2 puntos. En la Part 4
-          el examen real da 1 punto por respuestas a medias; aquí cuenta todo o nada. Revisa cada parte abajo para ver las
-          explicaciones.
+        </Panel>
+        <p className="mt-3 text-sm text-ink-3 max-w-3xl">
+          Como en el examen, las Parts 1, 2, 3 y 7 valen 1 punto por pregunta y las Parts 4, 5 y 6 valen 2. En la Part 4 el examen
+          real da 1 punto a las respuestas a medias; aquí cuenta entera o nada. Abajo puedes revisar cada parte con sus explicaciones.
         </p>
       </section>
     )
@@ -167,32 +190,30 @@ function MockRueRunner({ n }: { n: number }) {
 
   return (
     <div>
-      <Breadcrumbs items={[{ label: 'Inicio', to: '/' }, { label: 'Simulacro', to: '/simulacro' }, { label: `${n} · Reading & Use of English` }]} />
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-bold text-navy-900">Simulacro {n} · Reading &amp; Use of English</h1>
+      <BackLink to="/simulacro" label="Simulacros" />
+      <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-[1.75rem] sm:text-[2rem] leading-tight font-bold tracking-[-0.02em]">
+          Simulacro {n}: Reading &amp; Use of English
+        </h1>
         {!results && <TimerBadge left={left} total={total} />}
-      </div>
+      </header>
 
       {summary}
 
       {/* Pestañas de partes */}
-      <nav className="flex gap-1.5 overflow-x-auto pb-2 mb-4 sticky top-0 z-10 bg-navy-50/95 backdrop-blur pt-2 -mx-4 px-4">
+      <nav className="sticky top-14 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 mb-6 bg-bg/95 backdrop-blur border-b border-line flex gap-1 overflow-x-auto" aria-label="Partes">
         {parts.map((_, i) => {
           const done = answers[i].filter((x) => x.trim()).length
           const r = results?.[i]
           return (
             <button
               key={i}
-              onClick={() => {
-                setTab(i)
-                window.scrollTo(0, 0)
-              }}
-              className={`shrink-0 rounded-xl px-3 py-1.5 text-sm border transition ${
-                tab === i ? 'bg-navy-800 text-white border-navy-800' : 'bg-white border-navy-200 hover:border-navy-500'
-              }`}
+              onClick={() => go(i)}
+              aria-current={tab === i}
+              className={`shrink-0 h-10 rounded-md px-3 text-sm transition-colors ${tab === i ? 'bg-ink text-white' : 'hover:bg-paper'}`}
             >
-              <b>{i + 1}</b>{' '}
-              <span className={`text-xs ${tab === i ? 'text-navy-200' : 'text-slate-400'}`}>
+              <b>Part {i + 1}</b>{' '}
+              <span className={`tabular-nums ${tab === i ? 'text-white/70' : 'text-ink-3'}`}>
                 {r ? `${r.filter(Boolean).length}/${r.length}` : `${done}/${answers[i].length}`}
               </span>
             </button>
@@ -200,10 +221,10 @@ function MockRueRunner({ n }: { n: number }) {
         })}
       </nav>
 
-      <p className="text-sm text-slate-500 mb-1">
-        {cur.label} · {cur.part.name}
+      <p className="text-sm text-ink-3">
+        {cur.label}: {cur.part.name}
       </p>
-      <h2 className="text-lg font-semibold text-navy-900 mb-3">{cur.ex.title}</h2>
+      <h2 className="text-xl font-bold mb-4">{cur.ex.title}</h2>
       <ExerciseBody
         key={tab}
         ex={cur.ex}
@@ -213,40 +234,40 @@ function MockRueRunner({ n }: { n: number }) {
         onChange={(q, v) => setAnswers((a) => a.map((arr, i) => (i === tab ? arr.map((x, j) => (j === q ? v : x)) : arr)))}
       />
 
-      <div className="sticky bottom-0 mt-6 -mx-4 px-4 py-3 bg-navy-50/95 backdrop-blur border-t border-navy-100 flex flex-wrap gap-2 items-center">
+      <ActionBar>
         {tab > 0 && (
-          <button onClick={() => { setTab(tab - 1); window.scrollTo(0, 0) }} className="rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm font-medium">
-            ← Part {tab}
+          <button onClick={() => go(tab - 1)} className={btn('secondary')}>
+            Part {tab}
           </button>
         )}
         {tab < parts.length - 1 && (
-          <button onClick={() => { setTab(tab + 1); window.scrollTo(0, 0) }} className="rounded-xl border border-navy-800 text-navy-800 bg-white px-4 py-2.5 text-sm font-medium">
-            Part {tab + 2} →
+          <button onClick={() => go(tab + 1)} className={btn('secondary')}>
+            Part {tab + 2}
           </button>
         )}
         <span className="flex-1" />
         {!results &&
           (!confirming ? (
-            <button onClick={() => (blanks > 0 ? setConfirming(true) : submit())} className="rounded-xl bg-navy-800 text-white px-5 py-2.5 font-medium hover:bg-navy-700">
+            <button onClick={() => (blanks > 0 ? setConfirming(true) : submit())} className={btn('primary')}>
               Entregar examen
             </button>
           ) : (
             <span className="flex flex-wrap items-center gap-2 text-sm">
-              Tienes {blanks} preguntas sin responder.
-              <button onClick={submit} className="rounded-xl bg-navy-800 text-white px-4 py-2 font-medium">
+              Quedan {blanks} preguntas sin responder.
+              <button onClick={submit} className={btn('primary', 'sm')}>
                 Entregar igualmente
               </button>
-              <button onClick={() => setConfirming(false)} className="rounded-xl border px-4 py-2">
-                Seguir
+              <button onClick={() => setConfirming(false)} className={btn('quiet', 'sm')}>
+                Seguir respondiendo
               </button>
             </span>
           ))}
         {results && (
-          <Link to="/simulacro" className="rounded-xl bg-gold-400 text-navy-900 px-5 py-2.5 font-medium hover:bg-gold-300">
+          <Link to="/simulacro" className={btn('accent')}>
             Volver a simulacros
           </Link>
         )}
-      </div>
+      </ActionBar>
     </div>
   )
 }
@@ -260,12 +281,12 @@ export function MockWriting() {
 }
 
 const BANDS = [
-  '0 · No se entiende o no tiene relación con la tarea',
-  '1 · Muy por debajo de B2',
-  '2 · Cerca de B2, con problemas importantes',
-  '3 · Nivel B2 adecuado',
-  '4 · Bien por encima del mínimo',
-  '5 · Excelente para B2',
+  '0: no se entiende o no responde a la tarea',
+  '1: muy por debajo de B2',
+  '2: cerca de B2, con problemas importantes',
+  '3: nivel B2 adecuado',
+  '4: claramente por encima del mínimo',
+  '5: excelente para un B2',
 ]
 const CRITERIA_SHORT = ['Content', 'Communicative Achievement', 'Organisation', 'Language']
 
@@ -295,24 +316,26 @@ function MockWritingRunner({ n }: { n: number }) {
 
   return (
     <div>
-      <Breadcrumbs items={[{ label: 'Inicio', to: '/' }, { label: 'Simulacro', to: '/simulacro' }, { label: `${n} · Writing` }]} />
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-bold text-navy-900">Simulacro {n} · Writing</h1>
+      <BackLink to="/simulacro" label="Simulacros" />
+      <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-[1.75rem] sm:text-[2rem] leading-tight font-bold tracking-[-0.02em]">Simulacro {n}: Writing</h1>
         {phase === 'writing' && <TimerBadge left={left} total={total} />}
-      </div>
+      </header>
 
       {phase === 'done' && (
-        <section className="mb-6">
-          <ScaleCard title="Writing (estimación a partir de tu autoevaluación)" raw={raw} max={MAX_RAW.writing} scale={scale} />
-          <p className="mt-2 text-sm text-slate-600">
+        <section className="mb-10 max-w-3xl">
+          <Panel>
+            <ScaleCard title="Writing, estimado a partir de tu revisión" raw={raw} max={MAX_RAW.writing} scale={scale} />
+          </Panel>
+          <p className="mt-3 text-ink-2">
             Compara tus textos con los modelos comentados de{' '}
-            <Link to={`/s/writing/${essay.part.slug}`} className="underline">
+            <Link to={`/s/writing/${essay.part.slug}`} className="font-semibold text-print underline underline-offset-2">
               {essay.part.name}
             </Link>
             {chosen && (
               <>
                 {' '}y{' '}
-                <Link to={`/s/writing/${chosen.part.slug}`} className="underline">
+                <Link to={`/s/writing/${chosen.part.slug}`} className="font-semibold text-print underline underline-offset-2">
                   {chosen.part.name}
                 </Link>
               </>
@@ -322,73 +345,67 @@ function MockWritingRunner({ n }: { n: number }) {
         </section>
       )}
 
-      <section>
-        <h2 className="text-lg font-semibold text-navy-900 mb-2">Part 1 · Essay (obligatorio)</h2>
+      <section className="max-w-4xl">
+        <h2 className="text-lg font-bold mb-3">
+          <span className="text-print">Part 1</span> Essay, obligatorio
+        </h2>
         <PromptBox task={essay.task} />
-        <textarea
-          value={t1}
-          onChange={(e) => setT1(e.target.value)}
-          disabled={phase !== 'writing'}
-          placeholder="Write your essay here…"
-          spellCheck={false}
-          className="mt-3 w-full min-h-[18rem] rounded-2xl border border-navy-200 bg-white p-4 font-serif text-[1.05rem] leading-7 outline-none focus:ring-2 focus:ring-navy-200 disabled:bg-slate-50"
-        />
-        <WordCounter words={countWords(t1)} />
+        <WritingArea value={t1} onChange={setT1} disabled={phase !== 'writing'} placeholder="Write your essay here" className="mt-5 !min-h-[18rem]" />
+        <div className="mt-2">
+          <WordCounter words={countWords(t1)} />
+        </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold text-navy-900 mb-2">Part 2 · Elige UNA tarea</h2>
-        <div className="grid gap-2 sm:grid-cols-3">
+      <section className="mt-12 max-w-4xl">
+        <h2 className="text-lg font-bold mb-3">
+          <span className="text-print">Part 2</span> Elige una tarea
+        </h2>
+        <div className="grid gap-2 sm:grid-cols-3" role="radiogroup">
           {options.map((o, i) => (
             <button
               key={i}
+              role="radio"
+              aria-checked={choice === i}
               disabled={phase !== 'writing'}
               onClick={() => setChoice(i)}
-              className={`rounded-xl border p-3 text-left text-sm transition ${
-                choice === i ? 'border-navy-800 bg-navy-800 text-white' : 'border-navy-200 bg-white hover:border-navy-500'
-              }`}
+              className={`rounded-md border p-4 text-left transition-colors ${choice === i ? 'border-ink bg-ink text-white' : 'border-line bg-paper hover:border-ink'}`}
             >
-              <b>{o.part.name}</b>
-              <span className={`block text-xs ${choice === i ? 'text-navy-200' : 'text-slate-500'}`}>{o.task.title}</span>
+              <b className="block">{o.part.name}</b>
+              <span className={`text-sm ${choice === i ? 'text-white/70' : 'text-ink-3'}`}>{o.task.title}</span>
             </button>
           ))}
         </div>
         {chosen && (
-          <div className="mt-3">
+          <div className="mt-6">
             <PromptBox task={chosen.task} />
-            <textarea
-              value={t2}
-              onChange={(e) => setT2(e.target.value)}
-              disabled={phase !== 'writing'}
-              placeholder="Write your answer here…"
-              spellCheck={false}
-              className="mt-3 w-full min-h-[18rem] rounded-2xl border border-navy-200 bg-white p-4 font-serif text-[1.05rem] leading-7 outline-none focus:ring-2 focus:ring-navy-200 disabled:bg-slate-50"
-            />
-            <WordCounter words={countWords(t2)} />
+            <WritingArea value={t2} onChange={setT2} disabled={phase !== 'writing'} placeholder="Write your answer here" className="mt-5 !min-h-[18rem]" />
+            <div className="mt-2">
+              <WordCounter words={countWords(t2)} />
+            </div>
           </div>
         )}
       </section>
 
       {phase === 'review' && (
-        <section className="mt-8 rounded-2xl bg-white border border-navy-100 p-5">
-          <h2 className="font-semibold text-navy-900">Autoevaluación</h2>
-          <p className="text-sm text-slate-600 mt-1 mb-4">
-            Puntúa cada texto de 0 a 5 en los 4 criterios de Cambridge, siendo honesto. Si puedes, pide a otra persona que lo
-            corrija con estos mismos criterios.
+        <section className="mt-12 max-w-3xl">
+          <h2 className="text-xl font-bold">Revisa y puntúa tus textos</h2>
+          <p className="text-ink-2 mt-1 mb-5">
+            Puntúa cada texto de 0 a 5 en los cuatro criterios de Cambridge, siendo exigente. Si puedes, pide a otra persona que lo
+            haga con estos mismos criterios.
           </p>
-          {['Part 1 · Essay', `Part 2 · ${chosen?.part.name ?? '—'}`].map((title, t) => (
-            <div key={t} className="mb-4">
-              <p className="font-medium text-navy-800 mb-2">{title}</p>
-              <div className="grid sm:grid-cols-2 gap-2">
+          {['Part 1: Essay', `Part 2: ${chosen?.part.name ?? 'sin elegir'}`].map((title, t) => (
+            <Panel key={t} className="mb-4 p-4 sm:p-5">
+              <p className="font-bold mb-3">{title}</p>
+              <div className="grid sm:grid-cols-2 gap-3">
                 {CRITERIA_SHORT.map((c, k) => {
                   const idx = t * 4 + k
                   return (
                     <label key={c} className="text-sm">
-                      <span className="block text-slate-600 mb-1">{c}</span>
+                      <span className="block font-semibold mb-1">{c}</span>
                       <select
                         value={marks[idx]}
                         onChange={(e) => setMarks((m) => m.map((x, j) => (j === idx ? Number(e.target.value) : x)))}
-                        className="w-full rounded-lg border border-navy-200 bg-white px-2 py-1.5"
+                        className="w-full h-10 rounded-md border border-line-strong bg-paper px-2"
                       >
                         {BANDS.map((b, v) => (
                           <option key={v} value={v}>
@@ -400,27 +417,23 @@ function MockWritingRunner({ n }: { n: number }) {
                   )
                 })}
               </div>
-            </div>
+            </Panel>
           ))}
-          <p className="text-sm mb-3">
-            Total: <b>{raw}/40</b> → escala estimada <b>{scale ?? '<122'}</b> ({gradeFor(scale).label})
+          <p className="mb-4 tabular-nums">
+            Total <b>{raw} de 40</b>, que equivale a unos <b>{scale ?? '<122'}</b> en la escala ({gradeFor(scale).label}).
           </p>
-          <button onClick={finish} className="rounded-xl bg-navy-800 text-white px-5 py-2.5 font-medium hover:bg-navy-700">
+          <button onClick={finish} className={btn('primary')}>
             Guardar resultado
           </button>
         </section>
       )}
 
       {phase === 'writing' && (
-        <div className="sticky bottom-0 mt-6 -mx-4 px-4 py-3 bg-navy-50/95 backdrop-blur border-t border-navy-100 flex gap-2">
-          <button
-            onClick={() => setPhase('review')}
-            disabled={!t1.trim()}
-            className="rounded-xl bg-navy-800 text-white px-5 py-2.5 font-medium hover:bg-navy-700 disabled:opacity-40"
-          >
-            He terminado · autoevaluar
+        <ActionBar>
+          <button onClick={() => setPhase('review')} disabled={!t1.trim()} className={btn('primary')}>
+            He terminado, quiero puntuarlo
           </button>
-        </div>
+        </ActionBar>
       )}
     </div>
   )

@@ -71,6 +71,24 @@ src/
 1. Añade un objeto al array de `src/data/<sección>/partN.ts` con un `id` único.
 2. Ejecuta `npm test`: si algo está mal formado, el test lo indica.
 
+## 3b. Sistema visual (rediseño del 14-nov-2026)
+Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como las casillas ovaladas impresas que se rellenan a lápiz.
+- **Colores** (`src/index.css`, `@theme`):
+  - `bg` #F2F3F6 y `paper` #FFF.
+  - `ink` #23262D (grafito: texto y marcas del alumno). `ink-2` y `ink-3` para texto secundario.
+  - `print` #A3245F (tinta magenta: números de parte, casillas, huecos).
+  - `ok` #17784A, `bad` #B3261E y `warn` #8A5A00, con sus versiones `-soft`.
+- **Fuentes** (autoalojadas con @fontsource): Schibsted Grotesk para la interfaz y Newsreader para los textos (clase `.passage`).
+- **Componentes** (`src/components/ui.tsx`):
+  - `btn()`: variantes primary, accent, secondary, quiet y danger.
+  - `Lozenge`: la casilla de la hoja de respuestas.
+  - También `Meter`, `PageHeader`, `Panel`, `Tabs`, `ModeTag` e `Icon`.
+- **Navegación:** cabecera con Practicar, Simulacro y Progreso. En el móvil, una barra inferior fija. Se vuelve atrás con `BackLink`.
+- **Reglas:**
+  - Sin emojis, sin separadores " · ", sin flechas en los botones y sin etiquetas en mayúsculas.
+  - Las listas van como índice de cuadernillo, en un `Panel` con divisores, no como tarjetas iguales.
+  - El foco del teclado es visible y se respeta `prefers-reduced-motion`.
+
 ## 4. Hoja de ruta
 - [x] **F0 – Base:** proyecto, navegación, diseño, workflow de despliegue, CONTEXTO.md
 - [x] **F1 – Use of English** P1–P4 + motor (modo práctica / modo examen). Hay 5 ejercicios por parte (20 en total, 140 preguntas), cada uno con una guía de la parte y una explicación por pregunta.
@@ -101,6 +119,7 @@ src/
 | 2026-11-14 | F2b Vocabulary: 6 temas, 18 ejercicios. 156 tests. Todos los ejercicios revisados en el navegador | F3 Reading |
 | 2026-11-14 | F3 Reading (9 textos) + F4 Writing (6 tipos, 24 tareas, modelos). 208 tests | F5 Progreso + F7 Simulacro |
 | 2026-11-14 | F5 Progreso + F7 Simulacro (3 simulacros con nota estimada). 212 tests. Revisados en el navegador todos los ejercicios, las tareas y los simulacros | Speaking / Listening / más contenido |
+| 2026-11-14 | Rediseño completo de la interfaz (sistema "hoja de respuestas", sección 3b). 212 tests. Revisado en móvil y escritorio | Speaking / Listening / más contenido |
 
 ## 7. Comandos
 ```
