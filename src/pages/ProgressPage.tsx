@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { sections } from '../data/sections'
 import { exportData, importData, loadDays, loadProgress, resetAll, streak, type ProgressMap } from '../lib/progress'
 import { btn, Meter, PageHeader, Panel } from '../components/ui'
+import { loadUser, saveUser } from '../lib/user'
 
 interface PartStat {
   sectionSlug: string
@@ -198,8 +199,42 @@ export default function ProgressPage() {
         </Panel>
       </section>
 
+      <Profile />
       <Backup onChange={() => setVersion((v) => v + 1)} />
     </div>
+  )
+}
+
+function Profile() {
+  const [name, setName] = useState(() => loadUser().name)
+  const [saved, setSaved] = useState(false)
+  return (
+    <section className="max-w-2xl mb-10">
+      <h2 className="text-lg font-bold">Tu nombre</h2>
+      <form
+        className="mt-3 flex flex-wrap gap-2"
+        onSubmit={(e) => {
+          e.preventDefault()
+          saveUser({ name: name.trim() })
+          setSaved(true)
+        }}
+      >
+        <input
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value)
+            setSaved(false)
+          }}
+          maxLength={30}
+          placeholder="Tu nombre"
+          aria-label="Tu nombre"
+          className="h-9 w-56 rounded-md border border-line-strong bg-paper px-3 outline-none focus:border-ink"
+        />
+        <button type="submit" className={btn('secondary', 'sm')}>
+          {saved ? 'Guardado' : 'Guardar'}
+        </button>
+      </form>
+    </section>
   )
 }
 

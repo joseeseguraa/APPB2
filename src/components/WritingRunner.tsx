@@ -5,7 +5,7 @@ import { countWords, CRITERIA, loadDraft, saveDraft } from '../lib/writing'
 import { saveAttempt } from '../lib/progress'
 import { TimerBadge, useCountdown } from './Timer'
 import { WritingModelView } from './WritingModelView'
-import { btn, ModeTag, Panel } from './ui'
+import { btn, Icon, ModeTag, Panel } from './ui'
 
 export function WordCounter({ words, min = 140, max = 190 }: { words: number; min?: number; max?: number }) {
   const ok = words >= min && words <= max
@@ -101,11 +101,21 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
     setSaved(true)
   }
 
+  const [copiedAi, setCopiedAi] = useState(false)
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
+    } catch {
+      /* el navegador no permite copiar */
+    }
+  }
+  const copyForAi = async () => {
+    try {
+      await navigator.clipboard.writeText(aiPrompt(part.name, task, text))
+      setCopiedAi(true)
+      setTimeout(() => setCopiedAi(false), 2500)
     } catch {
       /* el navegador no permite copiar */
     }
@@ -204,11 +214,20 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
                 </button>
               )}
             </div>
-            <p className="mt-3 text-sm text-ink-3">
-              Para una corrección detallada, copia el texto y pásaselo a un profesor o a Claude indicando que es un{' '}
-              {part.name.toLowerCase()} para el B2 First.
-            </p>
           </div>
+
+          <Panel className="p-5 sm:p-6">
+            <h2 className="text-lg font-bold">Corrígelo con IA, gratis</h2>
+            <p className="text-ink-2 mt-1 text-[0.97rem] leading-relaxed">
+              Copia tu texto junto con unas instrucciones preparadas y pégalo en Claude, ChatGPT o Gemini. Te dará una nota en cada
+              criterio de Cambridge, tus errores corregidos y una versión mejorada.
+            </p>
+            <button onClick={copyForAi} className={`${btn('accent')} mt-4`}>
+              <Icon name="copy" className="w-4 h-4" />
+              {copiedAi ? 'Copiado. Ahora pégalo en el chat' : 'Copiar texto e instrucciones'}
+            </button>
+          </Panel>
+
 
           {part.model && (
             <div>
@@ -226,4 +245,22 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
       )}
     </div>
   )
+}
+
+/** Instrucciones para que una IA corrija el texto con los criterios de Cambridge. */
+export function aiPrompt(typeName: string, task: Pick<WritingTask, 'prompt' | 'notes'>, text: string): string {
+  const notes = task.notes ? `\nNotes: ${task.notes.map((n, i) => `${i + 1}. ${n}`).join('  ')}` : ''
+  return `Actúa como examinador del Cambridge B2 First (FCE). Corrige este ${typeName.toLowerCase()} de la prueba de Writing.
+
+ENUNCIADO:
+${task.prompt}${notes}
+
+MI TEXTO (${text.trim().split(/\s+/).length} palabras):
+${text.trim()}
+
+Responde en español y con este formato:
+1. Nota de 0 a 5 en cada criterio oficial (Content, Communicative Achievement, Organisation, Language), con una frase que la justifique, y el total sobre 20.
+2. Los errores de gramática y vocabulario: la frase original, la corrección y una breve explicación.
+3. Tres consejos concretos para subir la nota.
+4. Una versión mejorada de mi texto, de nivel B2 alto, entre 140 y 190 palabras.`
 }

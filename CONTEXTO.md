@@ -106,10 +106,19 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 - [ ] **F6 – Speaking** P1–P4: prompts, temporizador, grabación de voz, frases útiles (lo deja José para el final)
 - [x] **F7 – Simulacro** (`/simulacro`): 3 simulacros. Reading & UoE (7 partes, 75 min, pestañas por parte) y Writing (essay + elegir 1 de 3, 80 min, autoevaluación 0–5 × 4 criterios). La nota se estima en la escala Cambridge con los puntos de conversión oficiales de B2 First (`src/lib/score.ts`), interpolando entre ellos. Resultados en `appb2.mocks.v1`. Pendiente: Listening y Speaking en el simulacro.
 - [ ] **F8 – Listening** P1–P4 (al final, cuando todo lo demás esté hecho)
+- [x] **F10 – Para compartir con amigos** (18-nov):
+  - Bienvenida en 3 pasos con nombre (`appb2.user.v1`, `components/Welcome.tsx`). El nombre se cambia en Mi progreso.
+  - Enlace "Avísanos" en cada corrección (`lib/report.ts`). Si `REPORT_EMAIL` en `src/config.ts` está vacío, abre una incidencia en GitHub; si tiene un email, abre un correo.
+  - App instalable y sin conexión con vite-plugin-pwa: manifest, service worker e iconos en `public/pwa-*.png`.
+  - **Mis errores** (`/repaso`, `lib/review.ts`, `appb2.review.v1`): las preguntas falladas se repasan en 4 niveles (1, 3, 7 y 14 días). Gapped text y matching no entran porque dependen de todo el texto.
+  - **Reto diario** (`/reto`, `appb2.daily.v1`): 10 preguntas al día (4 de UoE, 3 de Grammar, 3 de Vocabulary), iguales para todos según la fecha. Los fallos van a Mis errores.
+  - Las preguntas sueltas se construyen con `lib/cards.ts` (cualquier pregunta pasa a ser un ejercicio de 1 ítem) y se practican con `components/QuizSession.tsx`.
+  - Writing: botón para copiar el texto con instrucciones de corrección para una IA (`aiPrompt` en WritingRunner).
+- [ ] **F11 – Ranking entre amigos** (al final, a petición de José): necesita un servidor (Supabase o Firebase). Hay que decidirlo con él antes.
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
-- **Fase:** está todo hecho menos Speaking (F6) y Listening (F8), que José quiere dejar para el final. Siguiente: lo que decida José (Speaking, Listening o más contenido en F9).
+- **Fase:** está todo hecho menos Speaking (F6), Listening (F8) y el ranking (F11). Siguiente recomendado: **Speaking**.
 - **Contenido actual:** 148 ejercicios o tareas: UoE 40 (10 por parte), Reading 18 (6 por parte), Grammar 36 (12 temas), Vocabulary 30 (10 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 3 simulacros.
 - **Preferencias de José (18-nov):** sin plan de estudio ni cuenta atrás de examen. En Writing basta con tener todos los tipos (la "story" solo existe en B2 First for Schools, así que no se incluye).
 - **Pendiente de José:** José va a hacer el repo público. Después tiene que ir a Settings → Pages → Source y elegir **GitHub Actions**, y volver a lanzar el workflow.
@@ -127,6 +136,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-14 | F3 Reading (9 textos) + F4 Writing (6 tipos, 24 tareas, modelos). 208 tests | F5 Progreso + F7 Simulacro |
 | 2026-11-14 | F5 Progreso + F7 Simulacro (3 simulacros con nota estimada). 212 tests. Revisados en el navegador todos los ejercicios, las tareas y los simulacros | Speaking / Listening / más contenido |
 | 2026-11-14 | Rediseño completo de la interfaz (sistema "hoja de respuestas", sección 3b). 212 tests. Revisado en móvil y escritorio | Speaking / Listening / más contenido |
+| 2026-11-18 | Bienvenida, avisos de errores, PWA, Mis errores, Reto diario, corrección de writing con IA. 324 tests | Speaking (F6), después Listening y el ranking |
 | 2026-11-18 | Menú lateral + inicio tipo panel + página /examen. UoE de 5 a 10 por parte, Reading de 3 a 6, Grammar +3 temas (comparison, linking words, quantifiers & articles) y Vocabulary +4 temas (work, environment, technology, health). 319 tests | Speaking / Listening / más contenido |
 
 ## 7. Comandos

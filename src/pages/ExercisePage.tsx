@@ -26,9 +26,12 @@ import {
 } from '../lib/exercise'
 import { containsKeyword, countKwtWords } from '../lib/answers'
 import { saveAttempt } from '../lib/progress'
+import { recordMistakes } from '../lib/review'
+import { isReviewable } from '../lib/cards'
+import { reportUrl } from '../lib/report'
 import { BackLink } from '../components/Layout'
 import { TimerBadge, useCountdown } from '../components/Timer'
-import { btn, Lozenge, ModeTag, Panel, type MarkState } from '../components/ui'
+import { btn, Icon, Lozenge, ModeTag, Panel, type MarkState } from '../components/ui'
 import NotFound from './NotFound'
 import WritingRunner from '../components/WritingRunner'
 
@@ -120,6 +123,7 @@ function Runner({ ex, mode, minutes, partUrl, nextUrl, position }: RunnerProps) 
     const r = checkAll(ex, answersRef.current)
     setResults(r)
     saveAttempt(ex.id, r.filter(Boolean).length, n, r.flatMap((ok, i) => (ok ? [] : [i])))
+    if (isReviewable(ex)) recordMistakes(ex.id, r)
     if (mode === 'exam') {
       finishedRef.current = true
       setFinished(true)
@@ -287,7 +291,32 @@ function Feedback({ ex, i, value, ok }: { ex: Exercise; i: number; value: string
         </>
       )}
       <p className="mt-1 text-ink-2">{explanationFor(ex, i)}</p>
+      <ReportLink ex={ex} i={i} value={value} />
     </div>
+  )
+}
+
+/** Enlace discreto para avisar de un error en la pregunta. */
+function ReportLink({ ex, i, value }: { ex: Exercise; i: number; value: string }) {
+  // en las tarjetas sueltas el id es "ejercicio#pregunta"
+  const [exId, qStr] = ex.id.includes('#') ? ex.id.split('#') : [ex.id, String(i)]
+  const href = reportUrl({
+    exId,
+    q: Number(qStr),
+    title: ex.title,
+    userAnswer: value.trim() ? userDisplay(ex, i, value) : '',
+    correct: correctDisplay(ex, i),
+  })
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="mt-2 inline-flex items-center gap-1 text-xs text-ink-3 hover:text-ink underline-offset-2 hover:underline"
+    >
+      <Icon name="flag" className="w-3.5 h-3.5" />
+      ¿Crees que hay un error en esta pregunta? Avísanos
+    </a>
   )
 }
 

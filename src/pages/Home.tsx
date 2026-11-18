@@ -4,6 +4,8 @@ import { loadDays, loadProgress, streak } from '../lib/progress'
 import { btn, Icon, IconTile, Meter, Panel, SECTION_ICON, type IconName } from '../components/ui'
 import type { Exercise, PartInfo, SectionInfo } from '../types'
 import { partStats } from './ExamPage'
+import { dateKey, dueKeys, loadDaily } from '../lib/review'
+import { loadUser } from '../lib/user'
 
 interface Located {
   s: SectionInfo
@@ -60,6 +62,17 @@ export default function Home() {
 
   /* ---------- Sugerencias para hoy ---------- */
   const suggestions: Suggestion[] = []
+  const due = dueKeys().length
+  const daily = loadDaily()[dateKey()]
+  if (!daily)
+    suggestions.push({ icon: 'daily', title: 'Reto diario', why: '10 preguntas variadas, unos 5 minutos. Cambia cada día.', to: '/reto' })
+  if (due > 0)
+    suggestions.push({
+      icon: 'review',
+      title: `Repasa ${due} ${due === 1 ? 'error' : 'errores'}`,
+      why: 'Preguntas que fallaste y que toca volver a ver hoy.',
+      to: '/repaso',
+    })
   const examParts = sections
     .filter((s) => s.slug === 'use-of-english' || s.slug === 'reading')
     .flatMap((s) => s.parts.map((p) => ({ s, p, st: partStats(p, progress) })))
@@ -131,7 +144,10 @@ export default function Home() {
   return (
     <div className="max-w-5xl">
       <header className="mb-8">
-        <h1 className="text-[2rem] sm:text-[2.4rem] leading-[1.1] font-bold tracking-[-0.025em]">{greeting()}</h1>
+        <h1 className="text-[2rem] sm:text-[2.4rem] leading-[1.1] font-bold tracking-[-0.025em]">
+          {greeting()}
+          {loadUser().name && `, ${loadUser().name}`}
+        </h1>
         <p className="mt-2 text-ink-2 text-[1.05rem]">
           {done === 0
             ? 'Aquí verás qué te conviene practicar cada día. Empieza por cualquiera de estas propuestas.'
@@ -158,7 +174,7 @@ export default function Home() {
           <section>
             <h2 className="text-lg font-bold mb-3">Para hoy</h2>
             <Panel className="divide-y divide-line">
-              {suggestions.slice(0, 3).map((sg) => (
+              {suggestions.slice(0, 4).map((sg) => (
                 <Link key={sg.to} to={sg.to} className="group flex items-center gap-4 px-4 sm:px-5 py-4 hover:bg-bg/60 transition-colors">
                   <IconTile name={sg.icon} />
                   <div className="flex-1 min-w-0">

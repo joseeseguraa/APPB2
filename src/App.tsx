@@ -6,6 +6,8 @@ import PartPage from './pages/PartPage'
 import ExercisePage from './pages/ExercisePage'
 import NotFound from './pages/NotFound'
 import ExamPage from './pages/ExamPage'
+import ReviewPage from './pages/ReviewPage'
+import DailyPage from './pages/DailyPage'
 import ProgressPage from './pages/ProgressPage'
 import { MockHome, MockRue, MockWriting } from './pages/MockPages'
 
@@ -18,6 +20,8 @@ export default function App() {
         <Route path="s/:section/:part" element={<PartPage />} />
         <Route path="s/:section/:part/:exercise" element={<ExercisePage />} />
         <Route path="examen" element={<ExamPage />} />
+        <Route path="repaso" element={<ReviewPage />} />
+        <Route path="reto" element={<DailyPage />} />
         <Route path="progreso" element={<ProgressPage />} />
         <Route path="simulacro" element={<MockHome />} />
         <Route path="simulacro/:n/rue" element={<MockRue />} />

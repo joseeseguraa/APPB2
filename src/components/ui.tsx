@@ -165,6 +165,10 @@ export type IconName =
   | 'chevron'
   | 'flame'
   | 'check'
+  | 'review'
+  | 'daily'
+  | 'flag'
+  | 'copy'
 
 const ICONS: Record<IconName, ReactNode> = {
   home: <path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4v-9.5Z" />,
@@ -236,6 +240,25 @@ const ICONS: Record<IconName, ReactNode> = {
   chevron: <path d="m9 5 7 7-7 7" />,
   flame: <path d="M12 21c-3.9 0-6.5-2.6-6.5-6 0-3.6 3-5.6 3.8-9 2 1.3 3 3 3.2 4.6.9-.6 1.5-1.6 1.6-2.8 2.4 1.7 4.4 4.3 4.4 7.2 0 3.4-2.6 6-6.5 6Z" />,
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
+  review: (
+    <>
+      <path d="M4.5 12a7.5 7.5 0 0 1 13-5.1M19.5 12a7.5 7.5 0 0 1-13 5.1" />
+      <path d="M17.5 3v4h-4M6.5 21v-4h4" />
+    </>
+  ),
+  daily: (
+    <>
+      <rect x="4" y="5" width="16" height="15" rx="2" />
+      <path d="M8 3v4M16 3v4M4 10h16M10.5 13.5l-1.5 3h3l-1.5 3" />
+    </>
+  ),
+  flag: <path d="M5.5 21V4.5M5.5 4.5h11l-2 4 2 4h-11" />,
+  copy: (
+    <>
+      <rect x="8.5" y="8.5" width="11" height="11" rx="2" />
+      <path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5" />
+    </>
+  ),
 }
 
 export function Icon({ name, className = 'w-5 h-5' }: { name: IconName; className?: string }) {

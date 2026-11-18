@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { MOCK_COUNT, mockRue, mockWriting } from '../data/mocks'
 import { checkAll, marksPerQuestion, questionCount } from '../lib/exercise'
 import { saveAttempt } from '../lib/progress'
+import { recordMistakes } from '../lib/review'
+import { isReviewable } from '../lib/cards'
 import { gradeFor, loadMocks, MAX_RAW, saveMock, SCALE_POINTS, toScale } from '../lib/score'
 import { countWords, loadDraft, saveDraft } from '../lib/writing'
 import { BackLink } from '../components/Layout'
@@ -120,6 +122,7 @@ function MockRueRunner({ n }: { n: number }) {
       const ok = r[i].filter(Boolean).length
       raw[p.skill] += ok * marksPerQuestion(p.ex)
       saveAttempt(p.ex.id, ok, r[i].length, r[i].flatMap((x, j) => (x ? [] : [j])))
+      if (isReviewable(p.ex)) recordMistakes(p.ex.id, r[i])
     })
     saveMock({
       id: `${n}-rue`,

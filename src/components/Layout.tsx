@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Icon, type IconName } from './ui'
+import { dateKey, dueKeys, loadDaily } from '../lib/review'
+import { loadUser } from '../lib/user'
+import Welcome from './Welcome'
 
 interface NavItem {
   to: string
@@ -11,6 +14,13 @@ interface NavItem {
 
 const GROUPS: { title?: string; items: NavItem[] }[] = [
   { items: [{ to: '/', label: 'Inicio', icon: 'home' }] },
+  {
+    title: 'Cada día',
+    items: [
+      { to: '/reto', label: 'Reto diario', icon: 'daily' },
+      { to: '/repaso', label: 'Mis errores', icon: 'review' },
+    ],
+  },
   {
     title: 'El examen',
     items: [
@@ -55,6 +65,8 @@ function Wordmark() {
 
 function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useLocation()
+  const due = dueKeys().length
+  const dailyDone = Boolean(loadDaily()[dateKey()])
   return (
     <nav aria-label="Secciones" className="flex flex-col gap-6">
       {GROUPS.map((g, gi) => (
@@ -85,7 +97,13 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
                   >
                     {active && <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-print" aria-hidden />}
                     <Icon name={it.icon} className={`w-[1.15rem] h-[1.15rem] ${active ? 'text-print' : ''}`} />
-                    {it.label}
+                    <span className="flex-1">{it.label}</span>
+                    {it.to === '/repaso' && due > 0 && (
+                      <span className="min-w-[1.4rem] h-[1.4rem] px-1.5 grid place-items-center rounded-full bg-print text-white text-[0.7rem] font-bold tabular-nums">
+                        {due}
+                      </span>
+                    )}
+                    {it.to === '/reto' && !dailyDone && <span className="w-2 h-2 rounded-full bg-print" aria-label="Pendiente hoy" />}
                   </NavLink>
                 </li>
               )
@@ -106,6 +124,7 @@ const BOTTOM: { to: string; label: string; icon: IconName }[] = [
 export default function Layout() {
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
+  const [welcome, setWelcome] = useState(() => !loadUser().onboarded)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -185,6 +204,8 @@ export default function Layout() {
           <SideNav onNavigate={() => setOpen(false)} />
         </div>
       </div>
+
+      {welcome && <Welcome onDone={() => setWelcome(false)} />}
 
       {/* Barra inferior (móvil) */}
       <nav
