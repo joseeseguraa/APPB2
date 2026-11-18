@@ -1,3 +1,5 @@
+import { getLevel } from '../lib/level'
+import { c1Decks } from './c1/flashcards'
 // Mazos de tarjetas de vocabulario. Cada tarjeta: término en inglés, significado en español
 // y una frase de ejemplo. Se estudian con repaso espaciado (lib/flashcards.ts).
 
@@ -283,6 +285,11 @@ export const decks: Deck[] = [
   },
 ]
 
+/** Mazos del nivel activo. */
+export function currentDecks(): Deck[] {
+  return getLevel() === 'c1' ? c1Decks : decks
+}
+
 export function findDeck(slug?: string) {
-  return decks.find((d) => d.slug === slug)
+  return currentDecks().find((d) => d.slug === slug)
 }

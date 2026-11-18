@@ -1,8 +1,6 @@
-import C1Soon from '../components/C1Soon'
-import { getLevel } from '../lib/level'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { decks, findDeck, type FlashCard } from '../data/flashcards'
+import { currentDecks, findDeck, type FlashCard } from '../data/flashcards'
 import { cardKey, deckStats, rateCard, sessionCards, type Rating } from '../lib/flashcards'
 import { BackLink } from '../components/Layout'
 import { btn, Meter, PageHeader, Panel } from '../components/ui'
@@ -11,8 +9,7 @@ import NotFound from './NotFound'
 /* ---------- Lista de mazos ---------- */
 
 export function FlashcardsHome() {
-  if (getLevel() === 'c1') return <C1Soon title="Tarjetas" what="La sección de tarjetas" />
-  const all = decks.map((d) => ({ d, st: deckStats(d) }))
+  const all = currentDecks().map((d) => ({ d, st: deckStats(d) }))
   const due = all.reduce((a, x) => a + x.st.due, 0)
   return (
     <div className="max-w-4xl">

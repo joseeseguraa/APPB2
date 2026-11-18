@@ -1,5 +1,4 @@
-import C1Soon from '../components/C1Soon'
-import { getLevel } from '../lib/level'
+import { getLevel, levelInfo } from '../lib/level'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { MOCK_COUNT, mockRue, mockWriting } from '../data/mocks'
@@ -7,7 +6,7 @@ import { checkAll, marksPerQuestion, questionCount } from '../lib/exercise'
 import { saveAttempt } from '../lib/progress'
 import { recordMistakes } from '../lib/review'
 import { isReviewable } from '../lib/cards'
-import { gradeFor, loadMocks, MAX_RAW, saveMock, SCALE_POINTS, toScale } from '../lib/score'
+import { gradeFor, loadMocks, maxRaw, minScale, saveMock, scalePoints, toScale } from '../lib/score'
 import { countWords, loadDraft, saveDraft } from '../lib/writing'
 import { BackLink } from '../components/Layout'
 import { TimerBadge, useCountdown } from '../components/Timer'
@@ -19,14 +18,13 @@ import NotFound from './NotFound'
 /* ---------- Página principal del simulacro ---------- */
 
 export function MockHome() {
-  if (getLevel() === 'c1') return <C1Soon title="Simulacros" what="La sección de simulacros" />
   const results = loadMocks()
   return (
     <div className="max-w-5xl">
       <PageHeader
         icon="mock"
         title="Simulacros"
-        lead="Dos pruebas del B2 First con el tiempo oficial y una nota estimada en la escala de Cambridge."
+        lead={`Dos pruebas del ${levelInfo().exam} con el tiempo oficial y una nota estimada en la escala de Cambridge.`}
       />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_18rem] items-start">
@@ -43,19 +41,19 @@ export function MockHome() {
                 <div className="grid sm:grid-cols-2 gap-3">
                   <Link to={`/simulacro/${n}/rue`} className="block rounded-md border border-line p-4 hover:border-ink transition-colors">
                     <p className="font-bold">Reading &amp; Use of English</p>
-                    <p className="text-sm text-ink-3">1 h 15 min, 52 preguntas</p>
+                    <p className="text-sm text-ink-3">{getLevel() === 'c1' ? '1 h 30 min, 56 preguntas' : '1 h 15 min, 52 preguntas'}</p>
                     {rue && (
                       <p className="mt-2 text-sm tabular-nums">
-                        Reading <b>{rue.scale.reading ?? '<122'}</b>, Use of English <b>{rue.scale.useOfEnglish ?? '<122'}</b>
+                        Reading <b>{rue.scale.reading ?? `<${minScale()}`}</b>, Use of English <b>{rue.scale.useOfEnglish ?? `<${minScale()}`}</b>
                       </p>
                     )}
                   </Link>
                   <Link to={`/simulacro/${n}/writing`} className="block rounded-md border border-line p-4 hover:border-ink transition-colors">
                     <p className="font-bold">Writing</p>
-                    <p className="text-sm text-ink-3">1 h 20 min, 2 textos</p>
+                    <p className="text-sm text-ink-3">{getLevel() === 'c1' ? '1 h 30 min, 2 textos' : '1 h 20 min, 2 textos'}</p>
                     {wr && (
                       <p className="mt-2 text-sm tabular-nums">
-                        Writing <b>{wr.scale.writing ?? '<122'}</b>
+                        Writing <b>{wr.scale.writing ?? `<${minScale()}`}</b>
                       </p>
                     )}
                   </Link>
@@ -67,12 +65,23 @@ export function MockHome() {
 
         <aside className="text-[0.95rem] leading-relaxed text-ink-2 space-y-3">
           <h2 className="font-bold text-ink">Cómo se calcula la nota</h2>
-          <p>
-            Usamos las tablas de conversión que publica Cambridge para B2 First. Por ejemplo, 24 de 42 puntos en Reading equivalen
-            a 160, el mínimo para aprobar el B2.
-          </p>
+          {getLevel() === 'c1' ? (
+            <p>
+              Usamos las tablas de conversión que publica Cambridge para C1 Advanced. Por ejemplo, 32 de 50 puntos en Reading equivalen
+              a 180, el mínimo para aprobar el C1.
+            </p>
+          ) : (
+            <p>
+              Usamos las tablas de conversión que publica Cambridge para B2 First. Por ejemplo, 24 de 42 puntos en Reading equivalen
+              a 160, el mínimo para aprobar el B2.
+            </p>
+          )}
           <p>Es una estimación: la nota real depende de cada convocatoria. En Writing sale de tu propia revisión.</p>
-          <p className="text-sm text-ink-3">160–172 Grade C, 173–179 Grade B, 180–190 Grade A (C1).</p>
+          <p className="text-sm text-ink-3">
+            {getLevel() === 'c1'
+              ? '160–179 nivel B2, 180–192 Grade C, 193–199 Grade B, 200–210 Grade A (C2).'
+              : '160–172 Grade C, 173–179 Grade B, 180–190 Grade A (C1).'}
+          </p>
         </aside>
       </div>
     </div>
@@ -87,7 +96,7 @@ function ScaleCard({ title, raw, max, scale }: { title: string; raw: number; max
   return (
     <div className="p-5">
       <p className="text-sm text-ink-2">{title}</p>
-      <p className={`text-[2.75rem] leading-none font-bold tabular-nums tracking-[-0.03em] mt-2 ${tone}`}>{scale ?? '<122'}</p>
+      <p className={`text-[2.75rem] leading-none font-bold tabular-nums tracking-[-0.03em] mt-2 ${tone}`}>{scale ?? `<${minScale()}`}</p>
       <p className="text-sm mt-2">
         <b>{g.label}</b>
         {g.cefr !== '—' && `, nivel ${g.cefr}`}
@@ -131,12 +140,12 @@ function MockRueRunner({ n }: { n: number }) {
       id: `${n}-rue`,
       at: new Date().toISOString(),
       raw,
-      scale: { reading: toScale(raw.reading, SCALE_POINTS.reading), useOfEnglish: toScale(raw.useOfEnglish, SCALE_POINTS.useOfEnglish) },
+      scale: { reading: toScale(raw.reading, scalePoints().reading), useOfEnglish: toScale(raw.useOfEnglish, scalePoints().useOfEnglish) },
     })
     window.scrollTo(0, 0)
   }, [n, parts])
 
-  const total = 75 * 60
+  const total = levelInfo().readingMinutes * 60
   const left = useCountdown(total, results === null, submit)
   const blanks = answers.reduce((a, arr) => a + arr.filter((x) => !x.trim()).length, 0)
   const cur = parts[tab]
@@ -153,12 +162,12 @@ function MockRueRunner({ n }: { n: number }) {
       <section className="mb-10">
         <h2 className="text-xl font-bold mb-3">Resultado estimado</h2>
         <Panel className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-line">
-          <ScaleCard title="Reading (Parts 1, 5, 6 y 7)" raw={raw.reading} max={MAX_RAW.reading} scale={toScale(raw.reading, SCALE_POINTS.reading)} />
+          <ScaleCard title={getLevel() === 'c1' ? 'Reading (Parts 1, 5, 6, 7 y 8)' : 'Reading (Parts 1, 5, 6 y 7)'} raw={raw.reading} max={maxRaw().reading} scale={toScale(raw.reading, scalePoints().reading)} />
           <ScaleCard
             title="Use of English (Parts 2, 3 y 4)"
             raw={raw.useOfEnglish}
-            max={MAX_RAW.useOfEnglish}
-            scale={toScale(raw.useOfEnglish, SCALE_POINTS.useOfEnglish)}
+            max={maxRaw().useOfEnglish}
+            scale={toScale(raw.useOfEnglish, scalePoints().useOfEnglish)}
           />
         </Panel>
         <Panel className="mt-3 overflow-x-auto">
@@ -188,7 +197,9 @@ function MockRueRunner({ n }: { n: number }) {
           </table>
         </Panel>
         <p className="mt-3 text-sm text-ink-3 max-w-3xl">
-          Como en el examen, las Parts 1, 2, 3 y 7 valen 1 punto por pregunta y las Parts 4, 5 y 6 valen 2. En la Part 4 el examen
+          {getLevel() === 'c1'
+            ? 'Como en el examen, las Parts 1, 2, 3 y 8 valen 1 punto por pregunta y las Parts 4, 5, 6 y 7 valen 2.'
+            : 'Como en el examen, las Parts 1, 2, 3 y 7 valen 1 punto por pregunta y las Parts 4, 5 y 6 valen 2.'} En la Part 4 el examen
           real da 1 punto a las respuestas a medias; aquí cuenta entera o nada. Abajo puedes revisar cada parte con sus explicaciones.
         </p>
       </section>
@@ -287,13 +298,13 @@ export function MockWriting() {
   return <MockWritingRunner key={n} n={n} />
 }
 
-const BANDS = [
+const bands = (c: string) => [
   '0: no se entiende o no responde a la tarea',
-  '1: muy por debajo de B2',
-  '2: cerca de B2, con problemas importantes',
-  '3: nivel B2 adecuado',
+  `1: muy por debajo de ${c}`,
+  `2: cerca de ${c}, con problemas importantes`,
+  `3: nivel ${c} adecuado`,
   '4: claramente por encima del mínimo',
-  '5: excelente para un B2',
+  `5: excelente para un ${c}`,
 ]
 const CRITERIA_SHORT = ['Content', 'Communicative Achievement', 'Organisation', 'Language']
 
@@ -308,10 +319,10 @@ function MockWritingRunner({ n }: { n: number }) {
   useEffect(() => saveDraft(`mock${n}-w1`, t1), [n, t1])
   useEffect(() => saveDraft(`mock${n}-w2`, t2), [n, t2])
 
-  const total = 80 * 60
+  const total = levelInfo().writingMinutes * 60
   const left = useCountdown(total, phase === 'writing', () => setPhase('review'))
   const raw = marks.reduce((a, b) => a + b, 0)
-  const scale = toScale(raw, SCALE_POINTS.writing)
+  const scale = toScale(raw, scalePoints().writing)
 
   const finish = () => {
     saveMock({ id: `${n}-writing`, at: new Date().toISOString(), raw: { writing: raw }, scale: { writing: scale } })
@@ -332,7 +343,7 @@ function MockWritingRunner({ n }: { n: number }) {
       {phase === 'done' && (
         <section className="mb-10 max-w-3xl">
           <Panel>
-            <ScaleCard title="Writing, estimado a partir de tu revisión" raw={raw} max={MAX_RAW.writing} scale={scale} />
+            <ScaleCard title="Writing, estimado a partir de tu revisión" raw={raw} max={maxRaw().writing} scale={scale} />
           </Panel>
           <p className="mt-3 text-ink-2">
             Compara tus textos con los modelos comentados de{' '}
@@ -414,7 +425,7 @@ function MockWritingRunner({ n }: { n: number }) {
                         onChange={(e) => setMarks((m) => m.map((x, j) => (j === idx ? Number(e.target.value) : x)))}
                         className="w-full h-10 rounded-md border border-line-strong bg-paper px-2"
                       >
-                        {BANDS.map((b, v) => (
+                        {bands(levelInfo().code).map((b, v) => (
                           <option key={v} value={v}>
                             {b}
                           </option>
@@ -427,7 +438,7 @@ function MockWritingRunner({ n }: { n: number }) {
             </Panel>
           ))}
           <p className="mb-4 tabular-nums">
-            Total <b>{raw} de 40</b>, que equivale a unos <b>{scale ?? '<122'}</b> en la escala ({gradeFor(scale).label}).
+            Total <b>{raw} de 40</b>, que equivale a unos <b>{scale ?? `<${minScale()}`}</b> en la escala ({gradeFor(scale).label}).
           </p>
           <button onClick={finish} className={btn('primary')}>
             Guardar resultado

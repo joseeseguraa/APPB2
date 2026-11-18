@@ -100,7 +100,7 @@ function ThemeToggle() {
 }
 
 /** Páginas que todavía no existen en C1 */
-const C1_SOON = new Set(['/tarjetas', '/estrategia', '/simulacro'])
+const C1_SOON = new Set<string>([])
 
 function isSoon(it: NavItem) {
   if (it.soon) return true

@@ -1,4 +1,3 @@
-import { getLevel } from '../lib/level'
 import { Link } from 'react-router-dom'
 import { currentSections } from '../data/sections'
 import { loadDays, loadProgress, streak } from '../lib/progress'
@@ -7,7 +6,7 @@ import type { Exercise, PartInfo, SectionInfo } from '../types'
 import { partStats } from './ExamPage'
 import { dateKey, dueKeys, loadDaily } from '../lib/review'
 import { loadUser } from '../lib/user'
-import { decks } from '../data/flashcards'
+import { currentDecks } from '../data/flashcards'
 import { deckStats } from '../lib/flashcards'
 
 interface Located {
@@ -69,7 +68,7 @@ export default function Home() {
   const daily = loadDaily()[dateKey()]
   if (!daily)
     suggestions.push({ icon: 'daily', title: 'Reto diario', why: '10 preguntas variadas, unos 5 minutos. Cambia cada día.', to: '/reto' })
-  const cardsDue = decks.reduce((a, d) => a + deckStats(d).due, 0)
+  const cardsDue = currentDecks().reduce((a, d) => a + deckStats(d).due, 0)
   if (cardsDue > 0)
     suggestions.push({
       icon: 'cards',
@@ -271,7 +270,7 @@ export default function Home() {
             </Link>
           </Panel>
 
-          {getLevel() === 'b2' && (
+          {(
           <Panel className="p-5 !bg-ink !border-ink text-on-ink">
             <p className="font-bold">¿Listo para medirte?</p>
             <p className="text-on-ink/75 text-sm mt-1 leading-relaxed">Haz un simulacro con el tiempo oficial y obtén una nota estimada.</p>

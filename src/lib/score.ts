@@ -1,4 +1,4 @@
-import { storageKey } from './level'
+import { getLevel, storageKey } from './level'
 // Conversión de puntuación de práctica a la Cambridge English Scale (B2 First).
 // Puntos de referencia publicados por Cambridge English ("Converting practice test scores
 // to Cambridge English Scale scores", B2 First). Entre puntos se interpola de forma lineal,
@@ -6,13 +6,34 @@ import { storageKey } from './level'
 
 type Points = [raw: number, scale: number][]
 
-export const SCALE_POINTS = {
+const B2_POINTS = {
   reading: [[10, 122], [16, 140], [24, 160], [37, 180], [42, 190]] as Points, // Parts 1, 5, 6, 7 · /42
   useOfEnglish: [[7, 122], [11, 140], [18, 160], [24, 180], [28, 190]] as Points, // Parts 2, 3, 4 · /28
   writing: [[10, 122], [16, 140], [24, 160], [34, 180], [40, 190]] as Points, // 2 tareas × 20 · /40
 }
 
+// C1 Advanced ("C1 Advanced: converting practice test scores", Cambridge, 2019). Máximo 210.
+const C1_POINTS = {
+  reading: [[17, 142], [23, 160], [32, 180], [43, 200], [50, 210]] as Points, // Parts 1, 5, 6, 7, 8 · /50
+  useOfEnglish: [[8, 142], [11, 160], [16, 180], [23, 200], [28, 210]] as Points, // Parts 2, 3, 4 · /28
+  writing: [[10, 142], [16, 160], [24, 180], [34, 200], [40, 210]] as Points, // 2 tareas × 20 · /40
+}
+
+/** Puntos de conversión del nivel activo (para tests: B2 por defecto). */
+export const SCALE_POINTS = B2_POINTS
+export function scalePoints() {
+  return getLevel() === 'c1' ? C1_POINTS : B2_POINTS
+}
+
 export const MAX_RAW = { reading: 42, useOfEnglish: 28, writing: 40 }
+export function maxRaw() {
+  return getLevel() === 'c1' ? { reading: 50, useOfEnglish: 28, writing: 40 } : MAX_RAW
+}
+
+/** Puntuación mínima que se informa en el nivel activo. */
+export function minScale() {
+  return getLevel() === 'c1' ? 142 : 122
+}
 
 /** Devuelve la puntuación en la escala (122–190) o null si queda por debajo del mínimo que se informa. */
 export function toScale(raw: number, points: Points): number | null {
@@ -26,6 +47,13 @@ export function toScale(raw: number, points: Points): number | null {
 }
 
 export function gradeFor(scale: number | null): { label: string; cefr: string; tone: 'green' | 'amber' | 'red' } {
+  if (getLevel() === 'c1') {
+    if (scale === null || scale < 160) return { label: 'Sin certificado', cefr: '—', tone: 'red' }
+    if (scale < 180) return { label: 'Level B2', cefr: 'B2', tone: 'amber' }
+    if (scale < 193) return { label: 'Grade C', cefr: 'C1', tone: 'green' }
+    if (scale < 200) return { label: 'Grade B', cefr: 'C1', tone: 'green' }
+    return { label: 'Grade A', cefr: 'C2', tone: 'green' }
+  }
   if (scale === null || scale < 140) return { label: 'Sin certificado', cefr: '—', tone: 'red' }
   if (scale < 160) return { label: 'Level B1', cefr: 'B1', tone: 'amber' }
   if (scale < 173) return { label: 'Grade C', cefr: 'B2', tone: 'green' }
