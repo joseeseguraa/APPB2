@@ -26,12 +26,16 @@ import { c1Part4C } from './uoe/part4c'
 import { c1Part4D } from './uoe/part4d'
 import { c1Part5 } from './reading/part5'
 import { c1Part5B } from './reading/part5b'
+import { c1Part5C } from './reading/part5c'
 import { c1Part6 } from './reading/part6'
 import { c1Part6B } from './reading/part6b'
+import { c1Part6C } from './reading/part6c'
 import { c1Part7 } from './reading/part7'
 import { c1Part7B } from './reading/part7b'
+import { c1Part7C } from './reading/part7c'
 import { c1Part8 } from './reading/part8'
 import { c1Part8B } from './reading/part8b'
+import { c1Part8C } from './reading/part8c'
 
 function grouped(group: string, parts: PartInfo[]): PartInfo[] {
   return parts.map((p) => ({ ...p, group }))
@@ -205,7 +209,7 @@ export const c1Sections: SectionInfo[] = [
             'No distinguir entre lo que piensa el autor y lo que dice que piensan otros.',
           ],
         },
-        exercises: [...c1Part5, ...c1Part5B],
+        exercises: [...c1Part5, ...c1Part5B, ...c1Part5C],
       },
       {
         slug: 'part-6',
@@ -233,7 +237,7 @@ export const c1Sections: SectionInfo[] = [
             'Olvidar que la pregunta puede pedir la opinión diferente, no la parecida.',
           ],
         },
-        exercises: [...c1Part6, ...c1Part6B],
+        exercises: [...c1Part6, ...c1Part6B, ...c1Part6C],
       },
       {
         slug: 'part-7',
@@ -262,7 +266,7 @@ export const c1Sections: SectionInfo[] = [
             'No mirar la frase que viene después del hueco.',
           ],
         },
-        exercises: [...c1Part7, ...c1Part7B],
+        exercises: [...c1Part7, ...c1Part7B, ...c1Part7C],
       },
       {
         slug: 'part-8',
@@ -290,7 +294,7 @@ export const c1Sections: SectionInfo[] = [
             'Pasar demasiado tiempo en una pregunta: es la parte en la que más rápido se puede sumar.',
           ],
         },
-        exercises: [...c1Part8, ...c1Part8B],
+        exercises: [...c1Part8, ...c1Part8B, ...c1Part8C],
       },
     ],
   },
