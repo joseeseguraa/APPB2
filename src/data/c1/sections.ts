@@ -1,5 +1,10 @@
 import type { SectionInfo } from '../../types'
+import type { PartInfo } from '../../types'
 import { c1Essay } from './writing/essay'
+import { c1Conditionals, c1Cleft, c1Inversion, c1Tenses } from './grammar/g1'
+import { c1Modals, c1Passive, c1Relatives, c1Wishes } from './grammar/g2'
+import { c1Linking, c1Reporting, c1Subjunctive, c1Verbpatterns } from './grammar/g3'
+import { c1Comparison, c1Determiners, c1Ellipsis, c1Participles } from './grammar/g4'
 import { c1Letter, c1Proposal, c1Report, c1Review } from './writing/part2'
 import { c1Part1 } from './uoe/part1'
 import { c1Part1B } from './uoe/part1b'
@@ -17,6 +22,10 @@ import { c1Part7 } from './reading/part7'
 import { c1Part7B } from './reading/part7b'
 import { c1Part8 } from './reading/part8'
 import { c1Part8B } from './reading/part8b'
+
+function grouped(group: string, parts: PartInfo[]): PartInfo[] {
+  return parts.map((p) => ({ ...p, group }))
+}
 
 /** C1 Advanced: Reading & Use of English (8 partes, 56 preguntas, 1 h 30 min). */
 export const c1Sections: SectionInfo[] = [
@@ -294,10 +303,15 @@ export const c1Sections: SectionInfo[] = [
     slug: 'grammar',
     name: 'Grammar',
     nameEs: 'Gramática',
-    description: 'Gramática de nivel C1 con teoría y ejercicios. En preparación.',
+    description: 'La gramática que separa un B2 de un C1: inversión, frases escindidas, pasivas avanzadas, subjuntivo y más.',
     icon: '📐',
-    available: false,
-    parts: [],
+    available: true,
+    parts: [
+      ...grouped('Tiempos y modales', [c1Tenses, c1Modals, c1Wishes, c1Conditionals]),
+      ...grouped('Énfasis y estilo', [c1Inversion, c1Cleft, c1Subjunctive, c1Ellipsis]),
+      ...grouped('Estructuras de la frase', [c1Passive, c1Relatives, c1Participles, c1Reporting, c1Verbpatterns]),
+      ...grouped('Conectores y determinantes', [c1Linking, c1Comparison, c1Determiners]),
+    ],
   },
   {
     slug: 'vocabulary',
