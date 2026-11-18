@@ -30,12 +30,14 @@ import { c1Part5C } from './reading/part5c'
 import { c1Part6 } from './reading/part6'
 import { c1Part6B } from './reading/part6b'
 import { c1Part6C } from './reading/part6c'
+import { c1Part6D } from './reading/part6d'
 import { c1Part7 } from './reading/part7'
 import { c1Part7B } from './reading/part7b'
 import { c1Part7C } from './reading/part7c'
 import { c1Part8 } from './reading/part8'
 import { c1Part8B } from './reading/part8b'
 import { c1Part8C } from './reading/part8c'
+import { c1Part8D } from './reading/part8d'
 
 function grouped(group: string, parts: PartInfo[]): PartInfo[] {
   return parts.map((p) => ({ ...p, group }))
@@ -237,7 +239,7 @@ export const c1Sections: SectionInfo[] = [
             'Olvidar que la pregunta puede pedir la opinión diferente, no la parecida.',
           ],
         },
-        exercises: [...c1Part6, ...c1Part6B, ...c1Part6C],
+        exercises: [...c1Part6, ...c1Part6B, ...c1Part6C, ...c1Part6D],
       },
       {
         slug: 'part-7',
@@ -294,7 +296,7 @@ export const c1Sections: SectionInfo[] = [
             'Pasar demasiado tiempo en una pregunta: es la parte en la que más rápido se puede sumar.',
           ],
         },
-        exercises: [...c1Part8, ...c1Part8B, ...c1Part8C],
+        exercises: [...c1Part8, ...c1Part8B, ...c1Part8C, ...c1Part8D],
       },
     ],
   },
