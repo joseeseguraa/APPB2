@@ -143,6 +143,9 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
   - Tarjetas: 7 mazos, 210 tarjetas (`data/c1/flashcards.ts`; `currentDecks()` en `data/flashcards.ts`).
   - Estrategia C1 (`StrategyPage`, `C1_READING` y `C1_WRITING`) y 6 simulacros con la escala C1 (`scalePoints()`, `maxRaw()`, `minScale()` y `gradeFor()` en `lib/score.ts`; `C1_RUE_PARTS` y `C1_PART2_TYPES` en `data/mocks.ts`).
   - Test nuevo: en word formation la respuesta nunca puede ser la raíz sin cambiar.
+- [x] **F15 – Mejoras para los dos niveles** (19-nov):
+  - **Buscar** (`/buscar`, `pages/SearchPage.tsx`): busca sin tildes en la teoría de Grammar y Vocabulary, en las guías de cada parte y en las tarjetas del nivel activo.
+  - **Tiempo del modo examen a elegir**: en cada ejercicio, 75 %, 100 % o 150 % del tiempo recomendado (parámetro `?t=` en la URL).
 - [ ] **F11 – Ranking entre amigos** (al final, a petición de José): necesita un servidor (Supabase o Firebase). Hay que decidirlo con él antes.
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
@@ -153,7 +156,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 - **Preferencia (18-nov):** nada de logros, compartir resultados ni funciones de "enganche". Solo cosas que ayuden a aprender.
 - **Preferencias de José (18-nov):** sin plan de estudio ni cuenta atrás de examen. En Writing basta con tener todos los tipos (la "story" solo existe en B2 First for Schools, así que no se incluye).
 - La app está publicada en https://joseeseguraa.github.io/APPB2/ (repo público, despliegue con GitHub Actions).
-- Ideas para más adelante: un ejemplo "0" en cada ejercicio, como en el examen real; poder elegir el tiempo en el modo examen.
+- Ideas para más adelante: un ejemplo "0" en cada ejercicio, como en el examen real; medio punto en la Part 4 cuando la respuesta está a medias.
 
 ## 6. Registro de sesiones
 | Fecha | Qué se hizo | Siguiente paso |
@@ -173,6 +176,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-18 | UoE Parts 1–3 +9 textos, Reading +6 textos, Grammar +3 temas, Vocabulary +2 temas. 437 tests | Más contenido o lo que pida José (Speaking aplazado) |
 | 2026-11-19 | C1 Advanced, tanda 1: selector de nivel, progreso separado por nivel, formato C1, guías de las 8 partes y 12 ejercicios. 469 tests | F14 tanda 2: más Reading & Use of English de C1 |
 | 2026-11-19 | C1 completo con la misma cantidad que B2: Reading & UoE, Writing, Grammar, Vocabulary, tarjetas, estrategia y simulacros. Comprobados en el navegador los 400 ejercicios de los dos niveles. 866 tests | Mejoras para aprender en los dos niveles |
+| 2026-11-19 | Buscador de teoría y tarjetas, y tiempo a elegir en el modo examen (B2 y C1). 866 tests | Lo que pida José (Speaking aplazado) |
 
 ## 7. Comandos
 ```

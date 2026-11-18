@@ -43,6 +43,7 @@ export default function ExercisePage() {
   const { section: sSlug, part: pSlug, exercise: eId } = useParams()
   const [params] = useSearchParams()
   const mode: Mode = params.get('mode') === 'exam' ? 'exam' : 'practice'
+  const tParam = Number(params.get('t'))
   const section = findSection(sSlug)
   const part = findPart(sSlug, pSlug)
   const idx = part?.exercises.findIndex((e) => e.id === eId) ?? -1
@@ -67,10 +68,11 @@ export default function ExercisePage() {
         />
       ) : (
         <Runner
-          key={`${ex.id}-${mode}`}
+          key={`${ex.id}-${mode}-${tParam}`}
           ex={ex}
           mode={mode}
-          minutes={part.suggestedMinutes}
+          minutes={tParam >= 1 && tParam <= 60 ? tParam : part.suggestedMinutes}
+          baseMinutes={part.suggestedMinutes}
           partUrl={partUrl}
           nextUrl={next ? `${partUrl}/${next.id}?mode=${mode}` : undefined}
           position={`${idx + 1} de ${part.exercises.length}`}
@@ -84,6 +86,8 @@ interface RunnerProps {
   ex: Exercise
   mode: Mode
   minutes: number
+  /** tiempo recomendado de la parte (para ofrecer más o menos) */
+  baseMinutes: number
   partUrl: string
   nextUrl?: string
   position: string
@@ -102,7 +106,7 @@ export function ActionBar({ children, sticky = true }: { children: ReactNode; st
   )
 }
 
-function Runner({ ex: original, mode, minutes, partUrl, nextUrl, position }: RunnerProps) {
+function Runner({ ex: original, mode, minutes, baseMinutes, partUrl, nextUrl, position }: RunnerProps) {
   // Si ya lo has hecho antes, las opciones salen en otro orden para que no memorices la letra
   const [ex, setEx] = useState<Exercise>(() => (loadProgress()[original.id] ? shuffleOptions(original) : original))
   const n = questionCount(ex)
@@ -190,7 +194,22 @@ function Runner({ ex: original, mode, minutes, partUrl, nextUrl, position }: Run
         <p className="text-[0.95rem] text-ink-2 mb-5 max-w-2xl">
           {mode === 'practice'
             ? 'Sin límite de tiempo. Cuando quieras, pulsa Comprobar para ver qué tienes bien y la explicación de cada respuesta.'
-            : `Tienes ${minutes} minutos, el tiempo recomendado para esta parte. La corrección aparece al entregar o cuando se acabe el tiempo.`}
+            : `Tienes ${minutes} minutos${minutes === baseMinutes ? ', el tiempo recomendado para esta parte' : ''}. La corrección aparece al entregar o cuando se acabe el tiempo.`}
+          {mode === 'exam' && (
+            <span className="block mt-1.5 text-sm">
+              <span className="text-ink-3">Cambiar el tiempo: </span>
+              {[Math.max(1, Math.round(baseMinutes * 0.75)), baseMinutes, Math.round(baseMinutes * 1.5)].map((m, i) => (
+                <Link
+                  key={m}
+                  to={`?mode=exam&t=${m}`}
+                  className={`ml-2 font-semibold underline-offset-2 ${m === minutes ? 'text-ink' : 'text-print hover:underline'}`}
+                  aria-current={m === minutes ? 'true' : undefined}
+                >
+                  {m} min{i === 0 ? ' (reto)' : i === 2 ? ' (con calma)' : ''}
+                </Link>
+              ))}
+            </span>
+          )}
         </p>
       )}
 
