@@ -83,7 +83,13 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
   - `btn()`: variantes primary, accent, secondary, quiet y danger.
   - `Lozenge`: la casilla de la hoja de respuestas.
   - También `Meter`, `PageHeader`, `Panel`, `Tabs`, `ModeTag` e `Icon`.
-- **Navegación:** cabecera con Practicar, Simulacro y Progreso. En el móvil, una barra inferior fija. Se vuelve atrás con `BackLink`.
+- **Navegación** (18-nov):
+  - En escritorio, menú lateral fijo agrupado en Inicio, El examen (Formato y partes, Use of English, Reading, Writing, Listening y Speaking con "Pronto"), Base (Grammar, Vocabulary) y Seguimiento (Simulacros, Mi progreso).
+  - En móvil, cabecera con botón de menú (menú desplegable) y una barra inferior con Inicio, Practicar (abre el menú), Simulacro y Progreso.
+  - El inicio es un panel con último ejercicio, sugerencias "Para hoy", últimos ejercicios, racha de 14 días y resumen.
+  - El mapa del examen está en `/examen`.
+  - Los temas de Grammar y Vocabulary se agrupan por bloques con el campo `group` de `PartInfo`.
+  - Se vuelve atrás con `BackLink`.
 - **Reglas:**
   - Sin emojis, sin separadores " · ", sin flechas en los botones y sin etiquetas en mayúsculas.
   - Las listas van como índice de cuadernillo, en un `Panel` con divisores, no como tarjetas iguales.
@@ -100,11 +106,12 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 - [ ] **F6 – Speaking** P1–P4: prompts, temporizador, grabación de voz, frases útiles (lo deja José para el final)
 - [x] **F7 – Simulacro** (`/simulacro`): 3 simulacros. Reading & UoE (7 partes, 75 min, pestañas por parte) y Writing (essay + elegir 1 de 3, 80 min, autoevaluación 0–5 × 4 criterios). La nota se estima en la escala Cambridge con los puntos de conversión oficiales de B2 First (`src/lib/score.ts`), interpolando entre ellos. Resultados en `appb2.mocks.v1`. Pendiente: Listening y Speaking en el simulacro.
 - [ ] **F8 – Listening** P1–P4 (al final, cuando todo lo demás esté hecho)
-- [ ] **F9 – Extras:** más ejercicios de UoE (meta: 10+ por parte), corrección con IA, repetición espaciada
+- [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
 - **Fase:** está todo hecho menos Speaking (F6) y Listening (F8), que José quiere dejar para el final. Siguiente: lo que decida José (Speaking, Listening o más contenido en F9).
-- **Contenido actual:** 98 ejercicios o tareas: UoE 20, Grammar 27, Vocabulary 18, Reading 9 y Writing 24, más 3 simulacros.
+- **Contenido actual:** 148 ejercicios o tareas: UoE 40 (10 por parte), Reading 18 (6 por parte), Grammar 36 (12 temas), Vocabulary 30 (10 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 3 simulacros.
+- **Preferencias de José (18-nov):** sin plan de estudio ni cuenta atrás de examen. En Writing basta con tener todos los tipos (la "story" solo existe en B2 First for Schools, así que no se incluye).
 - **Pendiente de José:** José va a hacer el repo público. Después tiene que ir a Settings → Pages → Source y elegir **GitHub Actions**, y volver a lanzar el workflow.
 - Antes: GitHub Pages no funciona con repos privados en cuentas gratuitas. Las opciones son hacer el repo público, pasar a GitHub Pro, o usar Netlify/Vercel/Cloudflare Pages, que son gratis con repos privados. Mientras tanto, el workflow de Pages fallará en el paso de deploy.
 - Ideas para más adelante: un ejemplo "0" en cada ejercicio, como en el examen real; poder elegir el tiempo en el modo examen.
@@ -120,6 +127,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-14 | F3 Reading (9 textos) + F4 Writing (6 tipos, 24 tareas, modelos). 208 tests | F5 Progreso + F7 Simulacro |
 | 2026-11-14 | F5 Progreso + F7 Simulacro (3 simulacros con nota estimada). 212 tests. Revisados en el navegador todos los ejercicios, las tareas y los simulacros | Speaking / Listening / más contenido |
 | 2026-11-14 | Rediseño completo de la interfaz (sistema "hoja de respuestas", sección 3b). 212 tests. Revisado en móvil y escritorio | Speaking / Listening / más contenido |
+| 2026-11-18 | Menú lateral + inicio tipo panel + página /examen. UoE de 5 a 10 por parte, Reading de 3 a 6, Grammar +3 temas (comparison, linking words, quantifiers & articles) y Vocabulary +4 temas (work, environment, technology, health). 319 tests | Speaking / Listening / más contenido |
 
 ## 7. Comandos
 ```

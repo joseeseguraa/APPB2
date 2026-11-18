@@ -129,7 +129,8 @@ export default function Layout() {
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[16.5rem_1fr]">
       {/* Menú lateral (escritorio) */}
-      <aside className="hidden lg:flex flex-col sticky top-0 h-screen bg-paper border-r border-line px-4 py-5 overflow-y-auto">
+      <div className="hidden lg:block bg-paper border-r border-line">
+      <aside className="flex flex-col sticky top-0 h-screen px-4 py-5 overflow-y-auto">
         <div className="px-2 mb-8">
           <Wordmark />
         </div>
@@ -138,6 +139,7 @@ export default function Layout() {
           Material de práctica original. No es contenido oficial de Cambridge English.
         </p>
       </aside>
+      </div>
 
       <div className="min-w-0 flex flex-col min-h-screen">
         {/* Cabecera (móvil y tablet) */}

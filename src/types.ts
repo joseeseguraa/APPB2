@@ -228,6 +228,8 @@ export interface PartInfo {
   theory?: TheoryBlock[]
   /** frase corta para la lista de temas */
   summary?: string
+  /** bloque en el que se agrupa el tema en la lista de la sección */
+  group?: string
   /** writing: modelo comentado y checklist de autoevaluación */
   model?: WritingModel
   checklist?: string[]

@@ -1,4 +1,4 @@
-import type { SectionInfo } from '../types'
+import type { PartInfo, SectionInfo } from '../types'
 import { part1Exercises } from './uoe/part1'
 import { part1ExercisesB } from './uoe/part1b'
 import { part2Exercises } from './uoe/part2'
@@ -10,6 +10,8 @@ import { part4ExercisesB } from './uoe/part4b'
 import { future, narrativeTenses, presentPerfect } from './grammar/tenses'
 import { conditionals, passive, reportedSpeech } from './grammar/structures'
 import { gerunds, modals, relatives } from './grammar/more'
+import { comparison, linkers, quantifiers } from './grammar/extra'
+import { environment, health, technology, workStudy } from './vocabulary/topics'
 import { collocations, phrasalVerbs, prepositions } from './vocabulary/words'
 import { confusingWords, expressions, falseFriends } from './vocabulary/traps'
 import { part5Exercises } from './reading/part5'
@@ -20,6 +22,11 @@ import { part7Exercises } from './reading/part7'
 import { part7ExercisesB } from './reading/part7b'
 import { article, essay, informalEmail } from './writing/types1'
 import { formalLetter, report, review } from './writing/types2'
+
+/** Asigna un bloque a varios temas para agruparlos en la lista. */
+function grouped(group: string, parts: PartInfo[]): PartInfo[] {
+  return parts.map((p) => ({ ...p, group }))
+}
 
 export const sections: SectionInfo[] = [
   {
@@ -171,25 +178,23 @@ export const sections: SectionInfo[] = [
     icon: '📐',
     available: true,
     parts: [
-      presentPerfect,
-      narrativeTenses,
-      future,
-      conditionals,
-      passive,
-      reportedSpeech,
-      relatives,
-      modals,
-      gerunds,
+      ...grouped('Tiempos verbales', [presentPerfect, narrativeTenses, future]),
+      ...grouped('Estructuras clave del examen', [conditionals, passive, reportedSpeech, relatives, modals, gerunds]),
+      ...grouped('Frases y conectores', [comparison, linkers, quantifiers]),
     ],
   },
   {
     slug: 'vocabulary',
     name: 'Vocabulary',
     nameEs: 'Vocabulario',
-    description: 'Phrasal verbs, collocations, preposiciones, falsos amigos y expresiones fijas.',
+    description: 'Phrasal verbs, colocaciones, falsos amigos, expresiones fijas y vocabulario por temas.',
     icon: '📚',
     available: true,
-    parts: [phrasalVerbs, collocations, prepositions, falseFriends, confusingWords, expressions],
+    parts: [
+      ...grouped('Palabras y expresiones', [phrasalVerbs, collocations, prepositions, expressions]),
+      ...grouped('Trampas para hispanohablantes', [falseFriends, confusingWords]),
+      ...grouped('Vocabulario por temas', [workStudy, environment, technology, health]),
+    ],
   },
   {
     slug: 'reading',
