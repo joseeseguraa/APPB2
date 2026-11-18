@@ -27,6 +27,7 @@ import { c1Part4D } from './uoe/part4d'
 import { c1Part5 } from './reading/part5'
 import { c1Part5B } from './reading/part5b'
 import { c1Part5C } from './reading/part5c'
+import { c1Part5D } from './reading/part5d'
 import { c1Part6 } from './reading/part6'
 import { c1Part6B } from './reading/part6b'
 import { c1Part6C } from './reading/part6c'
@@ -34,6 +35,7 @@ import { c1Part6D } from './reading/part6d'
 import { c1Part7 } from './reading/part7'
 import { c1Part7B } from './reading/part7b'
 import { c1Part7C } from './reading/part7c'
+import { c1Part7D } from './reading/part7d'
 import { c1Part8 } from './reading/part8'
 import { c1Part8B } from './reading/part8b'
 import { c1Part8C } from './reading/part8c'
@@ -211,7 +213,7 @@ export const c1Sections: SectionInfo[] = [
             'No distinguir entre lo que piensa el autor y lo que dice que piensan otros.',
           ],
         },
-        exercises: [...c1Part5, ...c1Part5B, ...c1Part5C],
+        exercises: [...c1Part5, ...c1Part5B, ...c1Part5C, ...c1Part5D],
       },
       {
         slug: 'part-6',
@@ -268,7 +270,7 @@ export const c1Sections: SectionInfo[] = [
             'No mirar la frase que viene después del hueco.',
           ],
         },
-        exercises: [...c1Part7, ...c1Part7B, ...c1Part7C],
+        exercises: [...c1Part7, ...c1Part7B, ...c1Part7C, ...c1Part7D],
       },
       {
         slug: 'part-8',
