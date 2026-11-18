@@ -78,7 +78,6 @@ src/
 - `LEVELS` en `lib/level.ts`: palabras de Writing (B2 140–190, C1 220–260), palabras de la Part 4 (B2 2–5, C1 3–6), tiempos y nota de aprobado. Los tests validan cada nivel con sus límites.
 - **Formato C1 (verificado en cambridgeenglish.org):** Reading & Use of English 1 h 30, 8 partes, 56 preguntas. P1 MC cloze (8), P2 open cloze (8), P3 word formation (8), P4 KWT (6, 3–6 palabras, 2 puntos), P5 MC (6, 2 puntos), P6 cross-text multiple matching (4, 2 puntos; tipo `matching` con `marks: 2`), P7 gapped text de párrafos (6, 2 puntos; `gapped-text` con `unit: 'paragraph'`), P8 multiple matching (10). P1 y P5–8 cuentan para Reading (/50); P2–4 para Use of English (/28). Writing 1 h 30: essay obligatorio + email/carta, proposal, report o review (220–260 palabras).
 - **Escala C1:** 142–210. 160–179 nivel B2, 180–192 Grade C, 193–199 Grade B, 200–210 Grade A (C2). Puntos de conversión para los simulacros: Reading /50: 17→142, 23→160, 32→180, 43→200. UoE /28: 8→142, 11→160, 16→180, 23→200. Writing /40: 10→142, 16→160, 24→180, 34→200.
-- Mientras no estén hechas, en C1 las secciones Writing, Grammar, Vocabulary, Tarjetas, Estrategia y Simulacros salen como "Pronto" (`components/C1Soon.tsx`).
 
 ## 3b. Sistema visual (rediseño del 14-nov-2026)
 Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como las casillas ovaladas impresas que se rellenan a lápiz.
@@ -136,18 +135,21 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
   - **Estrategia** (`/estrategia`, `pages/StrategyPage.tsx`): reparto del tiempo por parte (suma 75 min, igual que `suggestedMinutes` de cada parte), pasos y trampas de cada parte, Writing y reglas de la hoja de respuestas.
   - Más contenido (2.ª tanda): UoE Parts 1–3 con 3 textos nuevos cada una (`uoe/part1c..3c.ts`), Reading Parts 5–7 con 2 textos nuevos cada una (`reading/part5c..7c.ts`), Grammar +3 temas (used to / be used to / get used to, emphasis e inversión, participle clauses; `grammar/advanced.ts`) y Vocabulary +2 (sport & free time, food & cooking; `vocabulary/topics3.ts`).
   - Teclado: en preguntas sueltas (reto y Mis errores) letras o números para elegir, Intro para comprobar y pasar; en ordenador el cursor va solo al hueco. En los ejercicios completos, Ctrl/Cmd + Intro comprueba.
-- [ ] **F14 – C1 Advanced con la misma cantidad que B2** (pedido el 19-nov). Por tandas:
-  - [x] Tanda 1: selector de nivel, progreso separado, formato y guías de las 8 partes, primeros ejercicios (UoE 2 por parte, Reading 1 por parte).
-  - [ ] Tanda 2: completar Reading & Use of English (objetivo: 13 en Parts 1–3, 15 en Part 4, 8 en Parts 5–8).
-  - [ ] Tanda 3: Writing C1 (essay, email/carta, proposal, report, review) con teoría, modelo de 220–260 palabras y 4 tareas cada uno.
-  - [ ] Tanda 4: Grammar y Vocabulary C1 (16 temas cada uno, 3 ejercicios por tema).
-  - [ ] Tanda 5: tarjetas C1 (~210), estrategia C1 y 6 simulacros con la escala C1.
+- [x] **F14 – C1 Advanced con la misma cantidad que B2** (19-nov):
+  - Selector de nivel, progreso separado, formato y guías de las 8 partes.
+  - Reading & Use of English: 13 ejercicios en las Parts 1–3, 15 en la Part 4 y 8 en cada una de las Parts 5–8 (`data/c1/uoe/part1..4[b-d].ts`, `data/c1/reading/part5..8[b-d].ts`).
+  - Writing: essay, email/carta, proposal, report y review, con teoría, modelo de 220–260 palabras y 4 tareas cada uno (`data/c1/writing/`).
+  - Grammar y Vocabulary: 16 temas cada uno con 3 ejercicios (`data/c1/grammar/g1..4.ts`, `data/c1/vocabulary/v1..4.ts`).
+  - Tarjetas: 7 mazos, 210 tarjetas (`data/c1/flashcards.ts`; `currentDecks()` en `data/flashcards.ts`).
+  - Estrategia C1 (`StrategyPage`, `C1_READING` y `C1_WRITING`) y 6 simulacros con la escala C1 (`scalePoints()`, `maxRaw()`, `minScale()` y `gradeFor()` en `lib/score.ts`; `C1_RUE_PARTS` y `C1_PART2_TYPES` en `data/mocks.ts`).
+  - Test nuevo: en word formation la respuesta nunca puede ser la raíz sin cambiar.
 - [ ] **F11 – Ranking entre amigos** (al final, a petición de José): necesita un servidor (Supabase o Firebase). Hay que decidirlo con él antes.
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
-- **Fase:** construyendo el C1 Advanced (F14), tanda 1 hecha. Siguiente: tanda 2 (más ejercicios de Reading & Use of English de C1). Speaking (F6), Listening (F8) y ranking (F11) siguen aplazados.
+- **Fase:** B2 y C1 completos (salvo Speaking, Listening y ranking, aplazados). Siguiente: mejoras para aprender que sirvan a los dos niveles, o lo que pida José.
 - **Contenido actual:** 197 ejercicios o tareas: UoE 54 (13 en las Parts 1–3 y 15 en la Part 4), Reading 24 (8 por parte), Grammar 48 (16 temas), Vocabulary 48 (16 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 6 simulacros y 212 tarjetas en 7 mazos.
+- **Contenido C1:** 202 ejercicios o tareas: UoE 54, Reading 32 (8 por parte, 4 partes), Grammar 48 (16 temas), Vocabulary 48 (16 temas) y Writing 20 (los 5 tipos del C1). 6 simulacros y 210 tarjetas en 7 mazos.
 - **Preferencia (18-nov):** nada de logros, compartir resultados ni funciones de "enganche". Solo cosas que ayuden a aprender.
 - **Preferencias de José (18-nov):** sin plan de estudio ni cuenta atrás de examen. En Writing basta con tener todos los tipos (la "story" solo existe en B2 First for Schools, así que no se incluye).
 - La app está publicada en https://joseeseguraa.github.io/APPB2/ (repo público, despliegue con GitHub Actions).
@@ -170,6 +172,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-18 | Tarjetas con repaso espaciado, 5 temas nuevos (questions, word formation, travel, money, relationships), 5 sets de Part 4, página de estrategia y atajos de teclado. 372 tests | Más contenido para aprender (Reading, Part 1–3), Speaking aplazado |
 | 2026-11-18 | UoE Parts 1–3 +9 textos, Reading +6 textos, Grammar +3 temas, Vocabulary +2 temas. 437 tests | Más contenido o lo que pida José (Speaking aplazado) |
 | 2026-11-19 | C1 Advanced, tanda 1: selector de nivel, progreso separado por nivel, formato C1, guías de las 8 partes y 12 ejercicios. 469 tests | F14 tanda 2: más Reading & Use of English de C1 |
+| 2026-11-19 | C1 completo con la misma cantidad que B2: Reading & UoE, Writing, Grammar, Vocabulary, tarjetas, estrategia y simulacros. Comprobados en el navegador los 400 ejercicios de los dos niveles. 866 tests | Mejoras para aprender en los dos niveles |
 
 ## 7. Comandos
 ```
