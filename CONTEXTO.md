@@ -150,8 +150,8 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-14 | Rediseño completo de la interfaz (sistema "hoja de respuestas", sección 3b). 212 tests. Revisado en móvil y escritorio | Speaking / Listening / más contenido |
 | 2026-11-18 | Opciones barajadas, 6 simulacros, gráfica de evolución, modo oscuro y revisión de calidad del contenido. 325 tests | Lo que pida José (Speaking aplazado) |
 | 2026-11-18 | Bienvenida, avisos de errores, PWA, Mis errores, Reto diario, corrección de writing con IA. 324 tests | Speaking (F6), después Listening y el ranking |
-| 2026-11-18 | Tarjetas con repaso espaciado, 5 temas nuevos (questions, word formation, travel, money, relationships), 5 sets de Part 4, página de estrategia y atajos de teclado. 372 tests | Más contenido para aprender (Reading, Part 1–3), Speaking aplazado |
 | 2026-11-18 | Menú lateral + inicio tipo panel + página /examen. UoE de 5 a 10 por parte, Reading de 3 a 6, Grammar +3 temas (comparison, linking words, quantifiers & articles) y Vocabulary +4 temas (work, environment, technology, health). 319 tests | Speaking / Listening / más contenido |
+| 2026-11-18 | Tarjetas con repaso espaciado, 5 temas nuevos (questions, word formation, travel, money, relationships), 5 sets de Part 4, página de estrategia y atajos de teclado. 372 tests | Más contenido para aprender (Reading, Part 1–3), Speaking aplazado |
 
 ## 7. Comandos
 ```
