@@ -45,7 +45,7 @@ export const part2Exercises: OpenClozeExercise[] = [
       { answers: ['where'], explanation: 'Relativo de lugar: "a town WHERE no cars are allowed". También valdría "in which", pero solo se puede escribir una palabra.' },
       { answers: ['for'], explanation: '"For + periodo de tiempo" (for decades, for three years) con present perfect. "Since" se usa con un punto de inicio (since 1960).' },
       { answers: ['by'], explanation: '"By train / by car / by bus" = medio de transporte, sin artículo. Ojo: "on foot".' },
-      { answers: ['through', 'along', 'around', 'down', 'up'], explanation: 'Hace falta una preposición de movimiento: los vehículos circulan POR las calles. Lo más natural es "through" o "along"; "around" también vale.' },
+      { answers: ['through', 'along', 'around', 'round', 'down', 'up'], explanation: 'Hace falta una preposición de movimiento: los vehículos circulan POR las calles. Lo más natural es "through" o "along"; "around" también vale.' },
       { answers: ['of'], explanation: 'Expresión fija: "Of course" = por supuesto.' },
       { answers: ['few', 'none'], explanation: '"Few of them" = pocos de ellos. Tiene sentido negativo: casi nadie querría cambiar las normas. "None of them" también es correcto.' },
       { answers: ['because'], explanation: '"Precisely because" = precisamente porque. Va seguido de sujeto y verbo ("it\'s so peaceful").' },

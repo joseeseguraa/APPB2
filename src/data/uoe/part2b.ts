@@ -26,7 +26,7 @@ export const part2ExercisesB: OpenClozeExercise[] = [
     text: `Have you {1} been introduced to someone and forgotten their name almost immediately? If so, you are not alone. Research suggests that {2} of us are particularly bad at remembering names, even {3} we have no difficulty remembering faces. The main reason is that we are often thinking about {4} we are going to say next, rather than listening carefully. Fortunately, there are several simple techniques that can help. One is to repeat the person's name as soon as you hear it: "Nice to meet you, Sarah." {5} is to link the name to something you already know, such as a famous person {6} the same name. The more unusual the connection, the {7} likely you are to remember it. With a little practice, you {8} soon find that forgetting names becomes a thing of the past.`,
     gaps: [
       { answers: ['ever'], explanation: 'Pregunta sobre experiencias: "Have you ever…?"' },
-      { answers: ['most', 'many'], explanation: '"Most of us" o "many of us" = la mayoría o muchos de nosotros.' },
+      { answers: ['most', 'many', 'some', 'lots'], explanation: '"Most of us" o "many of us" = la mayoría o muchos de nosotros. También valen "some of us" y "lots of us".' },
       { answers: ['though', 'if', 'when'], explanation: '"Even though / even if / even when" = aunque, incluso cuando. Introduce un contraste.' },
       { answers: ['what'], explanation: '"What" = lo que. Thinking about WHAT we are going to say.' },
       { answers: ['another'], explanation: '"One is… Another is…" = una técnica es… otra es…' },
@@ -81,7 +81,7 @@ export const part2ExercisesB: OpenClozeExercise[] = [
       { answers: ['who'], explanation: 'Relativo explicativo de persona, entre comas: Mark, WHO has been… ("that" no vale con comas).' },
       { answers: ['which'], explanation: '"Which" se refiere a toda la frase anterior: duerme fuera casi cada noche, lo que significa…' },
       { answers: ['that'], explanation: '"So + adverbio + THAT" = tan… que.' },
-      { answers: ['but'], explanation: 'Contraste: no necesitan títulos, PERO deben escribir bien.' },
+      { answers: ['but', 'although', 'though', 'yet'], explanation: 'Contraste: no necesitan títulos, PERO deben escribir bien. También valen "although", "though" o "yet".' },
       { answers: ['who', 'that'], explanation: 'Relativo de persona: the kind of person WHO lies awake.' },
       { answers: ['for'], explanation: '"This isn\'t the job FOR you" = este trabajo no es para ti.' },
     ],

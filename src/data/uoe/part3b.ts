@@ -64,7 +64,7 @@ export const part3ExercisesB: WordFormationExercise[] = [
       { stem: 'EASY', answers: ['easier'], explanation: 'Va seguido de "than", así que hace falta el comparativo: easier. La y pasa a i.' },
       { stem: 'PROFIT', answers: ['profitable'], explanation: 'Adjetivo delante de "business": profitable (rentable).' },
       { stem: 'BENEFIT', answers: ['benefits'], explanation: 'Sustantivo en plural porque el verbo es "are": the environmental benefits ARE…' },
-      { stem: 'LONG', answers: ['lengthen'], explanation: 'Hace falta un verbo detrás de "to": lengthen (alargar). El sufijo -en forma verbos: short → shorten, wide → widen.' },
+      { stem: 'LONG', answers: ['lengthen', 'prolong'], explanation: 'Hace falta un verbo detrás de "to": lengthen (alargar). El sufijo -en forma verbos: short → shorten, wide → widen.' },
       { stem: 'SCEPTIC', answers: ['sceptical', 'skeptical'], explanation: '"Be + adjetivo": sceptical (escéptico).' },
       { stem: 'THOUGHT', answers: ['thoughtful'], explanation: '"More + adjetivo + choices": thoughtful (meditado, considerado).' },
     ],

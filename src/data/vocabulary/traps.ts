@@ -42,7 +42,7 @@ export const falseFriends: PartInfo = {
       title: 'Elige la palabra correcta',
       focus: 'No te dejes engañar',
       items: [
-        ch('My brother is ___ studying in Germany.', 'currently', ['actually', 'eventually'], '"Currently" = actualmente. "Actually" significa "en realidad".'),
+        ch('Who is the ___ world champion? I think she won the title last month.', 'current', ['actual', 'eventual'], '"Current" = actual, de ahora. "Actual" en inglés significa "real, verdadero", y "eventual" significa "final".'),
         ch("I'm going to the ___ to borrow some books.", 'library', ['bookshop', 'bookstore'], 'Los libros se piden prestados en la biblioteca (library). En la librería (bookshop) se compran.'),
         ch("She's very ___ - she cries when people criticise her.", 'sensitive', ['sensible', 'sensual'], '"Sensitive" = sensible (que se afecta). "Sensible" = sensato.'),
         ch("I didn't ___ I had left my phone at home until I got to work.", 'realise', ['carry out', 'perform'], '"Realise" = darse cuenta. "Carry out" = realizar, llevar a cabo.'),
@@ -144,7 +144,7 @@ export const confusingWords: PartInfo = {
         g("I'm going to ___ down on the sofa for a while. (lie / lay)", ['lie'], '"Lie down" = tumbarse.'),
         g('Can you ___ English? (speak / talk)', ['speak'], 'Los idiomas se "speak".'),
         g('This song ___ me of my holiday in Greece. (remember / remind)', ['reminds'], '"Remind somebody of something" = hacerte recordar algo.'),
-        g('Don\'t forget to ___ your umbrella with you when you go out. (bring / take)', ['take'], 'Cuando te vas (te alejas de aquí) se usa take.'),
+        g('Don\'t forget to ___ your umbrella with you when you go out. (bring / take)', ['take', 'bring'], 'Cuando te vas (te alejas de aquí) lo más correcto es take. En la práctica, muchos nativos también dicen "bring your umbrella", así que también se acepta.'),
         g('Living ___ can be hard for old people. (alone / lonely)', ['alone'], '"Alone" = sin compañía. "Lonely" es el sentimiento de soledad.'),
       ],
     },

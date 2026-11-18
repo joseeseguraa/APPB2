@@ -155,7 +155,7 @@ export const environment: PartInfo = {
       focus: 'Usos incorrectos',
       items: [
         er('The [contamination] in big cities is a serious problem.', 'pollution', 'La contaminación del aire o del agua es "pollution". "Contamination" se usa para sustancias concretas (comida, agua con bacterias).'),
-        er('We must protect [the endangered species] like the panda.', 'endangered species', 'En general y en plural, sin artículo.'),
+        er('We must do more to protect [the nature].', 'nature', '"Nature" en general va sin artículo: protect nature. En español decimos "la naturaleza".'),
         er('Recycling helps to reduce waste.', null, 'La frase es correcta.'),
         er('Solar energy is a [renovable] energy.', 'renewable', 'En inglés es "renewable". "Renovable" no existe.'),
         er('Plastic bags take hundreds of years to [decompose them].', 'decompose', '"Decompose" no lleva objeto aquí: se descomponen solas.'),

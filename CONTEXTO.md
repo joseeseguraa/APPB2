@@ -114,11 +114,17 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
   - **Reto diario** (`/reto`, `appb2.daily.v1`): 10 preguntas al día (4 de UoE, 3 de Grammar, 3 de Vocabulary), iguales para todos según la fecha. Los fallos van a Mis errores.
   - Las preguntas sueltas se construyen con `lib/cards.ts` (cualquier pregunta pasa a ser un ejercicio de 1 ítem) y se practican con `components/QuizSession.tsx`.
   - Writing: botón para copiar el texto con instrucciones de corrección para una IA (`aiPrompt` en WritingRunner).
+- [x] **F12 – Pulido** (18-nov):
+  - Las opciones se barajan al repetir un ejercicio y en el reto y el repaso (`shuffleOptions` en `lib/exercise.ts`).
+  - 6 simulacros.
+  - Gráfica de evolución semanal por destreza en Mi progreso (`appb2.history.v1`, `components/TrendChart.tsx`).
+  - Modo oscuro (`html.dark` en `index.css`, `lib/theme.ts`, `appb2.theme.v1`). Sobre fondos de color se usa `text-on-ink`, nunca `text-white`.
+  - Revisión de calidad de las ~820 preguntas sueltas: se aceptan más respuestas alternativas válidas y se reescribieron 3 ítems ambiguos.
 - [ ] **F11 – Ranking entre amigos** (al final, a petición de José): necesita un servidor (Supabase o Firebase). Hay que decidirlo con él antes.
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
-- **Fase:** está todo hecho menos Speaking (F6), Listening (F8) y el ranking (F11). Siguiente recomendado: **Speaking**.
+- **Fase:** está todo hecho menos Speaking (F6), Listening (F8) y el ranking (F11). José prefiere seguir aplazando Speaking (18-nov). Siguiente: lo que pida José.
 - **Contenido actual:** 148 ejercicios o tareas: UoE 40 (10 por parte), Reading 18 (6 por parte), Grammar 36 (12 temas), Vocabulary 30 (10 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 3 simulacros.
 - **Preferencias de José (18-nov):** sin plan de estudio ni cuenta atrás de examen. En Writing basta con tener todos los tipos (la "story" solo existe en B2 First for Schools, así que no se incluye).
 - **Pendiente de José:** José va a hacer el repo público. Después tiene que ir a Settings → Pages → Source y elegir **GitHub Actions**, y volver a lanzar el workflow.
@@ -136,6 +142,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-14 | F3 Reading (9 textos) + F4 Writing (6 tipos, 24 tareas, modelos). 208 tests | F5 Progreso + F7 Simulacro |
 | 2026-11-14 | F5 Progreso + F7 Simulacro (3 simulacros con nota estimada). 212 tests. Revisados en el navegador todos los ejercicios, las tareas y los simulacros | Speaking / Listening / más contenido |
 | 2026-11-14 | Rediseño completo de la interfaz (sistema "hoja de respuestas", sección 3b). 212 tests. Revisado en móvil y escritorio | Speaking / Listening / más contenido |
+| 2026-11-18 | Opciones barajadas, 6 simulacros, gráfica de evolución, modo oscuro y revisión de calidad del contenido. 325 tests | Lo que pida José (Speaking aplazado) |
 | 2026-11-18 | Bienvenida, avisos de errores, PWA, Mis errores, Reto diario, corrección de writing con IA. 324 tests | Speaking (F6), después Listening y el ranking |
 | 2026-11-18 | Menú lateral + inicio tipo panel + página /examen. UoE de 5 a 10 por parte, Reading de 3 a 6, Grammar +3 temas (comparison, linking words, quantifiers & articles) y Vocabulary +4 temas (work, environment, technology, health). 319 tests | Speaking / Listening / más contenido |
 

@@ -32,7 +32,7 @@ export const part3Exercises: WordFormationExercise[] = [
       { stem: 'COMMUNICATE', answers: ['communication'], explanation: '"A form of + sustantivo": communication.' },
       { stem: 'POSITION', answers: ['positive'], explanation: 'Delante del sustantivo "effect" va un adjetivo. El contexto es beneficioso: positive.' },
       { stem: 'RESIST', answers: ['resistant'], explanation: '"Make somebody + adjetivo": resistant to illness (resistente a las enfermedades).' },
-      { stem: 'DEPRESS', answers: ['depressed', 'depressing'], explanation: 'Cómo se siente una persona → adjetivo en -ed: depressed (deprimido/bajo de ánimo). El adjetivo en -ing describe la cosa que provoca el sentimiento (a depressing film).' },
+      { stem: 'DEPRESS', answers: ['depressed'], explanation: 'Cómo se siente una persona → adjetivo en -ed: depressed (deprimido/bajo de ánimo). "Feeling depressing" sería incorrecto: el adjetivo en -ing describe la cosa que provoca el sentimiento (a depressing film).' },
     ],
   },
   {

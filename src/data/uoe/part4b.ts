@@ -53,7 +53,7 @@ export const part4ExercisesB: KwtExercise[] = [
       { original: 'The train was late because of the snow.', keyword: 'DUE', before: "The train's delay", after: 'the snow.', answers: ['was due to'], explanation: '"Be due to" = deberse a.' },
       { original: 'Please could you open the window?', keyword: 'MIND', before: 'Would', after: 'the window?', answers: ['you mind opening'], explanation: '"Would you mind + -ing?" = ¿te importaría…?' },
       { original: "I've never seen such a beautiful sunset.", keyword: 'MOST', before: "It's the", after: 'I have ever seen.', answers: ['most beautiful sunset'], explanation: '"Never… such a" equivale a "the most… I have ever seen".' },
-      { original: "Let's go to the beach this weekend.", keyword: 'HOW', before: '', after: 'to the beach this weekend?', answers: ['how about going'], explanation: 'Sugerencia: "How about + -ing?"' },
+      { original: "Let's go to the beach this weekend.", keyword: 'HOW', before: '', after: 'to the beach this weekend?', answers: ['how about going', 'how about we go'], explanation: 'Sugerencia: "How about + -ing?"' },
       { original: 'Tom is likely to win the race.', keyword: 'PROBABLY', before: 'Tom', after: 'the race.', answers: ['will probably win'], explanation: '"Be likely to" equivale a "will probably". El adverbio va entre "will" y el verbo.' },
     ],
   },
@@ -63,7 +63,7 @@ export const part4ExercisesB: KwtExercise[] = [
     title: 'Set 10',
     focus: 'Condiciones, despite, first time, pasiva',
     items: [
-      { original: "We'll go out unless it rains.", keyword: 'AS', before: "We'll go out", after: "doesn't rain.", answers: ['as long as it'], explanation: '"Unless it rains" equivale a "as long as it doesn\'t rain".' },
+      { original: "We'll go out unless it rains.", keyword: 'AS', before: "We'll go out", after: "doesn't rain.", answers: ['as long as it', 'so long as it'], explanation: '"Unless it rains" equivale a "as long as it doesn\'t rain".' },
       { original: 'Although he was tired, he kept working.', keyword: 'DESPITE', before: '', after: 'tired, he kept working.', answers: ['despite being', 'despite feeling'], explanation: '"Despite + -ing": despite being tired.' },
       { original: "I haven't eaten sushi before.", keyword: 'FIRST', before: "It's the", after: 'eaten sushi.', answers: ['first time I have', "first time I've"], explanation: '"It\'s the first time + present perfect".' },
       { original: 'They made him wait for an hour.', keyword: 'MADE', before: 'He', after: 'wait for an hour.', answers: ['was made to'], explanation: 'En pasiva, "make somebody do" lleva "to": he was made TO wait.' },

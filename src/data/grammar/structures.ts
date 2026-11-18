@@ -254,7 +254,7 @@ export const reportedSpeech: PartInfo = {
         g('"I\'m leaving tomorrow." → She said she was leaving ___.', ['the next day', 'the following day'], '"Tomorrow" pasa a "the next day" o "the following day".'),
         g('"Do you like jazz?" → He asked me ___ I liked jazz.', ['if', 'whether'], 'Las preguntas de sí o no se introducen con if o whether.'),
         g('"Don\'t touch it!" → She told me ___ touch it.', ['not to'], 'Orden negativa: told me NOT TO + infinitivo.'),
-        g('"You stole my phone!" → She accused him ___ her phone.', ['of stealing'], 'Accuse somebody OF + -ing.'),
+        g('"You stole my phone!" → She accused him ___ her phone.', ['of stealing', 'of taking'], 'Accuse somebody OF + -ing.'),
         g('"I won\'t do it." → He refused ___ it.', ['to do'], 'Refuse + to + infinitivo.'),
         g('"I\'ve finished." → She said she ___ finished.', ['had'], 'El present perfect pasa a past perfect: had finished.'),
         g('"Remember to lock the door." → She reminded me ___ the door.', ['to lock'], 'Remind + alguien + to + infinitivo.'),

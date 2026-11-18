@@ -132,7 +132,7 @@ export const part4Exercises: KwtExercise[] = [
         keyword: 'ENOUGH',
         before: 'The water was',
         after: 'for us to swim in.',
-        answers: ['not warm enough', "n't warm enough"],
+        answers: ['not warm enough'],
         explanation: '"Too + adjetivo" equivale a "not + adjetivo contrario + enough". Ojo: "enough" va DETRÁS del adjetivo (warm enough).',
       },
       {
