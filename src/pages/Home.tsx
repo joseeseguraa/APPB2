@@ -1,5 +1,6 @@
+import { getLevel } from '../lib/level'
 import { Link } from 'react-router-dom'
-import { sections } from '../data/sections'
+import { currentSections } from '../data/sections'
 import { loadDays, loadProgress, streak } from '../lib/progress'
 import { btn, Icon, IconTile, Meter, Panel, SECTION_ICON, type IconName } from '../components/ui'
 import type { Exercise, PartInfo, SectionInfo } from '../types'
@@ -16,7 +17,7 @@ interface Located {
 }
 
 function locate(id: string): Located | null {
-  for (const s of sections)
+  for (const s of currentSections())
     for (const p of s.parts) {
       const e = p.exercises.find((x) => x.id === id)
       if (e) return { s, p, e }
@@ -49,7 +50,7 @@ export default function Home() {
   const days = loadDays()
   const st = streak(days)
   const done = Object.keys(progress).length
-  const allEx = sections.flatMap((s) => s.parts.flatMap((p) => p.exercises))
+  const allEx = currentSections().flatMap((s) => s.parts.flatMap((p) => p.exercises))
 
   const recent = Object.entries(progress)
     .sort((a, b) => b[1].lastAt.localeCompare(a[1].lastAt))
@@ -83,7 +84,7 @@ export default function Home() {
       why: 'Preguntas que fallaste y que toca volver a ver hoy.',
       to: '/repaso',
     })
-  const examParts = sections
+  const examParts = currentSections()
     .filter((s) => s.slug === 'use-of-english' || s.slug === 'reading')
     .flatMap((s) => s.parts.map((p) => ({ s, p, st: partStats(p, progress) })))
 
@@ -117,7 +118,7 @@ export default function Home() {
   }
 
   // 3. Un tema de base sin empezar
-  const base = sections
+  const base = currentSections()
     .filter((s) => s.slug === 'grammar' || s.slug === 'vocabulary')
     .flatMap((s) => s.parts.map((p) => ({ s, p })))
     .find(({ p }) => p.exercises.every((e) => !progress[e.id]))
@@ -131,8 +132,8 @@ export default function Home() {
   }
 
   // 4. Un writing si aún no hay ninguno
-  const writing = sections.find((s) => s.slug === 'writing')!
-  if (suggestions.length < 3 && !writing.parts.some((p) => p.exercises.some((e) => progress[e.id]))) {
+  const writing = currentSections().find((s) => s.slug === 'writing')
+  if (writing && writing.parts.length > 0 && suggestions.length < 3 && !writing.parts.some((p) => p.exercises.some((e) => progress[e.id]))) {
     suggestions.push({
       icon: 'writing',
       title: 'Writing: tu primer essay',
@@ -270,6 +271,7 @@ export default function Home() {
             </Link>
           </Panel>
 
+          {getLevel() === 'b2' && (
           <Panel className="p-5 !bg-ink !border-ink text-on-ink">
             <p className="font-bold">¿Listo para medirte?</p>
             <p className="text-on-ink/75 text-sm mt-1 leading-relaxed">Haz un simulacro con el tiempo oficial y obtén una nota estimada.</p>
@@ -277,6 +279,7 @@ export default function Home() {
               Ir a simulacros
             </Link>
           </Panel>
+          )}
         </aside>
       </div>
     </div>

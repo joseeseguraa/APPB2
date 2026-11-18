@@ -1,3 +1,5 @@
+import C1Soon from '../components/C1Soon'
+import { getLevel } from '../lib/level'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { MOCK_COUNT, mockRue, mockWriting } from '../data/mocks'
@@ -17,6 +19,7 @@ import NotFound from './NotFound'
 /* ---------- Página principal del simulacro ---------- */
 
 export function MockHome() {
+  if (getLevel() === 'c1') return <C1Soon title="Simulacros" what="La sección de simulacros" />
   const results = loadMocks()
   return (
     <div className="max-w-5xl">

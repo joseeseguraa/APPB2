@@ -139,6 +139,8 @@ export interface GappedTextExercise {
   text: string
   /** 7 frases; se muestran como A–G en este orden */
   sentences: string[]
+  /** C1 Part 7: lo que falta son párrafos enteros */
+  unit?: 'paragraph'
   /** para cada hueco, índice de la frase correcta */
   answers: number[]
   explanations: string[]
@@ -153,6 +155,8 @@ export interface MatchingExercise {
   intro: string
   sections: { title: string; text: string }[]
   questions: { statement: string; answer: number; explanation: string }[]
+  /** puntos por acierto (C1 Part 6 vale 2) */
+  marks?: number
 }
 
 /* ---------- Writing ---------- */

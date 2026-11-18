@@ -1,4 +1,6 @@
 import type { PartInfo, SectionInfo } from '../types'
+import { getLevel } from '../lib/level'
+import { c1Sections } from './c1/sections'
 import { part1Exercises } from './uoe/part1'
 import { part1ExercisesB } from './uoe/part1b'
 import { part1ExercisesC } from './uoe/part1c'
@@ -347,8 +349,13 @@ export const sections: SectionInfo[] = [
   },
 ]
 
+/** Secciones del nivel activo (B2 o C1). */
+export function currentSections(): SectionInfo[] {
+  return getLevel() === 'c1' ? c1Sections : sections
+}
+
 export function findSection(slug?: string) {
-  return sections.find((s) => s.slug === slug)
+  return currentSections().find((s) => s.slug === slug)
 }
 
 export function findPart(sectionSlug?: string, partSlug?: string) {

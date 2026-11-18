@@ -1,3 +1,4 @@
+import { storageKey } from './level'
 // Conversión de puntuación de práctica a la Cambridge English Scale (B2 First).
 // Puntos de referencia publicados por Cambridge English ("Converting practice test scores
 // to Cambridge English Scale scores", B2 First). Entre puntos se interpola de forma lineal,
@@ -34,7 +35,7 @@ export function gradeFor(scale: number | null): { label: string; cefr: string; t
 
 /* ---------- Resultados de simulacros guardados ---------- */
 
-const KEY = 'appb2.mocks.v1'
+const key = () => storageKey('mocks.v1')
 
 export interface MockResult {
   /** nº de simulacro y prueba */
@@ -46,7 +47,7 @@ export interface MockResult {
 
 export function loadMocks(): Record<string, MockResult> {
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '{}') as Record<string, MockResult>
+    return JSON.parse(localStorage.getItem(key()) ?? '{}') as Record<string, MockResult>
   } catch {
     return {}
   }
@@ -56,7 +57,7 @@ export function saveMock(r: MockResult): void {
   try {
     const all = loadMocks()
     all[r.id] = r
-    localStorage.setItem(KEY, JSON.stringify(all))
+    localStorage.setItem(key(), JSON.stringify(all))
   } catch {
     /* sin almacenamiento */
   }

@@ -1,3 +1,4 @@
+import { storageKey } from './level'
 // Repaso espaciado de tarjetas de vocabulario.
 // Cada tarjeta tiene un nivel (0-5). "Otra vez" la devuelve al 0 y vuelve a salir en la misma sesión;
 // "Bien" sube un nivel y "Fácil", dos. El nivel decide cuándo vuelve: 1, 3, 7, 14 o 30 días.
@@ -5,7 +6,7 @@ import type { Deck } from '../data/flashcards'
 import { logActivity } from './progress'
 import { dateKey } from './review'
 
-const KEY = 'appb2.cards.v1'
+const key = () => storageKey('cards.v1')
 export const CARD_INTERVALS = [0, 1, 3, 7, 14, 30]
 export const LEARNED_LEVEL = 3
 
@@ -21,7 +22,7 @@ export function cardKey(deck: string, en: string) {
 
 export function loadCardStates(): Record<string, CardState> {
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '{}')
+    return JSON.parse(localStorage.getItem(key()) ?? '{}')
   } catch {
     return {}
   }
@@ -33,14 +34,14 @@ function addDays(n: number, from = new Date()) {
   return dateKey(d)
 }
 
-export function rateCard(key: string, rating: Rating, now = new Date()): CardState {
+export function rateCard(id: string, rating: Rating, now = new Date()): CardState {
   const all = loadCardStates()
-  const cur = all[key]?.level ?? 0
+  const cur = all[id]?.level ?? 0
   const level = rating === 'again' ? 0 : Math.min(CARD_INTERVALS.length - 1, cur + (rating === 'easy' ? 2 : 1))
   const next = { level, due: addDays(CARD_INTERVALS[level], now) }
-  all[key] = next
+  all[id] = next
   try {
-    localStorage.setItem(KEY, JSON.stringify(all))
+    localStorage.setItem(key(), JSON.stringify(all))
   } catch {
     /* sin almacenamiento */
   }

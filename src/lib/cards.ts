@@ -1,6 +1,6 @@
 // Convierte cualquier pregunta de la app en una "tarjeta": un ejercicio de UNA sola pregunta
 // que se puede practicar suelta (en "Mis errores" y en el reto diario).
-import { sections } from '../data/sections'
+import { currentSections } from '../data/sections'
 import type { Exercise, PartInfo, SectionInfo } from '../types'
 import { itemKey } from './review'
 
@@ -72,7 +72,7 @@ let index: Map<string, { section: SectionInfo; part: PartInfo; ex: Exercise }> |
 function getIndex() {
   if (!index) {
     index = new Map()
-    for (const section of sections) for (const part of section.parts) for (const ex of part.exercises) index.set(ex.id, { section, part, ex })
+    for (const section of currentSections()) for (const part of section.parts) for (const ex of part.exercises) index.set(ex.id, { section, part, ex })
   }
   return index
 }
@@ -123,6 +123,9 @@ export function dailyCards(date: string, count = 10): Card[] {
     const list = [...(bySection.get(slug) ?? [])]
     for (let i = 0; i < n && list.length; i++) picked.push(list.splice(Math.floor(rnd() * list.length), 1)[0])
   }
+  // si un nivel aún tiene pocas secciones, completar con lo que haya
+  const rest = pool.filter((c) => !picked.includes(c))
+  while (picked.length < count && rest.length) picked.push(rest.splice(Math.floor(rnd() * rest.length), 1)[0])
   // barajar el orden final
   for (let i = picked.length - 1; i > 0; i--) {
     const j = Math.floor(rnd() * (i + 1))

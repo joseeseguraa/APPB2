@@ -1,7 +1,8 @@
+import { storageKey } from './level'
 // Progreso guardado en el navegador (localStorage).
 // Más adelante (fase Progreso) se ampliará con estadísticas y repaso de fallos.
 
-const KEY = 'appb2.progress.v1'
+const key = () => storageKey('progress.v1')
 
 export interface AttemptRecord {
   /** aciertos en el último intento */
@@ -20,7 +21,7 @@ export type ProgressMap = Record<string, AttemptRecord>
 
 export function loadProgress(): ProgressMap {
   try {
-    const raw = localStorage.getItem(KEY)
+    const raw = localStorage.getItem(key())
     return raw ? (JSON.parse(raw) as ProgressMap) : {}
   } catch {
     return {}
@@ -39,7 +40,7 @@ export function saveAttempt(exerciseId: string, score: number, total: number, wr
       lastAt: new Date().toISOString(),
       wrong,
     }
-    localStorage.setItem(KEY, JSON.stringify(all))
+    localStorage.setItem(key(), JSON.stringify(all))
     logHistory(exerciseId, score, total)
     logActivity()
   } catch {
@@ -49,7 +50,7 @@ export function saveAttempt(exerciseId: string, score: number, total: number, wr
 
 /* ---------- Días de actividad y racha ---------- */
 
-const DAYS_KEY = 'appb2.days.v1'
+const daysKey = () => storageKey('days.v1')
 
 function today(d = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -57,7 +58,7 @@ function today(d = new Date()): string {
 
 export function loadDays(): string[] {
   try {
-    return JSON.parse(localStorage.getItem(DAYS_KEY) ?? '[]') as string[]
+    return JSON.parse(localStorage.getItem(daysKey()) ?? '[]') as string[]
   } catch {
     return []
   }
@@ -67,7 +68,7 @@ export function logActivity(): void {
   try {
     const days = new Set(loadDays())
     days.add(today())
-    localStorage.setItem(DAYS_KEY, JSON.stringify([...days].sort()))
+    localStorage.setItem(daysKey(), JSON.stringify([...days].sort()))
   } catch {
     /* sin almacenamiento */
   }
@@ -94,7 +95,13 @@ export function exportData(): string {
   const out: Record<string, unknown> = { app: 'appb2', exportedAt: new Date().toISOString() }
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i)
-    if (k?.startsWith(PREFIX)) out[k] = JSON.parse(localStorage.getItem(k) ?? 'null')
+    if (!k?.startsWith(PREFIX)) continue
+    const raw = localStorage.getItem(k) ?? 'null'
+    try {
+      out[k] = JSON.parse(raw)
+    } catch {
+      out[k] = raw // valores guardados como texto plano (p. ej. el tema)
+    }
   }
   return JSON.stringify(out, null, 2)
 }
@@ -104,7 +111,7 @@ export function importData(json: string): boolean {
     const data = JSON.parse(json) as Record<string, unknown>
     if (data.app !== 'appb2') return false
     for (const [k, v] of Object.entries(data)) {
-      if (k.startsWith(PREFIX)) localStorage.setItem(k, JSON.stringify(v))
+      if (k.startsWith(PREFIX)) localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v))
     }
     return true
   } catch {
@@ -123,7 +130,7 @@ export function resetAll(): void {
 
 /* ---------- Historial de intentos (para la gráfica de evolución) ---------- */
 
-const HISTORY_KEY = 'appb2.history.v1'
+const historyKey = () => storageKey('history.v1')
 const HISTORY_MAX = 3000
 
 export interface HistoryEntry {
@@ -136,7 +143,7 @@ export interface HistoryEntry {
 
 export function loadHistory(): HistoryEntry[] {
   try {
-    return JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]') as HistoryEntry[]
+    return JSON.parse(localStorage.getItem(historyKey()) ?? '[]') as HistoryEntry[]
   } catch {
     return []
   }
@@ -146,7 +153,7 @@ function logHistory(id: string, s: number, t: number) {
   try {
     const h = loadHistory()
     h.push({ d: new Date().toISOString(), id, s, t })
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(-HISTORY_MAX)))
+    localStorage.setItem(historyKey(), JSON.stringify(h.slice(-HISTORY_MAX)))
   } catch {
     /* sin almacenamiento */
   }

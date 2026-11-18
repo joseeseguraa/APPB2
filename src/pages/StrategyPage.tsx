@@ -1,3 +1,5 @@
+import C1Soon from '../components/C1Soon'
+import { getLevel } from '../lib/level'
 import { Link } from 'react-router-dom'
 import { PageHeader, Panel } from '../components/ui'
 
@@ -108,6 +110,7 @@ const GENERAL = [
 ]
 
 export default function StrategyPage() {
+  if (getLevel() === 'c1') return <C1Soon title="Estrategia" what="La guía de estrategia" />
   return (
     <div className="max-w-3xl">
       <PageHeader

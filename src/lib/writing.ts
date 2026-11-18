@@ -1,5 +1,6 @@
+import { storageKey } from './level'
 // Borradores de Writing guardados en el navegador.
-const KEY = 'appb2.writing.v1'
+const key = () => storageKey('writing.v1')
 
 export function countWords(text: string): number {
   return text.trim() ? text.trim().split(/\s+/).length : 0
@@ -7,7 +8,7 @@ export function countWords(text: string): number {
 
 function loadAll(): Record<string, string> {
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '{}') as Record<string, string>
+    return JSON.parse(localStorage.getItem(key()) ?? '{}') as Record<string, string>
   } catch {
     return {}
   }
@@ -22,7 +23,7 @@ export function saveDraft(id: string, text: string): void {
     const all = loadAll()
     if (text) all[id] = text
     else delete all[id]
-    localStorage.setItem(KEY, JSON.stringify(all))
+    localStorage.setItem(key(), JSON.stringify(all))
   } catch {
     /* sin almacenamiento */
   }

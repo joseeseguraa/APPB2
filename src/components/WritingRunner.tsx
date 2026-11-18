@@ -1,3 +1,4 @@
+import { levelInfo } from '../lib/level'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { PartInfo, WritingTask } from '../types'
@@ -7,7 +8,7 @@ import { TimerBadge, useCountdown } from './Timer'
 import { WritingModelView } from './WritingModelView'
 import { btn, Icon, ModeTag, Panel } from './ui'
 
-export function WordCounter({ words, min = 140, max = 190 }: { words: number; min?: number; max?: number }) {
+export function WordCounter({ words, min = levelInfo().words[0], max = levelInfo().words[1] }: { words: number; min?: number; max?: number }) {
   const ok = words >= min && words <= max
   const tone = words === 0 ? 'text-ink-3' : ok ? 'text-ok' : 'text-warn'
   const msg = words === 0 ? `Entre ${min} y ${max} palabras` : words < min ? `faltan ${min - words}` : words <= max ? 'longitud correcta' : `sobran ${words - max}`
@@ -250,7 +251,7 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
 /** Instrucciones para que una IA corrija el texto con los criterios de Cambridge. */
 export function aiPrompt(typeName: string, task: Pick<WritingTask, 'prompt' | 'notes'>, text: string): string {
   const notes = task.notes ? `\nNotes: ${task.notes.map((n, i) => `${i + 1}. ${n}`).join('  ')}` : ''
-  return `Actúa como examinador del Cambridge B2 First (FCE). Corrige este ${typeName.toLowerCase()} de la prueba de Writing.
+  return `Actúa como examinador del Cambridge ${levelInfo().exam}. Corrige este ${typeName.toLowerCase()} de la prueba de Writing.
 
 ENUNCIADO:
 ${task.prompt}${notes}
@@ -262,5 +263,5 @@ Responde en español y con este formato:
 1. Nota de 0 a 5 en cada criterio oficial (Content, Communicative Achievement, Organisation, Language), con una frase que la justifique, y el total sobre 20.
 2. Los errores de gramática y vocabulario: la frase original, la corrección y una breve explicación.
 3. Tres consejos concretos para subir la nota.
-4. Una versión mejorada de mi texto, de nivel B2 alto, entre 140 y 190 palabras.`
+4. Una versión mejorada de mi texto, de nivel ${levelInfo().code} alto, entre ${levelInfo().words[0]} y ${levelInfo().words[1]} palabras.`
 }

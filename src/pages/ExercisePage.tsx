@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { findPart, findSection } from '../data/sections'
+import { levelInfo } from '../lib/level'
 import type {
   ChoiceExercise,
   ErrorExercise,
@@ -526,17 +527,18 @@ function OpenCloze({ ex, answers, results, onChange, disabled }: PartProps<OpenC
 /* ---------- Part 4: Key word transformation ---------- */
 
 function Kwt({ ex, answers, results, onChange, disabled }: PartProps<KwtExercise>) {
+  const [kmin, kmax] = levelInfo().kwtWords
   return (
     <>
       <p className="text-sm text-ink-2 mb-3 max-w-2xl">
-        Completa la segunda frase con 2 a 5 palabras, incluida la palabra clave, sin cambiarla. Las contracciones cuentan como
+        Completa la segunda frase con {kmin} a {kmax} palabras, incluida la palabra clave, sin cambiarla. Las contracciones cuentan como
         dos palabras.
       </p>
       <Panel className="divide-y divide-line max-w-3xl">
         {ex.items.map((it, i) => {
           const words = countKwtWords(answers[i])
           const r = results?.[i]
-          const badLen = words < 2 || words > 5
+          const badLen = words < kmin || words > kmax
           const noKey = !containsKeyword(answers[i], it.keyword)
           return (
             <QuestionRow key={i} n={i + 1}>
@@ -761,7 +763,7 @@ function GappedText({ ex, answers, results, onChange, disabled }: PartProps<Gapp
   return (
     <>
       <p className="text-sm text-ink-2 mb-3">
-        Faltan {ex.answers.length} frases. Elige la que encaja en cada hueco; sobra una.
+        Faltan {ex.answers.length} {ex.unit === 'paragraph' ? 'párrafos' : 'frases'}. Elige {ex.unit === 'paragraph' ? 'el que encaja' : 'la que encaja'} en cada hueco; sobra {ex.unit === 'paragraph' ? 'uno' : 'una'}.
       </p>
       <SplitLayout
         text={paragraphs.map((p, k) => (
@@ -782,7 +784,7 @@ function GappedText({ ex, answers, results, onChange, disabled }: PartProps<Gapp
                       aria-label={`Hueco ${seg + 1}`}
                       className="h-8 rounded-md border border-line-strong bg-paper px-2 text-sm font-semibold"
                     >
-                      <option value="">Elegir frase</option>
+                      <option value="">{ex.unit === 'paragraph' ? 'Elegir párrafo' : 'Elegir frase'}</option>
                       {ex.sentences.map((_, si) => (
                         <option key={si} value={String(si)}>
                           {LETTERS[si]}
@@ -798,7 +800,7 @@ function GappedText({ ex, answers, results, onChange, disabled }: PartProps<Gapp
         ))}
       >
         <Panel className="p-4 sm:p-5">
-          <h3 className="font-bold mb-3">Frases</h3>
+          <h3 className="font-bold mb-3">{ex.unit === 'paragraph' ? 'Párrafos' : 'Frases'}</h3>
           <ul className="grid gap-2.5">
             {ex.sentences.map((s, si) => (
               <li key={si} className={`flex gap-3 text-[0.95rem] leading-snug ${used.has(String(si)) ? 'text-ink-3' : ''}`}>

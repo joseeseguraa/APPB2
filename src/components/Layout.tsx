@@ -5,6 +5,9 @@ import { dateKey, dueKeys, loadDaily } from '../lib/review'
 import { loadUser } from '../lib/user'
 import Welcome from './Welcome'
 import { loadTheme, saveTheme, type ThemePref } from '../lib/theme'
+import LevelPicker from './LevelPicker'
+import { getLevel, hasChosenLevel, levelInfo } from '../lib/level'
+import { currentSections } from '../data/sections'
 
 interface NavItem {
   to: string
@@ -57,10 +60,10 @@ function isActive(pathname: string, to: string) {
 
 function Wordmark() {
   return (
-    <Link to="/" className="flex items-center gap-2.5" aria-label="B2 First práctica, inicio">
-      <span className="grid place-items-center w-10 h-6 rounded-full border-2 border-print text-print text-[0.7rem] font-extrabold">B2</span>
+    <Link to="/" className="flex items-center gap-2.5" aria-label={`${levelInfo().exam} práctica, inicio`}>
+      <span className="grid place-items-center w-10 h-6 rounded-full border-2 border-print text-print text-[0.7rem] font-extrabold">{levelInfo().code}</span>
       <span className="font-bold tracking-[-0.01em] text-[1.05rem]">
-        First <span className="font-medium text-ink-3">práctica</span>
+        {levelInfo().exam.split(' ')[1]} <span className="font-medium text-ink-3">práctica</span>
       </span>
     </Link>
   )
@@ -96,6 +99,34 @@ function ThemeToggle() {
   )
 }
 
+/** Páginas que todavía no existen en C1 */
+const C1_SOON = new Set(['/tarjetas', '/estrategia', '/simulacro'])
+
+function isSoon(it: NavItem) {
+  if (it.soon) return true
+  if (getLevel() !== 'c1') return false
+  if (C1_SOON.has(it.to)) return true
+  if (it.to.startsWith('/s/')) return !currentSections().find((s) => `/s/${s.slug}` === it.to)?.available
+  return false
+}
+
+function LevelSwitch({ onOpen }: { onOpen: () => void }) {
+  const info = levelInfo()
+  return (
+    <button
+      onClick={onOpen}
+      className="w-full flex items-center gap-3 rounded-lg border border-line px-3 py-2.5 text-left hover:border-line-strong hover:bg-bg/60"
+      aria-label={`Nivel: ${info.exam}. Cambiar de nivel`}
+    >
+      <span className="flex-1 min-w-0">
+        <span className="block text-xs text-ink-3">Nivel</span>
+        <span className="block font-semibold text-[0.95rem]">{info.exam}</span>
+      </span>
+      <span className="text-sm font-semibold text-print">Cambiar</span>
+    </button>
+  )
+}
+
 function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useLocation()
   const due = dueKeys().length
@@ -107,7 +138,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
           {g.title && <p className="px-3 mb-1.5 text-xs font-semibold text-ink-3">{g.title}</p>}
           <ul className="grid gap-0.5">
             {g.items.map((it) => {
-              if (it.soon)
+              if (isSoon(it))
                 return (
                   <li key={it.to}>
                     <span className="flex items-center gap-3 h-10 px-3 rounded-md text-ink-3 cursor-default">
@@ -158,6 +189,8 @@ export default function Layout() {
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
   const [welcome, setWelcome] = useState(() => !loadUser().onboarded)
+  const [picker, setPicker] = useState(false)
+  const mustPick = !welcome && !hasChosenLevel()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -183,8 +216,11 @@ export default function Layout() {
       {/* Menú lateral (escritorio) */}
       <div className="hidden lg:block bg-paper border-r border-line">
       <aside className="flex flex-col sticky top-0 h-screen px-4 py-5 overflow-y-auto">
-        <div className="px-2 mb-8">
+        <div className="px-2 mb-6">
           <Wordmark />
+        </div>
+        <div className="mb-6">
+          <LevelSwitch onOpen={() => setPicker(true)} />
         </div>
         <SideNav />
         <div className="mt-auto pt-8">
@@ -237,6 +273,9 @@ export default function Layout() {
               <Icon name="close" className="w-5 h-5" />
             </button>
           </div>
+          <div className="mb-6">
+            <LevelSwitch onOpen={() => setPicker(true)} />
+          </div>
           <SideNav onNavigate={() => setOpen(false)} />
           <div className="mt-8">
             <ThemeToggle />
@@ -245,6 +284,7 @@ export default function Layout() {
       </div>
 
       {welcome && <Welcome onDone={() => setWelcome(false)} />}
+      {(picker || mustPick) && <LevelPicker current={mustPick ? undefined : getLevel()} onClose={mustPick ? undefined : () => setPicker(false)} />}
 
       {/* Barra inferior (móvil) */}
       <nav

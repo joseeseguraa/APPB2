@@ -22,6 +22,7 @@ export function questionCount(ex: Exercise): number {
  * Parts 1-3 y 7: 1 punto · Part 4: 2 · Parts 5 y 6: 2. Fuera del examen: 1.
  */
 export function marksPerQuestion(ex: Exercise): number {
+  if (ex.kind === 'matching') return ex.marks ?? 1
   return ex.kind === 'kwt' || ex.kind === 'reading-mc' || ex.kind === 'gapped-text' ? 2 : 1
 }
 

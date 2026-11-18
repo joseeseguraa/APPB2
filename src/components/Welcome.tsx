@@ -57,7 +57,7 @@ export default function Welcome({ onDone }: { onDone: () => void }) {
               <h2 id="welcome-title" className="text-2xl font-bold tracking-[-0.02em]">
                 Te damos la bienvenida
               </h2>
-              <p className="text-ink-2 mt-2 leading-relaxed">Una app para preparar el Cambridge B2 First a tu ritmo, gratis y sin registrarte.</p>
+              <p className="text-ink-2 mt-2 leading-relaxed">Una app para preparar el Cambridge B2 First y el C1 Advanced a tu ritmo, gratis y sin registrarte.</p>
               <label className="block mt-6">
                 <span className="text-sm font-semibold">¿Cómo te llamas?</span>
                 <input

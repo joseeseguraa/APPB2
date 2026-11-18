@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { sections } from '../data/sections'
+import { currentSections } from '../data/sections'
 import { exportData, importData, loadDays, loadHistory, loadProgress, resetAll, skillOf, streak, weeklyAccuracy, type ProgressMap } from '../lib/progress'
 import TrendChart from '../components/TrendChart'
 import { btn, Meter, PageHeader, Panel } from '../components/ui'
@@ -19,7 +19,7 @@ interface PartStat {
 }
 
 function computeStats(progress: ProgressMap): PartStat[] {
-  return sections
+  return currentSections()
     .filter((s) => s.available)
     .flatMap((s) =>
       s.parts.map((p) => {
@@ -52,7 +52,7 @@ export default function ProgressPage() {
   const stats = computeStats(progress)
   const st = streak(days)
 
-  const allExercises = sections.flatMap((s) => s.parts.flatMap((p) => p.exercises.map((e) => ({ s, p, e }))))
+  const allExercises = currentSections().flatMap((s) => s.parts.flatMap((p) => p.exercises.map((e) => ({ s, p, e }))))
   const doneCount = allExercises.filter(({ e }) => progress[e.id]).length
   const graded = allExercises.filter(({ e }) => e.kind !== 'writing' && progress[e.id])
   const gScore = graded.reduce((a, { e }) => a + progress[e.id].score, 0)
@@ -69,7 +69,7 @@ export default function ProgressPage() {
     .sort((a, b) => progress[b.e.id].lastAt.localeCompare(progress[a.e.id].lastAt))
     .slice(0, 8)
 
-  const bySection = sections
+  const bySection = currentSections()
     .filter((s) => s.available)
     .map((s) => {
       const rows = stats.filter((r) => r.sectionSlug === s.slug)

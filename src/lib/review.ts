@@ -1,9 +1,10 @@
+import { storageKey } from './level'
 // "Mis errores": repaso espaciado de preguntas falladas (sistema de cajas de Leitner).
 // Cada pregunta fallada entra en la caja 0. Si aciertas en el repaso, sube de caja y vuelve
 // más tarde (1, 3, 7 y 14 días). Al acertar en la última caja, se da por dominada y sale.
 import { logActivity } from './progress'
 
-const KEY = 'appb2.review.v1'
+const key = () => storageKey('review.v1')
 export const INTERVALS = [1, 3, 7, 14] // días hasta el siguiente repaso, por caja
 
 export interface ReviewItem {
@@ -38,7 +39,7 @@ function addDays(days: number, from = new Date()): string {
 
 export function loadReview(): ReviewMap {
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '{}') as ReviewMap
+    return JSON.parse(localStorage.getItem(key()) ?? '{}') as ReviewMap
   } catch {
     return {}
   }
@@ -46,7 +47,7 @@ export function loadReview(): ReviewMap {
 
 function save(map: ReviewMap) {
   try {
-    localStorage.setItem(KEY, JSON.stringify(map))
+    localStorage.setItem(key(), JSON.stringify(map))
   } catch {
     /* sin almacenamiento */
   }
@@ -92,11 +93,11 @@ export function dueKeys(map: ReviewMap = loadReview(), today = dateKey()): strin
 
 /* ---------- Reto diario ---------- */
 
-const DAILY_KEY = 'appb2.daily.v1'
+const dailyKey = () => storageKey('daily.v1')
 
 export function loadDaily(): Record<string, { score: number; total: number }> {
   try {
-    return JSON.parse(localStorage.getItem(DAILY_KEY) ?? '{}')
+    return JSON.parse(localStorage.getItem(dailyKey()) ?? '{}')
   } catch {
     return {}
   }
@@ -106,7 +107,7 @@ export function saveDaily(date: string, score: number, total: number) {
   try {
     const all = loadDaily()
     all[date] = { score, total }
-    localStorage.setItem(DAILY_KEY, JSON.stringify(all))
+    localStorage.setItem(dailyKey(), JSON.stringify(all))
     logActivity()
   } catch {
     /* sin almacenamiento */

@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { sections } from './data/sections'
+import { c1Sections } from './data/c1/sections'
+import { LEVELS, type Level } from './lib/level'
 import { containsKeyword, countKwtWords, isCorrect, normalize } from './lib/answers'
 import { checkAll, parseErrorSentence, questionCount, splitGaps } from './lib/exercise'
 import type { Exercise } from './types'
 import { countWords } from './lib/writing'
 
-const allParts = sections.flatMap((s) => s.parts.map((p) => ({ s, p })))
+const byLevel: { level: Level; list: typeof sections }[] = [
+  { level: 'b2', list: sections },
+  { level: 'c1', list: c1Sections },
+]
+const allParts = byLevel.flatMap(({ level, list }) => list.flatMap((s) => s.parts.map((p) => ({ s, p, level }))))
 const allExercises = allParts.flatMap(({ p }) => p.exercises)
 
 /** Respuestas modelo (la primera aceptada) para cada pregunta. */
@@ -64,11 +70,11 @@ describe('contenido', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
   it('slugs únicos dentro de cada sección', () => {
-    for (const s of sections) expect(new Set(s.parts.map((p) => p.slug)).size).toBe(s.parts.length)
+    for (const { list } of byLevel) for (const s of list) expect(new Set(s.parts.map((p) => p.slug)).size).toBe(s.parts.length)
   })
 
-  for (const { s, p } of allParts) {
-    describe(`${s.slug} / ${p.slug}`, () => {
+  for (const { s, p, level } of allParts) {
+    describe(`${level} / ${s.slug} / ${p.slug}`, () => {
       it('tiene ejercicios y guía o teoría', () => {
         expect(p.exercises.length).toBeGreaterThan(0)
         expect(Boolean(p.guide || p.theory)).toBe(true)
@@ -92,8 +98,8 @@ describe('contenido', () => {
                 for (const a of it.answers) {
                   expect(containsKeyword(a, it.keyword), `${ex.id} "${a}"`).toBe(true)
                   const w = countKwtWords(a)
-                  expect(w, `${ex.id} "${a}"`).toBeGreaterThanOrEqual(2)
-                  expect(w, `${ex.id} "${a}"`).toBeLessThanOrEqual(5)
+                  expect(w, `${ex.id} "${a}"`).toBeGreaterThanOrEqual(LEVELS[level].kwtWords[0])
+                  expect(w, `${ex.id} "${a}"`).toBeLessThanOrEqual(LEVELS[level].kwtWords[1])
                 }
               }
               break
@@ -149,8 +155,8 @@ describe('contenido', () => {
                 expect(q.answer).toBeGreaterThanOrEqual(0)
                 expect(q.answer).toBeLessThan(ex.sections.length)
               }
-              // todas las secciones son respuesta de al menos un enunciado
-              expect(new Set(ex.questions.map((q) => q.answer)).size).toBe(ex.sections.length)
+              // todas las secciones son respuesta de al menos un enunciado (no en los textos cruzados de C1, con 4 preguntas)
+              if (ex.questions.length >= 10) expect(new Set(ex.questions.map((q) => q.answer)).size).toBe(ex.sections.length)
               break
             case 'error': {
               for (const it of ex.items) {
@@ -173,14 +179,14 @@ describe('contenido', () => {
     })
   }
 
-  it('los modelos de writing tienen entre 140 y 190 palabras (sin contar el título)', () => {
-    for (const { p } of allParts) {
+  it('los modelos de writing tienen la extensión de su nivel', () => {
+    for (const { p, level } of allParts) {
       if (!p.model) continue
       const lines = p.model.text.split('\n')
       // los informes y reseñas tienen título y encabezados: Cambridge cuenta todo, pero damos margen
       const words = countWords(p.model.text)
-      expect(words, `${p.slug}: ${words}`).toBeGreaterThanOrEqual(140)
-      expect(words, `${p.slug}: ${words}`).toBeLessThanOrEqual(190)
+      expect(words, `${p.slug}: ${words}`).toBeGreaterThanOrEqual(LEVELS[level].words[0])
+      expect(words, `${p.slug}: ${words}`).toBeLessThanOrEqual(LEVELS[level].words[1])
       expect(lines.length).toBeGreaterThan(3)
     }
   })
