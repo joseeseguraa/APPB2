@@ -1,0 +1,55 @@
+import type { WordFormationExercise } from '../../../types'
+
+export const c1Part3D: WordFormationExercise[] = [
+  {
+    id: 'c1-uoe3-11',
+    kind: 'word-formation',
+    title: 'Why we love scary stories',
+    focus: 'Adjetivos y sustantivos abstractos',
+    text: `From ghost stories told around a campfire to horror films with record-breaking audiences, frightening tales have an {1} appeal. Psychologists believe that they allow us to experience fear in a safe and {2} environment. Our hearts race and our palms sweat, but we know that there is no real danger. This {3} of threat and safety produces a kind of excitement that many people find {4}. There may also be a practical {5}. Some researchers argue that scary stories help us rehearse our responses to danger, making us better prepared for real emergencies. Interestingly, people who regularly watch horror films appear to have shown greater psychological {6} during difficult periods, such as the recent pandemic. Of course, not everyone enjoys being frightened. For some, horror is simply {7}, and there is nothing wrong with that. Tastes vary {8}, and what thrills one person may terrify another.`,
+    gaps: [
+      { stem: 'DENY', answers: ['undeniable'], explanation: '"An + adjetivo + appeal": undeniable (innegable). Prefijo un- y sufijo -able; la y pasa a i.' },
+      { stem: 'CONTROL', answers: ['controlled'], explanation: 'Coordinado con "safe": controlled (controlado).' },
+      { stem: 'COMBINE', answers: ['combination'], explanation: '"This + sustantivo + of": combination.' },
+      { stem: 'ADDICT', answers: ['addictive'], explanation: '"Find something + adjetivo": addictive (adictivo).' },
+      { stem: 'EXPLAIN', answers: ['explanation'], explanation: '"A practical + sustantivo": explanation. Cambio interno: explain → explanation.' },
+      { stem: 'RESILIENT', answers: ['resilience'], explanation: '"Psychological + sustantivo": resilience.' },
+      { stem: 'BEAR', answers: ['unbearable'], explanation: 'Sentido negativo: unbearable (insoportable).' },
+      { stem: 'ENORMOUS', answers: ['enormously'], explanation: 'Adverbio que modifica a "vary": enormously.' },
+    ],
+  },
+  {
+    id: 'c1-uoe3-12',
+    kind: 'word-formation',
+    title: 'The future of the office',
+    focus: 'Sufijos y prefijos variados',
+    text: `When millions of people began working from home, many predicted the end of the traditional office. Several years later, the reality is more complicated. Many companies have adopted a {1} model, with staff spending some days at home and others in the office. Employers have discovered that remote work can increase {2}, but many also worry about its effect on teamwork and company culture. {3} meetings, they argue, are no substitute for the informal conversations that happen by the coffee machine. Young employees in particular may miss out on the {4} that comes from watching more experienced colleagues at work. For their part, many workers value the {5} that working from home offers, and some have made it clear that they would rather resign than return full-time. Offices themselves are being {6}, with fewer individual desks and more space for collaboration. The challenge for employers is to find an arrangement that is both {7} and fair, without creating a {8} between those who come in and those who do not.`,
+    gaps: [
+      { stem: 'BLEND', answers: ['blended'], explanation: 'Adjetivo delante de "model": blended (mixto, combinado).' },
+      { stem: 'PRODUCT', answers: ['productivity'], explanation: '"Increase + sustantivo": productivity (productividad).' },
+      { stem: 'VIRTUE', answers: ['virtual'], explanation: 'Adjetivo delante de "meetings": virtual. Cambio de sustantivo a adjetivo.' },
+      { stem: 'GUIDE', answers: ['guidance'], explanation: '"The + sustantivo": guidance (orientación).' },
+      { stem: 'FLEXIBLE', answers: ['flexibility'], explanation: '"The + sustantivo": flexibility.' },
+      { stem: 'DESIGN', answers: ['redesigned'], explanation: 'Pasiva continua: "are being redesigned". Prefijo re-.' },
+      { stem: 'EFFECT', answers: ['effective'], explanation: 'Coordinado con "fair": effective (eficaz).' },
+      { stem: 'DIVIDE', answers: ['division'], explanation: '"A + sustantivo + between": division.' },
+    ],
+  },
+  {
+    id: 'c1-uoe3-13',
+    kind: 'word-formation',
+    title: 'Learning from elephants',
+    focus: 'Cambios internos y adverbios',
+    text: `Elephants have long been admired for their intelligence, but recent research suggests that their social lives are even more {1} than scientists once thought. Herds are led by older females, whose {2} and memory can mean the difference between life and death in times of drought. In one study, herds led by older matriarchs were found to respond more {3} to threats, such as the roar of a lion. Elephants also appear to show {4} towards one another. They have been observed comforting distressed companions and returning to the {5} of dead relatives, touching them gently with their trunks. Such behaviour has led some researchers to argue that elephants experience something {6} to grief. These findings have important {7} for conservation. When older elephants are killed by poachers, the {8} of the herd can be seriously affected, as younger animals lose the knowledge they need to survive.`,
+    gaps: [
+      { stem: 'SOPHISTICATION', answers: ['sophisticated'], explanation: '"More + adjetivo": sophisticated (complejo, sofisticado). Aquí se quita el sufijo.' },
+      { stem: 'WISE', answers: ['wisdom'], explanation: '"Whose + sustantivo": wisdom (sabiduría). Cambio interno.' },
+      { stem: 'APPROPRIATE', answers: ['appropriately'], explanation: 'Adverbio que modifica a "respond": appropriately.' },
+      { stem: 'EMPATHISE', answers: ['empathy'], explanation: '"Show + sustantivo": empathy.' },
+      { stem: 'REMAIN', answers: ['remains'], explanation: '"The remains of" = los restos de.' },
+      { stem: 'COMPARE', answers: ['comparable'], explanation: '"Something comparable to" = algo comparable a.' },
+      { stem: 'IMPLY', answers: ['implications'], explanation: '"Have implications for" = tener consecuencias para.' },
+      { stem: 'SURVIVE', answers: ['survival'], explanation: '"The + sustantivo + of": survival.' },
+    ],
+  },
+]

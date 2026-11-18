@@ -1,0 +1,88 @@
+import type { KwtExercise } from '../../../types'
+
+export const c1Part4D: KwtExercise[] = [
+  {
+    id: 'c1-uoe4-10',
+    kind: 'kwt',
+    title: 'Set 10',
+    focus: 'Modales en pasado',
+    items: [
+      { original: 'It was unnecessary for you to bring a present, but thank you.', keyword: 'NEEDN\'T', before: 'You', after: 'a present, but thank you.', answers: ["needn't have brought"], explanation: '"Needn\'t have + participio" = lo hiciste y no hacía falta. needn\'t cuenta como 2 palabras.' },
+      { original: 'I\'m sure she didn\'t take the money.', keyword: 'CAN\'T', before: 'She', after: 'the money.', answers: ["can't have taken"], explanation: 'Deducción negativa sobre el pasado: can\'t have + participio.' },
+      { original: 'Perhaps they missed the train.', keyword: 'MAY', before: 'They', after: 'the train.', answers: ['may have missed'], explanation: 'Posibilidad en el pasado: may have + participio.' },
+      { original: 'It was a mistake not to book the tickets in advance.', keyword: 'SHOULD', before: 'We', after: 'the tickets in advance.', answers: ['should have booked'], explanation: 'Arrepentimiento: should have + participio.' },
+      { original: 'It wasn\'t necessary for me to wait, so I went home.', keyword: 'NEED', before: 'I', after: 'wait, so I went home.', answers: ["didn't need to", 'did not need to'], explanation: '"Didn\'t need to" = no hacía falta (y no se hizo).' },
+      { original: 'I\'m certain that he forgot about the meeting.', keyword: 'MUST', before: 'He', after: 'about the meeting.', answers: ['must have forgotten'], explanation: 'Deducción segura: must have + participio.' },
+    ],
+  },
+  {
+    id: 'c1-uoe4-11',
+    kind: 'kwt',
+    title: 'Set 11',
+    focus: 'Estilo indirecto',
+    items: [
+      { original: '"I didn\'t steal the car," said Mark.', keyword: 'DENIED', before: 'Mark', after: 'the car.', answers: ['denied having stolen', 'denied that he had stolen', 'denied that he stole'], explanation: '"Deny having + participio" o "deny that…". ("Denied stealing" tiene solo 2 palabras: en C1 hacen falta 3–6.)' },
+      { original: '"You broke the window, Tom!" said the teacher.', keyword: 'ACCUSED', before: 'The teacher', after: 'the window.', answers: ['accused Tom of breaking', 'accused him of breaking', 'accused Tom of having broken'], explanation: '"Accuse somebody of + -ing".' },
+      { original: '"Why don\'t we eat out tonight?" said Laura.', keyword: 'SUGGESTED', before: 'Laura', after: 'out that night.', answers: ['suggested that they eat', 'suggested that they should eat', 'suggested that we eat'], explanation: '"Suggest + -ing" o "suggest that…".' },
+      { original: '"Don\'t forget to lock the door," Mum said to me.', keyword: 'REMINDED', before: 'Mum', after: 'the door.', answers: ['reminded me to lock'], explanation: '"Remind somebody to do".' },
+      { original: '"I\'m sorry I\'m late," said Ben.', keyword: 'APOLOGISED', before: 'Ben', after: 'late.', answers: ['apologised for being', 'apologised for having been'], explanation: '"Apologise for + -ing".' },
+      { original: '"I\'ll call the police if you don\'t leave," the man said to us.', keyword: 'THREATENED', before: 'The man', after: 'the police if we didn\'t leave.', answers: ['threatened to call'], explanation: '"Threaten to do".' },
+    ],
+  },
+  {
+    id: 'c1-uoe4-12',
+    kind: 'kwt',
+    title: 'Set 12',
+    focus: 'Sustantivos y expresiones formales',
+    items: [
+      { original: 'The government plans to reduce taxes.', keyword: 'INTENTION', before: 'The government', after: 'taxes.', answers: ['has the intention of reducing', 'has every intention of reducing', 'has an intention to reduce'], explanation: '"Have the intention of + -ing".' },
+      { original: 'Many people criticised the decision.', keyword: 'CRITICISM', before: 'The decision', after: 'many people.', answers: ['attracted criticism from', 'received criticism from', 'came in for criticism from', 'drew criticism from'], explanation: '"Attract / come in for criticism" = recibir críticas.' },
+      { original: 'Everyone was surprised when she won.', keyword: 'SURPRISE', before: 'Her victory', after: 'everyone.', answers: ['came as a surprise to', 'came as a complete surprise to', 'was a surprise to'], explanation: '"Come as a surprise to".' },
+      { original: 'It was difficult for the company to recover from the crisis.', keyword: 'STRUGGLED', before: 'The company', after: 'from the crisis.', answers: ['struggled to recover'], explanation: '"Struggle to do" = costar mucho hacer algo.' },
+      { original: 'He decided to leave his job.', keyword: 'DECISION', before: 'He', after: 'leave his job.', answers: ['made the decision to', 'made a decision to', 'took the decision to', 'reached a decision to'], explanation: '"Make / take the decision to".' },
+      { original: 'They didn\'t consider the cost when planning the trip.', keyword: 'ACCOUNT', before: 'They didn\'t', after: 'when planning the trip.', answers: ['take the cost into account', 'take into account the cost'], explanation: '"Take something into account".' },
+    ],
+  },
+  {
+    id: 'c1-uoe4-13',
+    kind: 'kwt',
+    title: 'Set 13',
+    focus: 'Condicionales avanzadas',
+    items: [
+      { original: 'Without your help, I would have failed.', keyword: 'BEEN', before: 'If it', after: 'your help, I would have failed.', answers: ["hadn't been for", 'had not been for'], explanation: '"If it hadn\'t been for…".' },
+      { original: 'If you need anything, just call me.', keyword: 'SHOULD', before: '', after: 'anything, just call me.', answers: ['should you need', 'should you require'], explanation: 'Condicional con inversión: Should you need…' },
+      { original: 'If I had known, I would have helped.', keyword: 'HAD', before: '', after: ', I would have helped.', answers: ['had i known', 'had i known about it', 'had i been aware'], explanation: 'Inversión: Had I known…' },
+      { original: 'You can come as long as you are quiet.', keyword: 'PROVIDING', before: 'You can come', after: 'quiet.', answers: ['providing that you are', 'providing you are', "providing you're"], explanation: '"Providing (that)" = siempre que.' },
+      { original: 'I didn\'t take the job, so I\'m still living here.', keyword: 'WOULD', before: 'If I had taken the job,', after: 'living here.', answers: ["I wouldn't still be", 'I would not still be', "I wouldn't be"], explanation: 'Mixta: pasado → presente.' },
+      { original: 'Leave now, or you\'ll miss the train.', keyword: 'UNLESS', before: 'You\'ll miss the train', after: 'now.', answers: ['unless you leave', 'unless you go'], explanation: '"Unless" = a menos que.' },
+    ],
+  },
+  {
+    id: 'c1-uoe4-14',
+    kind: 'kwt',
+    title: 'Set 14',
+    focus: 'Inversión',
+    items: [
+      { original: 'I had never seen such a beautiful place.', keyword: 'NEVER', before: '', after: 'such a beautiful place.', answers: ['never had i seen', 'never before had i seen'], explanation: 'Inversión: Never had I seen…' },
+      { original: 'As soon as I sat down, the phone rang.', keyword: 'HARDLY', before: '', after: 'when the phone rang.', answers: ['hardly had i sat down'], explanation: '"Hardly had I… when…".' },
+      { original: 'She didn\'t say a word at any time during the meeting.', keyword: 'TIME', before: 'At', after: 'a word during the meeting.', answers: ['no time did she say'], explanation: '"At no time" + inversión.' },
+      { original: 'You mustn\'t open this envelope under any circumstances.', keyword: 'CIRCUMSTANCES', before: 'Under', after: 'open this envelope.', answers: ['no circumstances must you', 'no circumstances should you'], explanation: '"Under no circumstances" + inversión.' },
+      { original: 'He was so angry that he couldn\'t speak.', keyword: 'WAS', before: 'So', after: 'he couldn\'t speak.', answers: ['angry was he that'], explanation: '"So + adjetivo + was + sujeto + that".' },
+      { original: 'We only realised the danger later.', keyword: 'DID', before: 'Only later', after: 'the danger.', answers: ['did we realise', 'did we realize'], explanation: 'Inversión después de "Only later".' },
+    ],
+  },
+  {
+    id: 'c1-uoe4-15',
+    kind: 'kwt',
+    title: 'Set 15',
+    focus: 'Mezcla de estructuras',
+    items: [
+      { original: 'I prefer staying in to going out on Fridays.', keyword: 'RATHER', before: 'I', after: 'go out on Fridays.', answers: ['would rather stay in than', "'d rather stay in than"], explanation: '"Would rather + infinitivo + than".' },
+      { original: 'She speaks French very well, but her Spanish is poor.', keyword: 'COMPARISON', before: 'Her Spanish is poor', after: 'French.', answers: ['in comparison with her', 'in comparison to her', 'by comparison with her'], explanation: '"In comparison with" = en comparación con.' },
+      { original: 'The museum is not usually this busy.', keyword: 'BUSIER', before: 'The museum is', after: 'usual.', answers: ['much busier than', 'a lot busier than', 'far busier than'], explanation: 'Comparativo: busier than usual.' },
+      { original: 'I object to people smoking near children.', keyword: 'STAND', before: 'I', after: 'smoking near children.', answers: ["can't stand people", 'cannot stand people'], explanation: '"Can\'t stand" = no soportar.' },
+      { original: 'Nobody expected the team to win.', keyword: 'ODDS', before: 'The team won', after: '.', answers: ['against all the odds', 'against all odds'], explanation: '"Against all (the) odds" = contra todo pronóstico.' },
+      { original: 'It\'s a long time since I last saw her.', keyword: 'AGES', before: 'I', after: '.', answers: ["haven't seen her for ages", 'have not seen her for ages', "haven't seen her in ages"], explanation: '"Haven\'t done for ages" = hace mucho que no…' },
+    ],
+  },
+]

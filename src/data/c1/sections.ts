@@ -19,9 +19,11 @@ import { c1Part2C } from './uoe/part2c'
 import { c1Part3 } from './uoe/part3'
 import { c1Part3B } from './uoe/part3b'
 import { c1Part3C } from './uoe/part3c'
+import { c1Part3D } from './uoe/part3d'
 import { c1Part4 } from './uoe/part4'
 import { c1Part4B } from './uoe/part4b'
 import { c1Part4C } from './uoe/part4c'
+import { c1Part4D } from './uoe/part4d'
 import { c1Part5 } from './reading/part5'
 import { c1Part5B } from './reading/part5b'
 import { c1Part6 } from './reading/part6'
@@ -133,7 +135,7 @@ export const c1Sections: SectionInfo[] = [
             'Errores de ortografía en dobles consonantes y en -able/-ible.',
           ],
         },
-        exercises: [...c1Part3, ...c1Part3B, ...c1Part3C],
+        exercises: [...c1Part3, ...c1Part3B, ...c1Part3C, ...c1Part3D],
       },
       {
         slug: 'part-4',
@@ -163,7 +165,7 @@ export const c1Sections: SectionInfo[] = [
             'Dejar fuera un detalle de la frase original (un "always", un "very").',
           ],
         },
-        exercises: [...c1Part4, ...c1Part4B, ...c1Part4C],
+        exercises: [...c1Part4, ...c1Part4B, ...c1Part4C, ...c1Part4D],
       },
     ],
   },
