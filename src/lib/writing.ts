@@ -34,5 +34,5 @@ export const CRITERIA = [
   { name: 'Content', es: '¿Has respondido a todo lo que pide el enunciado, con información relevante?' },
   { name: 'Communicative Achievement', es: '¿El formato y el registro son los adecuados para el tipo de texto y el lector?' },
   { name: 'Organisation', es: '¿Hay párrafos claros y conectores variados?' },
-  { name: 'Language', es: '¿Usas vocabulario y gramática variados de nivel B2 con pocos errores?' },
+  { name: 'Language', es: '¿Usas vocabulario y gramática variados, propios de tu nivel, con pocos errores?' },
 ] as const

@@ -1,4 +1,6 @@
 import type { SectionInfo } from '../../types'
+import { c1Essay } from './writing/essay'
+import { c1Letter, c1Proposal, c1Report, c1Review } from './writing/part2'
 import { c1Part1 } from './uoe/part1'
 import { c1Part1B } from './uoe/part1b'
 import { c1Part2 } from './uoe/part2'
@@ -277,10 +279,16 @@ export const c1Sections: SectionInfo[] = [
     slug: 'writing',
     name: 'Writing',
     nameEs: 'Expresión escrita',
-    description: 'Essay, email o carta, proposal, report y review de nivel C1, con estructura y modelos. En preparación.',
+    description: 'Essay, email o carta, proposal, report y review de nivel C1, con estructura, modelo comentado y tareas.',
     icon: '✍️',
-    available: false,
-    parts: [],
+    available: true,
+    intro: [
+      'El Writing de C1 dura 1 hora y 30 minutos y tiene 2 partes. En cada una escribes entre 220 y 260 palabras.',
+      'Part 1 es obligatoria: un essay a partir de unas notas con tres puntos, de los que eliges dos. En la Part 2 eliges UNA de tres tareas: email o carta, proposal, report o review.',
+      'Se corrige con los mismos 4 criterios que en B2 (Content, Communicative Achievement, Organisation y Language), de 0 a 5 cada uno, pero con la exigencia de C1: argumentos matizados, vocabulario preciso y estructuras complejas usadas con naturalidad.',
+      'Consejo: unos 45 minutos por parte, con 5–10 para planificar y 5 para revisar.',
+    ],
+    parts: [c1Essay, c1Letter, c1Proposal, c1Report, c1Review],
   },
   {
     slug: 'grammar',
