@@ -125,13 +125,14 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
   - Grammar +1 tema: Questions & question tags (`grammar/questions.ts`). Vocabulary +4: Word formation (prefijos y sufijos para la Part 3), Travel, Money & shopping y Relationships & feelings (`vocabulary/topics2.ts`).
   - Part 4: 5 sets nuevos (`uoe/part4c.ts`), 15 en total.
   - **Estrategia** (`/estrategia`, `pages/StrategyPage.tsx`): reparto del tiempo por parte (suma 75 min, igual que `suggestedMinutes` de cada parte), pasos y trampas de cada parte, Writing y reglas de la hoja de respuestas.
+  - Más contenido (2.ª tanda): UoE Parts 1–3 con 3 textos nuevos cada una (`uoe/part1c..3c.ts`), Reading Parts 5–7 con 2 textos nuevos cada una (`reading/part5c..7c.ts`), Grammar +3 temas (used to / be used to / get used to, emphasis e inversión, participle clauses; `grammar/advanced.ts`) y Vocabulary +2 (sport & free time, food & cooking; `vocabulary/topics3.ts`).
   - Teclado: en preguntas sueltas (reto y Mis errores) letras o números para elegir, Intro para comprobar y pasar; en ordenador el cursor va solo al hueco. En los ejercicios completos, Ctrl/Cmd + Intro comprueba.
 - [ ] **F11 – Ranking entre amigos** (al final, a petición de José): necesita un servidor (Supabase o Firebase). Hay que decidirlo con él antes.
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
 - **Fase:** está todo hecho menos Speaking (F6), Listening (F8) y el ranking (F11). José prefiere seguir aplazando Speaking (18-nov). Siguiente: lo que pida José.
-- **Contenido actual:** 168 ejercicios o tareas: UoE 45 (10 por parte, 15 en la Part 4), Reading 18 (6 por parte), Grammar 39 (13 temas), Vocabulary 42 (14 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 6 simulacros y 212 tarjetas en 7 mazos.
+- **Contenido actual:** 197 ejercicios o tareas: UoE 54 (13 en las Parts 1–3 y 15 en la Part 4), Reading 24 (8 por parte), Grammar 48 (16 temas), Vocabulary 48 (16 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 6 simulacros y 212 tarjetas en 7 mazos.
 - **Preferencia (18-nov):** nada de logros, compartir resultados ni funciones de "enganche". Solo cosas que ayuden a aprender.
 - **Preferencias de José (18-nov):** sin plan de estudio ni cuenta atrás de examen. En Writing basta con tener todos los tipos (la "story" solo existe en B2 First for Schools, así que no se incluye).
 - La app está publicada en https://joseeseguraa.github.io/APPB2/ (repo público, despliegue con GitHub Actions).
@@ -152,6 +153,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-18 | Bienvenida, avisos de errores, PWA, Mis errores, Reto diario, corrección de writing con IA. 324 tests | Speaking (F6), después Listening y el ranking |
 | 2026-11-18 | Menú lateral + inicio tipo panel + página /examen. UoE de 5 a 10 por parte, Reading de 3 a 6, Grammar +3 temas (comparison, linking words, quantifiers & articles) y Vocabulary +4 temas (work, environment, technology, health). 319 tests | Speaking / Listening / más contenido |
 | 2026-11-18 | Tarjetas con repaso espaciado, 5 temas nuevos (questions, word formation, travel, money, relationships), 5 sets de Part 4, página de estrategia y atajos de teclado. 372 tests | Más contenido para aprender (Reading, Part 1–3), Speaking aplazado |
+| 2026-11-18 | UoE Parts 1–3 +9 textos, Reading +6 textos, Grammar +3 temas, Vocabulary +2 temas. 437 tests | Más contenido o lo que pida José (Speaking aplazado) |
 
 ## 7. Comandos
 ```
