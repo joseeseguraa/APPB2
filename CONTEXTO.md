@@ -120,15 +120,21 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
   - Gráfica de evolución semanal por destreza en Mi progreso (`appb2.history.v1`, `components/TrendChart.tsx`).
   - Modo oscuro (`html.dark` en `index.css`, `lib/theme.ts`, `appb2.theme.v1`). Sobre fondos de color se usa `text-on-ink`, nunca `text-white`.
   - Revisión de calidad de las ~820 preguntas sueltas: se aceptan más respuestas alternativas válidas y se reescribieron 3 ítems ambiguos.
+- [x] **F13 – Aprender más** (18-nov, José pide funcionalidad para aprender, nada de logros ni "enganche"):
+  - **Tarjetas** (`/tarjetas`, `data/flashcards.ts`, `lib/flashcards.ts`, `appb2.cards.v1`): 7 mazos (phrasal verbs, collocations, false friends, preposiciones, familias de palabras, conectores y expresiones), 212 tarjetas inglés-español con ejemplo. Repaso espaciado con niveles 0–5 (0, 1, 3, 7, 14, 30 días); se considera aprendida desde el nivel 3. Teclas: espacio para girar, 1/2/3 para valorar.
+  - Grammar +1 tema: Questions & question tags (`grammar/questions.ts`). Vocabulary +4: Word formation (prefijos y sufijos para la Part 3), Travel, Money & shopping y Relationships & feelings (`vocabulary/topics2.ts`).
+  - Part 4: 5 sets nuevos (`uoe/part4c.ts`), 15 en total.
+  - **Estrategia** (`/estrategia`, `pages/StrategyPage.tsx`): reparto del tiempo por parte (suma 75 min, igual que `suggestedMinutes` de cada parte), pasos y trampas de cada parte, Writing y reglas de la hoja de respuestas.
+  - Teclado: en preguntas sueltas (reto y Mis errores) letras o números para elegir, Intro para comprobar y pasar; en ordenador el cursor va solo al hueco. En los ejercicios completos, Ctrl/Cmd + Intro comprueba.
 - [ ] **F11 – Ranking entre amigos** (al final, a petición de José): necesita un servidor (Supabase o Firebase). Hay que decidirlo con él antes.
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
 - **Fase:** está todo hecho menos Speaking (F6), Listening (F8) y el ranking (F11). José prefiere seguir aplazando Speaking (18-nov). Siguiente: lo que pida José.
-- **Contenido actual:** 148 ejercicios o tareas: UoE 40 (10 por parte), Reading 18 (6 por parte), Grammar 36 (12 temas), Vocabulary 30 (10 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 3 simulacros.
+- **Contenido actual:** 168 ejercicios o tareas: UoE 45 (10 por parte, 15 en la Part 4), Reading 18 (6 por parte), Grammar 39 (13 temas), Vocabulary 42 (14 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 6 simulacros y 212 tarjetas en 7 mazos.
+- **Preferencia (18-nov):** nada de logros, compartir resultados ni funciones de "enganche". Solo cosas que ayuden a aprender.
 - **Preferencias de José (18-nov):** sin plan de estudio ni cuenta atrás de examen. En Writing basta con tener todos los tipos (la "story" solo existe en B2 First for Schools, así que no se incluye).
-- **Pendiente de José:** José va a hacer el repo público. Después tiene que ir a Settings → Pages → Source y elegir **GitHub Actions**, y volver a lanzar el workflow.
-- Antes: GitHub Pages no funciona con repos privados en cuentas gratuitas. Las opciones son hacer el repo público, pasar a GitHub Pro, o usar Netlify/Vercel/Cloudflare Pages, que son gratis con repos privados. Mientras tanto, el workflow de Pages fallará en el paso de deploy.
+- La app está publicada en https://joseeseguraa.github.io/APPB2/ (repo público, despliegue con GitHub Actions).
 - Ideas para más adelante: un ejemplo "0" en cada ejercicio, como en el examen real; poder elegir el tiempo en el modo examen.
 
 ## 6. Registro de sesiones
@@ -144,6 +150,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-14 | Rediseño completo de la interfaz (sistema "hoja de respuestas", sección 3b). 212 tests. Revisado en móvil y escritorio | Speaking / Listening / más contenido |
 | 2026-11-18 | Opciones barajadas, 6 simulacros, gráfica de evolución, modo oscuro y revisión de calidad del contenido. 325 tests | Lo que pida José (Speaking aplazado) |
 | 2026-11-18 | Bienvenida, avisos de errores, PWA, Mis errores, Reto diario, corrección de writing con IA. 324 tests | Speaking (F6), después Listening y el ranking |
+| 2026-11-18 | Tarjetas con repaso espaciado, 5 temas nuevos (questions, word formation, travel, money, relationships), 5 sets de Part 4, página de estrategia y atajos de teclado. 372 tests | Más contenido para aprender (Reading, Part 1–3), Speaking aplazado |
 | 2026-11-18 | Menú lateral + inicio tipo panel + página /examen. UoE de 5 a 10 por parte, Reading de 3 a 6, Grammar +3 temas (comparison, linking words, quantifiers & articles) y Vocabulary +4 temas (work, environment, technology, health). 319 tests | Speaking / Listening / más contenido |
 
 ## 7. Comandos
