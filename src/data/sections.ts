@@ -17,7 +17,9 @@ import { gerunds, modals, relatives } from './grammar/more'
 import { comparison, linkers, quantifiers } from './grammar/extra'
 import { environment, health, technology, workStudy } from './vocabulary/topics'
 import { money, relationships, travel, wordFormation } from './vocabulary/topics2'
+import { food, sportLeisure } from './vocabulary/topics3'
 import { questions } from './grammar/questions'
+import { emphasis, participles, usedTo } from './grammar/advanced'
 import { collocations, phrasalVerbs, prepositions } from './vocabulary/words'
 import { confusingWords, expressions, falseFriends } from './vocabulary/traps'
 import { part5Exercises } from './reading/part5'
@@ -187,8 +189,8 @@ export const sections: SectionInfo[] = [
     icon: '📐',
     available: true,
     parts: [
-      ...grouped('Tiempos verbales', [presentPerfect, narrativeTenses, future]),
-      ...grouped('Estructuras clave del examen', [conditionals, passive, reportedSpeech, relatives, modals, gerunds, questions]),
+      ...grouped('Tiempos verbales', [presentPerfect, narrativeTenses, future, usedTo]),
+      ...grouped('Estructuras clave del examen', [conditionals, passive, reportedSpeech, relatives, modals, gerunds, questions, participles, emphasis]),
       ...grouped('Frases y conectores', [comparison, linkers, quantifiers]),
     ],
   },
@@ -202,7 +204,7 @@ export const sections: SectionInfo[] = [
     parts: [
       ...grouped('Palabras y expresiones', [phrasalVerbs, collocations, prepositions, expressions, wordFormation]),
       ...grouped('Trampas para hispanohablantes', [falseFriends, confusingWords]),
-      ...grouped('Vocabulario por temas', [workStudy, environment, technology, health, travel, money, relationships]),
+      ...grouped('Vocabulario por temas', [workStudy, environment, technology, health, travel, money, relationships, sportLeisure, food]),
     ],
   },
   {
