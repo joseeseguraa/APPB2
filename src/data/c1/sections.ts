@@ -12,12 +12,16 @@ import { c1Arts, c1Environment, c1Health, c1Law } from './vocabulary/v4'
 import { c1Letter, c1Proposal, c1Report, c1Review } from './writing/part2'
 import { c1Part1 } from './uoe/part1'
 import { c1Part1B } from './uoe/part1b'
+import { c1Part1C } from './uoe/part1c'
 import { c1Part2 } from './uoe/part2'
 import { c1Part2B } from './uoe/part2b'
+import { c1Part2C } from './uoe/part2c'
 import { c1Part3 } from './uoe/part3'
 import { c1Part3B } from './uoe/part3b'
+import { c1Part3C } from './uoe/part3c'
 import { c1Part4 } from './uoe/part4'
 import { c1Part4B } from './uoe/part4b'
+import { c1Part4C } from './uoe/part4c'
 import { c1Part5 } from './reading/part5'
 import { c1Part5B } from './reading/part5b'
 import { c1Part6 } from './reading/part6'
@@ -70,7 +74,7 @@ export const c1Sections: SectionInfo[] = [
             'Fiarse de la traducción: "jugar un papel" es "play a role", pero "tomar una decisión" es "make a decision".',
           ],
         },
-        exercises: [...c1Part1, ...c1Part1B],
+        exercises: [...c1Part1, ...c1Part1B, ...c1Part1C],
       },
       {
         slug: 'part-2',
@@ -100,7 +104,7 @@ export const c1Sections: SectionInfo[] = [
             'Olvidar que algunas expresiones llevan artículo: as a result, on the whole, for the time being.',
           ],
         },
-        exercises: [...c1Part2, ...c1Part2B],
+        exercises: [...c1Part2, ...c1Part2B, ...c1Part2C],
       },
       {
         slug: 'part-3',
@@ -129,7 +133,7 @@ export const c1Sections: SectionInfo[] = [
             'Errores de ortografía en dobles consonantes y en -able/-ible.',
           ],
         },
-        exercises: [...c1Part3, ...c1Part3B],
+        exercises: [...c1Part3, ...c1Part3B, ...c1Part3C],
       },
       {
         slug: 'part-4',
@@ -159,7 +163,7 @@ export const c1Sections: SectionInfo[] = [
             'Dejar fuera un detalle de la frase original (un "always", un "very").',
           ],
         },
-        exercises: [...c1Part4, ...c1Part4B],
+        exercises: [...c1Part4, ...c1Part4B, ...c1Part4C],
       },
     ],
   },
