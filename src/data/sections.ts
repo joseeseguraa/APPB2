@@ -7,6 +7,7 @@ import { part3Exercises } from './uoe/part3'
 import { part3ExercisesB } from './uoe/part3b'
 import { part4Exercises } from './uoe/part4'
 import { part4ExercisesB } from './uoe/part4b'
+import { part4ExercisesC } from './uoe/part4c'
 import { future, narrativeTenses, presentPerfect } from './grammar/tenses'
 import { conditionals, passive, reportedSpeech } from './grammar/structures'
 import { gerunds, modals, relatives } from './grammar/more'
@@ -168,7 +169,7 @@ export const sections: SectionInfo[] = [
             'Olvidar información de la frase original (un "not", un tiempo verbal).',
           ],
         },
-        exercises: [...part4Exercises, ...part4ExercisesB],
+        exercises: [...part4Exercises, ...part4ExercisesB, ...part4ExercisesC],
       },
     ],
   },
