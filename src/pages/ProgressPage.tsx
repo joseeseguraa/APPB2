@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sections } from '../data/sections'
-import { exportData, importData, loadDays, loadProgress, resetAll, streak, type ProgressMap } from '../lib/progress'
+import { exportData, importData, loadDays, loadHistory, loadProgress, resetAll, skillOf, streak, weeklyAccuracy, type ProgressMap } from '../lib/progress'
+import TrendChart from '../components/TrendChart'
 import { btn, Meter, PageHeader, Panel } from '../components/ui'
 import { loadUser, saveUser } from '../lib/user'
 
@@ -94,6 +95,8 @@ export default function ProgressPage() {
           </div>
         ))}
       </Panel>
+
+      <Trends />
 
       {doneCount === 0 && (
         <Panel className="p-6 mb-10 max-w-2xl">
@@ -205,6 +208,60 @@ export default function ProgressPage() {
   )
 }
 
+const SKILLS = [
+  { slug: 'use-of-english', name: 'Use of English' },
+  { slug: 'reading', name: 'Reading' },
+  { slug: 'grammar', name: 'Grammar' },
+  { slug: 'vocabulary', name: 'Vocabulary' },
+]
+
+/** Evolución: % de aciertos por semana en cada destreza (últimas 8 semanas). */
+function Trends() {
+  const history = loadHistory()
+  if (history.filter((h) => skillOf(h.id) !== 'writing').length === 0) return null
+  const data = SKILLS.map((sk) => ({ ...sk, points: weeklyAccuracy(history, sk.slug) }))
+  return (
+    <section className="mb-10">
+      <h2 className="text-lg font-bold mb-1">Evolución</h2>
+      <p className="text-sm text-ink-2 mb-3">Porcentaje de aciertos por semana en las últimas 8 semanas. Pasa el ratón por un punto para ver el detalle.</p>
+      <Panel className="p-5 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        {data.map((d) => (
+          <TrendChart key={d.slug} title={d.name} points={d.points} />
+        ))}
+      </Panel>
+      <details className="mt-2 text-sm">
+        <summary className="cursor-pointer text-ink-2 hover:text-ink">Ver los datos en una tabla</summary>
+        <div className="overflow-x-auto mt-2">
+          <table className="text-sm tabular-nums">
+            <thead>
+              <tr className="text-xs text-ink-3 text-left">
+                <th className="font-medium pr-4 pb-1">Semana del</th>
+                {data.map((d) => (
+                  <th key={d.slug} className="font-medium pr-4 pb-1 text-right">
+                    {d.name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data[0].points.map((p, i) => (
+                <tr key={i} className="border-t border-line">
+                  <td className="pr-4 py-1">{p.week.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</td>
+                  {data.map((d) => (
+                    <td key={d.slug} className="pr-4 py-1 text-right">
+                      {d.points[i].pct === null ? '—' : `${d.points[i].pct}%`}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+  )
+}
+
 function Profile() {
   const [name, setName] = useState(() => loadUser().name)
   const [saved, setSaved] = useState(false)
@@ -288,7 +345,7 @@ function Backup({ onChange }: { onChange: () => void }) {
                 setMsg('Progreso borrado.')
                 onChange()
               }}
-              className={`${btn('danger', 'sm')} !bg-bad !text-white`}
+              className={`${btn('danger', 'sm')} !bg-bad !text-on-ink`}
             >
               Borrar todo
             </button>

@@ -89,7 +89,7 @@ export default function DailyPage() {
               <div key={k} className="text-center">
                 <div
                   className={`aspect-square rounded-md grid place-items-center text-xs font-bold tabular-nums ${
-                    r ? (r.score >= 7 ? 'bg-ok text-white' : r.score >= 5 ? 'bg-warn text-white' : 'bg-bad text-white') : 'bg-line text-ink-3'
+                    r ? (r.score >= 7 ? 'bg-ok text-on-ink' : r.score >= 5 ? 'bg-warn text-on-ink' : 'bg-bad text-on-ink') : 'bg-line text-ink-3'
                   } ${k === today ? 'ring-2 ring-offset-2 ring-ink-3' : ''}`}
                   title={r ? `${r.score}/${r.total}` : 'Sin hacer'}
                 >

@@ -4,6 +4,7 @@ import { Icon, type IconName } from './ui'
 import { dateKey, dueKeys, loadDaily } from '../lib/review'
 import { loadUser } from '../lib/user'
 import Welcome from './Welcome'
+import { loadTheme, saveTheme, type ThemePref } from '../lib/theme'
 
 interface NavItem {
   to: string
@@ -63,6 +64,36 @@ function Wordmark() {
   )
 }
 
+function ThemeToggle() {
+  const [pref, setPref] = useState<ThemePref>(loadTheme)
+  const opts: { v: ThemePref; label: string }[] = [
+    { v: 'light', label: 'Claro' },
+    { v: 'dark', label: 'Oscuro' },
+    { v: 'system', label: 'Auto' },
+  ]
+  return (
+    <div className="px-3">
+      <p className="text-xs font-semibold text-ink-3 mb-1.5">Tema</p>
+      <div role="radiogroup" aria-label="Tema de color" className="grid grid-cols-3 gap-0.5 p-0.5 rounded-md bg-bg">
+        {opts.map((o) => (
+          <button
+            key={o.v}
+            role="radio"
+            aria-checked={pref === o.v}
+            onClick={() => {
+              setPref(o.v)
+              saveTheme(o.v)
+            }}
+            className={`h-7 rounded text-xs font-semibold transition-colors ${pref === o.v ? 'bg-paper text-ink shadow-sm' : 'text-ink-3 hover:text-ink'}`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useLocation()
   const due = dueKeys().length
@@ -99,7 +130,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
                     <Icon name={it.icon} className={`w-[1.15rem] h-[1.15rem] ${active ? 'text-print' : ''}`} />
                     <span className="flex-1">{it.label}</span>
                     {it.to === '/repaso' && due > 0 && (
-                      <span className="min-w-[1.4rem] h-[1.4rem] px-1.5 grid place-items-center rounded-full bg-print text-white text-[0.7rem] font-bold tabular-nums">
+                      <span className="min-w-[1.4rem] h-[1.4rem] px-1.5 grid place-items-center rounded-full bg-print text-on-ink text-[0.7rem] font-bold tabular-nums">
                         {due}
                       </span>
                     )}
@@ -154,7 +185,10 @@ export default function Layout() {
           <Wordmark />
         </div>
         <SideNav />
-        <p className="mt-auto pt-8 px-3 text-xs leading-relaxed text-ink-3">
+        <div className="mt-auto pt-8">
+          <ThemeToggle />
+        </div>
+        <p className="pt-5 px-3 text-xs leading-relaxed text-ink-3">
           Material de práctica original. No es contenido oficial de Cambridge English.
         </p>
       </aside>
@@ -185,7 +219,7 @@ export default function Layout() {
       <div className={`lg:hidden fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
         <div
           onClick={() => setOpen(false)}
-          className={`absolute inset-0 bg-ink/40 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}
         />
         <div
           role="dialog"
@@ -202,6 +236,9 @@ export default function Layout() {
             </button>
           </div>
           <SideNav onNavigate={() => setOpen(false)} />
+          <div className="mt-8">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
 

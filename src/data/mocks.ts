@@ -1,7 +1,7 @@
 import type { Exercise, PartInfo, WritingTask } from '../types'
 import { findPart, findSection } from './sections'
 
-export const MOCK_COUNT = 3
+export const MOCK_COUNT = 6
 
 export interface MockPart {
   label: string

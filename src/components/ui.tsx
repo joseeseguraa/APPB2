@@ -10,8 +10,8 @@ export function btn(variant: Variant = 'primary', size: 'md' | 'sm' = 'md'): str
     'inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors disabled:opacity-40 disabled:pointer-events-none whitespace-nowrap'
   const sizes = { md: 'h-11 px-5 text-[0.95rem]', sm: 'h-9 px-3.5 text-sm' }
   const variants: Record<Variant, string> = {
-    primary: 'bg-ink text-white hover:bg-black',
-    accent: 'bg-print text-white hover:bg-print-deep',
+    primary: 'bg-ink text-on-ink hover:opacity-90',
+    accent: 'bg-print text-on-ink hover:bg-print-deep',
     secondary: 'bg-paper text-ink border border-line-strong hover:border-ink',
     quiet: 'text-ink-2 hover:text-ink hover:bg-line/60',
     danger: 'bg-paper text-bad border border-bad/30 hover:bg-bad-soft',
@@ -30,9 +30,9 @@ export type MarkState = 'empty' | 'marked' | 'correct' | 'wrong' | 'missed' | 'd
 export function Lozenge({ letter, state }: { letter: string; state: MarkState }) {
   const styles: Record<MarkState, string> = {
     empty: 'border-print/70 text-print bg-paper',
-    marked: 'border-ink bg-ink text-white',
-    correct: 'border-ok bg-ok text-white',
-    wrong: 'border-bad bg-bad text-white',
+    marked: 'border-ink bg-ink text-on-ink',
+    correct: 'border-ok bg-ok text-on-ink',
+    wrong: 'border-bad bg-bad text-on-ink',
     missed: 'border-ok text-ok bg-ok-soft border-dashed',
     dim: 'border-line-strong text-ink-3 bg-paper',
   }
@@ -273,7 +273,7 @@ export function Icon({ name, className = 'w-5 h-5' }: { name: IconName; classNam
 export function IconTile({ name, tone = 'print' }: { name: IconName; tone?: 'print' | 'ink' }) {
   return (
     <span
-      className={`shrink-0 grid place-items-center w-11 h-11 rounded-lg ${tone === 'print' ? 'bg-print-soft text-print' : 'bg-ink text-white'}`}
+      className={`shrink-0 grid place-items-center w-11 h-11 rounded-lg ${tone === 'print' ? 'bg-print-soft text-print' : 'bg-ink text-on-ink'}`}
     >
       <Icon name={name} className="w-[1.35rem] h-[1.35rem]" />
     </span>

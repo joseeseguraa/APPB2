@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { Card } from '../lib/cards'
-import { checkAll } from '../lib/exercise'
+import { checkAll, shuffleOptions } from '../lib/exercise'
 import { ExerciseBody } from '../pages/ExercisePage'
 import { btn, Meter, Panel } from './ui'
 
@@ -21,6 +21,8 @@ export default function QuizSession({ cards, onAnswer, onFinish, endExtra }: Pro
   const [value, setValue] = useState<string[]>([''])
   const [result, setResult] = useState<boolean[] | null>(null)
   const [log, setLog] = useState<boolean[]>([])
+  // opciones barajadas una vez por sesión
+  const [shuffled] = useState(() => cards.map((c) => shuffleOptions(c.ex)))
   const done = i >= cards.length
 
   if (done) {
@@ -57,8 +59,9 @@ export default function QuizSession({ cards, onAnswer, onFinish, endExtra }: Pro
   }
 
   const card = cards[i]
+  const view = shuffled[i]
   const check = () => {
-    const r = checkAll(card.ex, value)
+    const r = checkAll(view, value)
     setResult(r)
     onAnswer?.(card, r[0])
   }
@@ -85,7 +88,7 @@ export default function QuizSession({ cards, onAnswer, onFinish, endExtra }: Pro
       </p>
       <ExerciseBody
         key={card.key}
-        ex={card.ex}
+        ex={view}
         answers={value}
         results={result}
         disabled={result !== null}

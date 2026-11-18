@@ -214,10 +214,10 @@ function MockRueRunner({ n }: { n: number }) {
               key={i}
               onClick={() => go(i)}
               aria-current={tab === i}
-              className={`shrink-0 h-10 rounded-md px-3 text-sm transition-colors ${tab === i ? 'bg-ink text-white' : 'hover:bg-paper'}`}
+              className={`shrink-0 h-10 rounded-md px-3 text-sm transition-colors ${tab === i ? 'bg-ink text-on-ink' : 'hover:bg-paper'}`}
             >
               <b>Part {i + 1}</b>{' '}
-              <span className={`tabular-nums ${tab === i ? 'text-white/70' : 'text-ink-3'}`}>
+              <span className={`tabular-nums ${tab === i ? 'text-on-ink/70' : 'text-ink-3'}`}>
                 {r ? `${r.filter(Boolean).length}/${r.length}` : `${done}/${answers[i].length}`}
               </span>
             </button>
@@ -372,10 +372,10 @@ function MockWritingRunner({ n }: { n: number }) {
               aria-checked={choice === i}
               disabled={phase !== 'writing'}
               onClick={() => setChoice(i)}
-              className={`rounded-md border p-4 text-left transition-colors ${choice === i ? 'border-ink bg-ink text-white' : 'border-line bg-paper hover:border-ink'}`}
+              className={`rounded-md border p-4 text-left transition-colors ${choice === i ? 'border-ink bg-ink text-on-ink' : 'border-line bg-paper hover:border-ink'}`}
             >
               <b className="block">{o.part.name}</b>
-              <span className={`text-sm ${choice === i ? 'text-white/70' : 'text-ink-3'}`}>{o.task.title}</span>
+              <span className={`text-sm ${choice === i ? 'text-on-ink/70' : 'text-ink-3'}`}>{o.task.title}</span>
             </button>
           ))}
         </div>

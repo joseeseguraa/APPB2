@@ -260,9 +260,9 @@ export default function Home() {
             </Link>
           </Panel>
 
-          <Panel className="p-5 !bg-ink !border-ink text-white">
+          <Panel className="p-5 !bg-ink !border-ink text-on-ink">
             <p className="font-bold">¿Listo para medirte?</p>
-            <p className="text-white/75 text-sm mt-1 leading-relaxed">Haz un simulacro con el tiempo oficial y obtén una nota estimada.</p>
+            <p className="text-on-ink/75 text-sm mt-1 leading-relaxed">Haz un simulacro con el tiempo oficial y obtén una nota estimada.</p>
             <Link to="/simulacro" className={`${btn('secondary', 'sm')} mt-4 !border-transparent`}>
               Ir a simulacros
             </Link>

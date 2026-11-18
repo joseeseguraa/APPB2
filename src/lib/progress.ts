@@ -40,6 +40,7 @@ export function saveAttempt(exerciseId: string, score: number, total: number, wr
       wrong,
     }
     localStorage.setItem(KEY, JSON.stringify(all))
+    logHistory(exerciseId, score, total)
     logActivity()
   } catch {
     // almacenamiento no disponible: la app sigue funcionando sin guardar
@@ -118,4 +119,73 @@ export function resetAll(): void {
     if (k?.startsWith(PREFIX)) keys.push(k)
   }
   keys.forEach((k) => localStorage.removeItem(k))
+}
+
+/* ---------- Historial de intentos (para la gráfica de evolución) ---------- */
+
+const HISTORY_KEY = 'appb2.history.v1'
+const HISTORY_MAX = 3000
+
+export interface HistoryEntry {
+  /** fecha ISO */
+  d: string
+  id: string
+  s: number
+  t: number
+}
+
+export function loadHistory(): HistoryEntry[] {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]') as HistoryEntry[]
+  } catch {
+    return []
+  }
+}
+
+function logHistory(id: string, s: number, t: number) {
+  try {
+    const h = loadHistory()
+    h.push({ d: new Date().toISOString(), id, s, t })
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(-HISTORY_MAX)))
+  } catch {
+    /* sin almacenamiento */
+  }
+}
+
+/** Destreza de un ejercicio según el prefijo de su id. */
+export function skillOf(id: string): 'use-of-english' | 'reading' | 'grammar' | 'vocabulary' | 'writing' | null {
+  if (id.startsWith('uoe')) return 'use-of-english'
+  if (id.startsWith('rd')) return 'reading'
+  if (id.startsWith('gr')) return 'grammar'
+  if (id.startsWith('vo')) return 'vocabulary'
+  if (id.startsWith('wr')) return 'writing'
+  return null
+}
+
+/** Lunes (00:00) de la semana de una fecha. */
+export function weekStart(d: Date): Date {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  const day = (x.getDay() + 6) % 7 // lunes = 0
+  x.setDate(x.getDate() - day)
+  return x
+}
+
+/** Aciertos por semana (últimas `weeks` semanas) para una destreza. null = semana sin práctica. */
+export function weeklyAccuracy(history: HistoryEntry[], skill: string, weeks = 8, now = new Date()) {
+  const start = weekStart(now)
+  const buckets = Array.from({ length: weeks }, (_, i) => {
+    const w = new Date(start)
+    w.setDate(w.getDate() - 7 * (weeks - 1 - i))
+    return { week: w, s: 0, t: 0 }
+  })
+  for (const e of history) {
+    if (skillOf(e.id) !== skill) continue
+    const ws = weekStart(new Date(e.d)).getTime()
+    const b = buckets.find((x) => x.week.getTime() === ws)
+    if (b) {
+      b.s += e.s
+      b.t += e.t
+    }
+  }
+  return buckets.map((b) => ({ week: b.week, score: b.s, total: b.t, pct: b.t ? Math.round((b.s / b.t) * 100) : null }))
 }

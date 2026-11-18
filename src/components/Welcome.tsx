@@ -40,7 +40,7 @@ export default function Welcome({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] bg-ink/50 grid place-items-center p-4" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div className="fixed inset-0 z-[60] bg-black/60 grid place-items-center p-4" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
       <div className="w-full max-w-lg bg-paper rounded-xl shadow-2xl overflow-hidden">
         <div className="h-1 bg-line">
           <div className="h-full bg-print transition-all duration-300" style={{ width: `${((step + 1) / 3) * 100}%` }} />

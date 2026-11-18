@@ -95,3 +95,24 @@ describe('repaso espaciado', () => {
     expect(loadReview()['gr-pp-1#0'].lapses).toBe(2)
   })
 })
+
+import { sections } from './data/sections'
+import { shuffleOptions } from './lib/exercise'
+
+describe('barajar opciones', () => {
+  it('mantiene la respuesta correcta en todos los ejercicios', () => {
+    for (const s of sections)
+      for (const p of s.parts)
+        for (const ex of p.exercises) {
+          const sh = shuffleOptions(ex)
+          if (sh.kind === 'mc-cloze' && ex.kind === 'mc-cloze')
+            sh.gaps.forEach((g, i) => expect(g.options[g.answer]).toBe(ex.gaps[i].options[ex.gaps[i].answer]))
+          if (sh.kind === 'choice' && ex.kind === 'choice')
+            sh.items.forEach((it, i) => expect(it.options[it.answer]).toBe(ex.items[i].options[ex.items[i].answer]))
+          if (sh.kind === 'reading-mc' && ex.kind === 'reading-mc')
+            sh.questions.forEach((q, i) => expect(q.options[q.answer]).toBe(ex.questions[i].options[ex.questions[i].answer]))
+          if (sh.kind === 'gapped-text' && ex.kind === 'gapped-text')
+            sh.answers.forEach((a, i) => expect(sh.sentences[a]).toBe(ex.sentences[ex.answers[i]]))
+        }
+  })
+})

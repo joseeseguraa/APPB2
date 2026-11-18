@@ -25,6 +25,8 @@
   --color-bad-soft: #fbebe9;
   --color-warn: #8a5a00;
   --color-warn-soft: #fdf3dc;
+  /* texto sobre fondos de color (botones, casillas marcadas) */
+  --color-on-ink: #ffffff;
 
   --font-sans: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Newsreader Variable", Georgia, "Times New Roman", serif;
@@ -34,6 +36,29 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  color-scheme: light;
+}
+
+/* Modo oscuro: mismos nombres de token, pasos propios (no una inversión automática) */
+html.dark {
+  color-scheme: dark;
+  --color-bg: #121419;
+  --color-paper: #1b1e25;
+  --color-ink: #e9ebf0;
+  --color-ink-2: #b4b9c4;
+  --color-ink-3: #868c99;
+  --color-line: #2b2f38;
+  --color-line-strong: #3d424d;
+  --color-print: #e2689c;
+  --color-print-soft: #3a1f2d;
+  --color-print-deep: #f08db8;
+  --color-ok: #4fc48d;
+  --color-ok-soft: #16301f;
+  --color-bad: #f0766c;
+  --color-bad-soft: #3a1c1a;
+  --color-warn: #e3b14f;
+  --color-warn-soft: #33290f;
+  --color-on-ink: #121419;
 }
 body {
   @apply bg-bg text-ink antialiased;

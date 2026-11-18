@@ -153,3 +153,51 @@ export function splitGaps(text: string): (string | number)[] {
   if (last < text.length) out.push(text.slice(last))
   return out
 }
+
+/** Permutación aleatoria de 0..n-1. */
+function permutation(n: number, rnd: () => number = Math.random): number[] {
+  const p = Array.from({ length: n }, (_, i) => i)
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1))
+    ;[p[i], p[j]] = [p[j], p[i]]
+  }
+  return p
+}
+
+function shuffleOpts<T>(options: T[], answer: number): { options: T[]; answer: number } {
+  const p = permutation(options.length)
+  return { options: p.map((i) => options[i]), answer: p.indexOf(answer) }
+}
+
+/**
+ * Copia del ejercicio con las opciones barajadas (para que al repetir no se memorice la letra).
+ * No cambia el orden de las preguntas, así que los índices de pregunta siguen siendo válidos.
+ */
+export function shuffleOptions(ex: Exercise): Exercise {
+  switch (ex.kind) {
+    case 'mc-cloze':
+      return {
+        ...ex,
+        gaps: ex.gaps.map((g) => {
+          const s = shuffleOpts(g.options, g.answer)
+          return { ...g, options: s.options as typeof g.options, answer: s.answer }
+        }),
+      }
+    case 'choice':
+      return { ...ex, items: ex.items.map((it) => ({ ...it, ...shuffleOpts(it.options, it.answer) })) }
+    case 'reading-mc':
+      return {
+        ...ex,
+        questions: ex.questions.map((q) => {
+          const s = shuffleOpts(q.options, q.answer)
+          return { ...q, options: s.options as typeof q.options, answer: s.answer }
+        }),
+      }
+    case 'gapped-text': {
+      const p = permutation(ex.sentences.length)
+      return { ...ex, sentences: p.map((i) => ex.sentences[i]), answers: ex.answers.map((a) => p.indexOf(a)) }
+    }
+    default:
+      return ex
+  }
+}

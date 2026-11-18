@@ -21,11 +21,12 @@ import {
   LETTERS,
   parseErrorSentence,
   questionCount,
+  shuffleOptions,
   splitGaps,
   userDisplay,
 } from '../lib/exercise'
 import { containsKeyword, countKwtWords } from '../lib/answers'
-import { saveAttempt } from '../lib/progress'
+import { loadProgress, saveAttempt } from '../lib/progress'
 import { recordMistakes } from '../lib/review'
 import { isReviewable } from '../lib/cards'
 import { reportUrl } from '../lib/report'
@@ -100,7 +101,9 @@ export function ActionBar({ children, sticky = true }: { children: ReactNode; st
   )
 }
 
-function Runner({ ex, mode, minutes, partUrl, nextUrl, position }: RunnerProps) {
+function Runner({ ex: original, mode, minutes, partUrl, nextUrl, position }: RunnerProps) {
+  // Si ya lo has hecho antes, las opciones salen en otro orden para que no memorices la letra
+  const [ex, setEx] = useState<Exercise>(() => (loadProgress()[original.id] ? shuffleOptions(original) : original))
   const n = questionCount(ex)
   const [answers, setAnswers] = useState<string[]>(() => Array(n).fill(''))
   const [results, setResults] = useState<boolean[] | null>(null)
@@ -139,6 +142,7 @@ function Runner({ ex, mode, minutes, partUrl, nextUrl, position }: RunnerProps) 
     setResults(null)
   }
   const restart = () => {
+    setEx(shuffleOptions(original))
     setAnswers(Array(n).fill(''))
     setResults(null)
     finishedRef.current = false
@@ -655,10 +659,10 @@ function ErrorSpot({ ex, answers, results, onChange, disabled }: PartProps<Error
               <p className="passage !text-[1.08rem] flex flex-wrap gap-x-[0.3em] gap-y-1">
                 {tokens.map((t, j) => {
                   const selected = sel === String(j)
-                  let cls = selected ? 'bg-ink text-white' : 'enabled:hover:bg-print-soft'
+                  let cls = selected ? 'bg-ink text-on-ink' : 'enabled:hover:bg-print-soft'
                   if (results) {
-                    if (j === wrong) cls = selected ? 'bg-ok text-white' : 'underline decoration-bad decoration-wavy decoration-2 underline-offset-4'
-                    else cls = selected ? 'bg-bad text-white' : ''
+                    if (j === wrong) cls = selected ? 'bg-ok text-on-ink' : 'underline decoration-bad decoration-wavy decoration-2 underline-offset-4'
+                    else cls = selected ? 'bg-bad text-on-ink' : ''
                   }
                   return (
                     <button key={j} type="button" disabled={disabled} onClick={() => onChange(i, String(j))} className={`rounded px-0.5 -mx-0.5 transition-colors ${cls}`}>
