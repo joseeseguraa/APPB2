@@ -7,6 +7,7 @@ import ExercisePage from './pages/ExercisePage'
 import NotFound from './pages/NotFound'
 import ExamPage from './pages/ExamPage'
 import StrategyPage from './pages/StrategyPage'
+import SearchPage from './pages/SearchPage'
 import ReviewPage from './pages/ReviewPage'
 import DailyPage from './pages/DailyPage'
 import { FlashcardsHome, FlashcardsSession } from './pages/FlashcardsPage'
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="s/:section/:part/:exercise" element={<ExercisePage />} />
         <Route path="examen" element={<ExamPage />} />
         <Route path="estrategia" element={<StrategyPage />} />
+        <Route path="buscar" element={<SearchPage />} />
         <Route path="repaso" element={<ReviewPage />} />
         <Route path="reto" element={<DailyPage />} />
         <Route path="tarjetas" element={<FlashcardsHome />} />

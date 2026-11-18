@@ -43,6 +43,7 @@ const GROUPS: { title?: string; items: NavItem[] }[] = [
     items: [
       { to: '/s/grammar', label: 'Grammar', icon: 'grammar' },
       { to: '/s/vocabulary', label: 'Vocabulary', icon: 'vocabulary' },
+      { to: '/buscar', label: 'Buscar', icon: 'search' },
     ],
   },
   {

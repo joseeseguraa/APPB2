@@ -171,6 +171,7 @@ export type IconName =
   | 'copy'
   | 'cards'
   | 'tips'
+  | 'search'
 
 const ICONS: Record<IconName, ReactNode> = {
   home: <path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4v-9.5Z" />,
@@ -259,6 +260,12 @@ const ICONS: Record<IconName, ReactNode> = {
     <>
       <rect x="7" y="7" width="13" height="13" rx="2" />
       <path d="M17 7V5.5A1.5 1.5 0 0 0 15.5 4h-10A1.5 1.5 0 0 0 4 5.5v10A1.5 1.5 0 0 0 5.5 17H7" />
+    </>
+  ),
+  search: (
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4.5 4.5" />
     </>
   ),
   tips: (
