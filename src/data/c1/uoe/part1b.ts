@@ -1,0 +1,73 @@
+import type { McClozeExercise } from '../../../types'
+import { mc } from '../../helpers'
+
+export const c1Part1B: McClozeExercise[] = [
+  {
+    id: 'c1-uoe1-03',
+    kind: 'mc-cloze',
+    title: 'The science of first impressions',
+    focus: 'Colocaciones con sustantivos abstractos',
+    text: `It takes us less than a second to {1} an opinion about someone we have just met. Within that time, we decide whether they seem trustworthy, competent and friendly, often on the {2} of nothing more than the shape of their face. What is remarkable is not how quickly we judge, but how {3} we are to change our minds afterwards. Once an impression has been formed, we tend to notice information that confirms it and {4} anything that contradicts it. This has obvious {5} for job interviews, where candidates may be rejected before they have had a chance to speak. Some organisations have tried to {6} the problem by removing names and photographs from application forms. Others train interviewers to {7} judgement until the end of the conversation. Neither approach is perfect, but both reflect a growing {8} that our instincts about people are far less reliable than we assume.`,
+    gaps: [
+      mc('c1-uoe1-03-1', 'form', ['shape', 'build', 'take'], 'Colocación: "form an opinion / an impression" = formarse una opinión.'),
+      mc('c1-uoe1-03-2', 'basis', ['ground', 'base', 'foundation'], 'Expresión fija: "on the basis of" = basándose en. "On the grounds of" llevaría plural.'),
+      mc('c1-uoe1-03-3', 'reluctant', ['unwilling to', 'opposed', 'resistant'], '"Be reluctant to do something" = ser reacio a. "Opposed" y "resistant" llevan "to + -ing".'),
+      mc('c1-uoe1-03-4', 'disregard', ['neglect', 'omit', 'miss out'], '"Disregard" = no hacer caso, pasar por alto información. "Neglect" es descuidar una obligación.'),
+      mc('c1-uoe1-03-5', 'implications', ['consequences of', 'outcomes', 'effects on'], '"Have implications for something" = tener repercusiones para algo. "Consequences" iría con "for" también, pero aquí la opción lleva "of".'),
+      mc('c1-uoe1-03-6', 'address', ['face up', 'confront with', 'attend'], '"Address a problem" = abordarlo. "Face up" necesita "to" y "attend" necesita "to".'),
+      mc('c1-uoe1-03-7', 'suspend', ['postpone to', 'delay on', 'hang'], 'Colocación: "suspend judgement" = no juzgar todavía.'),
+      mc('c1-uoe1-03-8', 'recognition', ['acknowledgement of', 'acceptance to', 'admission for'], '"A growing recognition that…" = un reconocimiento cada vez mayor de que…'),
+    ],
+  },
+  {
+    id: 'c1-uoe1-04',
+    kind: 'mc-cloze',
+    title: 'Rewilding Europe',
+    focus: 'Verbos con matices parecidos',
+    text: `Across Europe, a quiet revolution is {1} place in the countryside. Land that was once farmed intensively is being handed back to nature in a process known as rewilding. Rather than managing every hedge and field, conservationists step back and let natural processes {2} their course. In some areas, animals that had long since vanished, such as beavers, bison and wild boar, have been {3}. The results can be dramatic. Beavers, for example, build dams that slow the flow of rivers, {4} the risk of flooding further downstream and creating wetlands where other species thrive. Not everyone is enthusiastic, however. Farmers worry that wild animals will {5} their crops and livestock, and some rural communities feel that decisions are being {6} on them by city-based campaigners. Supporters argue that rewilding can bring new {7} of income through tourism. Whether it can win over the people who live alongside it will {8} on how carefully it is introduced.`,
+    gaps: [
+      mc('c1-uoe1-04-1', 'taking', ['having', 'making', 'getting'], 'Expresión fija: "take place" = tener lugar.'),
+      mc('c1-uoe1-04-2', 'run', ['follow', 'go', 'take'], 'Expresión fija: "let things run their course" = dejar que las cosas sigan su curso.'),
+      mc('c1-uoe1-04-3', 'reintroduced', ['replaced', 'reproduced', 'restored to'], '"Reintroduce a species" = volver a introducir una especie.'),
+      mc('c1-uoe1-04-4', 'reducing', ['decreasing to', 'lowering down', 'falling'], '"Reduce the risk" = reducir el riesgo.'),
+      mc('c1-uoe1-04-5', 'damage', ['injure', 'harm to', 'hurt'], '"Damage crops" = dañar cultivos. "Injure" y "hurt" se usan con seres vivos.'),
+      mc('c1-uoe1-04-6', 'imposed', ['obliged', 'compelled', 'required'], '"Impose something ON somebody" = imponer. Es el único que va con "on".'),
+      mc('c1-uoe1-04-7', 'sources', ['origins', 'springs', 'roots'], '"Sources of income" = fuentes de ingresos.'),
+      mc('c1-uoe1-04-8', 'depend', ['rely', 'count', 'rest'], '"Depend on how…" = depender de cómo… "Rely" y "count" significan confiar en.'),
+    ],
+  },
+  {
+    id: 'c1-uoe1-05',
+    kind: 'mc-cloze',
+    title: 'The return of vinyl',
+    focus: 'Expresiones idiomáticas',
+    text: `When compact discs arrived in the 1980s, the vinyl record seemed {1} for extinction. Within a decade, most record factories had closed, and the few that remained {2} a living by supplying collectors and DJs. Nobody could have predicted that, thirty years later, vinyl sales would be at their highest {3} since the early nineties. Part of the explanation is nostalgia, but that does not {4} for the large number of young buyers who never owned a record player in the first place. For many of them, vinyl offers something that streaming cannot: a physical object that can be held, {5} and displayed. Buying a record is also a statement of {6}; it shows that you care enough about an artist to pay for their work. Sceptics point out that many buyers never actually play their records, and that the sound quality is not {7} superior to digital formats. But for its fans, that is {8} the point.`,
+    gaps: [
+      mc('c1-uoe1-05-1', 'destined', ['fated to', 'meant to', 'bound to'], '"Destined for extinction" = condenado a desaparecer. "Bound" y "meant" irían con "to + infinitivo".'),
+      mc('c1-uoe1-05-2', 'scraped', ['earned up', 'gained', 'won'], 'Expresión: "scrape a living" = ganarse la vida a duras penas.'),
+      mc('c1-uoe1-05-3', 'level', ['grade', 'stage', 'rank'], '"At their highest level since…" = en su nivel más alto desde…'),
+      mc('c1-uoe1-05-4', 'account', ['explain', 'justify', 'reason'], '"Account for something" = explicar algo. "Explain" no lleva "for".'),
+      mc('c1-uoe1-05-5', 'treasured', ['valued at', 'priced', 'appreciated for'], '"Treasured" = apreciado como un tesoro, guardado con cariño.'),
+      mc('c1-uoe1-05-6', 'loyalty', ['faith in', 'devotion to', 'trust on'], '"A statement of loyalty" = una muestra de lealtad. Las otras opciones llevan preposiciones que no encajan.'),
+      mc('c1-uoe1-05-7', 'necessarily', ['essentially', 'basically', 'certainly'], '"Not necessarily" = no necesariamente.'),
+      mc('c1-uoe1-05-8', 'beside', ['besides', 'aside', 'apart'], 'Expresión fija: "beside the point" = no es lo que importa. "Besides" significa "además".'),
+    ],
+  },
+  {
+    id: 'c1-uoe1-06',
+    kind: 'mc-cloze',
+    title: 'A sense of place',
+    focus: 'Phrasal verbs y colocaciones',
+    text: `Psychologists have long been interested in the way that places {1} our sense of who we are. Ask people to describe the house they grew up in, and most will be able to {2} up detailed memories of rooms, smells and sounds. These memories are not simply pleasant; they appear to play a {3} role in our emotional well-being. Research suggests that people who move frequently as children can find it harder to {4} roots as adults, while those with a strong attachment to a particular place tend to cope better with stress. This has led some urban planners to argue that cities should be designed with a greater {5} to community and continuity. Too often, they say, familiar buildings are {6} down and replaced with structures that have no connection to the history of the area. The result is that residents feel {7} from the places where they live. Preserving a sense of place, in other words, is not a matter of sentimental attachment but of public health, and it deserves to be {8} seriously.`,
+    gaps: [
+      mc('c1-uoe1-06-1', 'shape', ['form up', 'model on', 'carve'], '"Shape our sense of who we are" = moldear, influir en nuestra identidad.'),
+      mc('c1-uoe1-06-2', 'conjure', ['bring', 'call', 'pick'], '"Conjure up memories" = evocar recuerdos.'),
+      mc('c1-uoe1-06-3', 'crucial', ['critical of', 'decisive in', 'key to'], '"Play a crucial role" = desempeñar un papel fundamental. "Key" también existiría, pero aquí lleva "to".'),
+      mc('c1-uoe1-06-4', 'put', ['set', 'lay', 'place'], 'Expresión fija: "put down roots" = echar raíces, asentarse.'),
+      mc('c1-uoe1-06-5', 'commitment', ['devotion of', 'attention on', 'dedication for'], '"A commitment to something" = un compromiso con algo.'),
+      mc('c1-uoe1-06-6', 'pulled', ['set', 'taken', 'turned'], '"Pull down a building" = derribarlo. "Knock down" también existe.'),
+      mc('c1-uoe1-06-7', 'disconnected', ['separated off', 'divided', 'detached to'], '"Feel disconnected from" = sentirse desconectado de.'),
+      mc('c1-uoe1-06-8', 'taken', ['made', 'thought', 'held'], 'Colocación: "take something seriously" = tomarse algo en serio.'),
+    ],
+  },
+]

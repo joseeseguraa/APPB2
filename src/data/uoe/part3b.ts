@@ -43,7 +43,7 @@ export const part3ExercisesB: WordFormationExercise[] = [
     text: `When the tennis player Laura Kemp injured her knee at the age of twenty-three, many people believed her career was over. Doctors warned her that a full {1} could take more than a year, and that there was no {2} she would ever play at the highest level again. Kemp, however, refused to give up. She followed a strict programme of {3} and exercise, and spent hours every day in the gym. Her {4} paid off. Eighteen months after the injury she returned to competition, and, {5}, she won her first tournament back. "People kept telling me it was {6}," she says. "But I never lost my belief." She now gives talks to young athletes about the {7} of mental strength, and says her injury taught her to be more {8}.`,
     gaps: [
       { stem: 'RECOVER', answers: ['recovery'], explanation: '"A full + sustantivo": recovery (recuperación).' },
-      { stem: 'GUARANTEE', answers: ['guarantee'], explanation: 'Trampa: a veces la palabra no cambia. "There was no guarantee" = no había garantía. Lee siempre el contexto.' },
+      { stem: 'CERTAIN', answers: ['certainty'], explanation: '"There was no + sustantivo": certainty (certeza). No había ninguna certeza de que volviera a jugar.' },
       { stem: 'TREAT', answers: ['treatment'], explanation: '"A programme of + sustantivo": treatment (tratamiento).' },
       { stem: 'DETERMINE', answers: ['determination'], explanation: '"Her + sustantivo": determination (determinación). Se pierde la e final.' },
       { stem: 'REMARK', answers: ['remarkably'], explanation: 'Adverbio que comenta toda la frase: remarkably (sorprendentemente).' },

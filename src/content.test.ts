@@ -114,6 +114,8 @@ describe('contenido', () => {
                   expect(new Set(g.options).size).toBe(4)
                 } else {
                   for (const a of g.answers) expect(a.trim().split(/\s+/)).toHaveLength(1)
+                  // en word formation la respuesta nunca es la raíz sin cambiar
+                  if ('stem' in g) for (const a of g.answers) expect(normalize(a), `${ex.id} ${g.stem}`).not.toBe(normalize(g.stem))
                   if ('stem' in g) expect(g.stem).toBe(g.stem.toUpperCase())
                 }
               }

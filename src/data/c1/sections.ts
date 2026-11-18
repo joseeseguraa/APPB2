@@ -1,12 +1,20 @@
 import type { SectionInfo } from '../../types'
 import { c1Part1 } from './uoe/part1'
+import { c1Part1B } from './uoe/part1b'
 import { c1Part2 } from './uoe/part2'
+import { c1Part2B } from './uoe/part2b'
 import { c1Part3 } from './uoe/part3'
+import { c1Part3B } from './uoe/part3b'
 import { c1Part4 } from './uoe/part4'
+import { c1Part4B } from './uoe/part4b'
 import { c1Part5 } from './reading/part5'
+import { c1Part5B } from './reading/part5b'
 import { c1Part6 } from './reading/part6'
+import { c1Part6B } from './reading/part6b'
 import { c1Part7 } from './reading/part7'
+import { c1Part7B } from './reading/part7b'
 import { c1Part8 } from './reading/part8'
+import { c1Part8B } from './reading/part8b'
 
 /** C1 Advanced: Reading & Use of English (8 partes, 56 preguntas, 1 h 30 min). */
 export const c1Sections: SectionInfo[] = [
@@ -47,7 +55,7 @@ export const c1Sections: SectionInfo[] = [
             'Fiarse de la traducción: "jugar un papel" es "play a role", pero "tomar una decisión" es "make a decision".',
           ],
         },
-        exercises: c1Part1,
+        exercises: [...c1Part1, ...c1Part1B],
       },
       {
         slug: 'part-2',
@@ -77,7 +85,7 @@ export const c1Sections: SectionInfo[] = [
             'Olvidar que algunas expresiones llevan artículo: as a result, on the whole, for the time being.',
           ],
         },
-        exercises: c1Part2,
+        exercises: [...c1Part2, ...c1Part2B],
       },
       {
         slug: 'part-3',
@@ -106,7 +114,7 @@ export const c1Sections: SectionInfo[] = [
             'Errores de ortografía en dobles consonantes y en -able/-ible.',
           ],
         },
-        exercises: c1Part3,
+        exercises: [...c1Part3, ...c1Part3B],
       },
       {
         slug: 'part-4',
@@ -136,7 +144,7 @@ export const c1Sections: SectionInfo[] = [
             'Dejar fuera un detalle de la frase original (un "always", un "very").',
           ],
         },
-        exercises: c1Part4,
+        exercises: [...c1Part4, ...c1Part4B],
       },
     ],
   },
@@ -176,7 +184,7 @@ export const c1Sections: SectionInfo[] = [
             'No distinguir entre lo que piensa el autor y lo que dice que piensan otros.',
           ],
         },
-        exercises: c1Part5,
+        exercises: [...c1Part5, ...c1Part5B],
       },
       {
         slug: 'part-6',
@@ -204,7 +212,7 @@ export const c1Sections: SectionInfo[] = [
             'Olvidar que la pregunta puede pedir la opinión diferente, no la parecida.',
           ],
         },
-        exercises: c1Part6,
+        exercises: [...c1Part6, ...c1Part6B],
       },
       {
         slug: 'part-7',
@@ -233,7 +241,7 @@ export const c1Sections: SectionInfo[] = [
             'No mirar la frase que viene después del hueco.',
           ],
         },
-        exercises: c1Part7,
+        exercises: [...c1Part7, ...c1Part7B],
       },
       {
         slug: 'part-8',
@@ -261,7 +269,7 @@ export const c1Sections: SectionInfo[] = [
             'Pasar demasiado tiempo en una pregunta: es la parte en la que más rápido se puede sumar.',
           ],
         },
-        exercises: c1Part8,
+        exercises: [...c1Part8, ...c1Part8B],
       },
     ],
   },
