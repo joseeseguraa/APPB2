@@ -1,0 +1,55 @@
+import type { OpenClozeExercise } from '../../types'
+
+export const part2ExercisesC: OpenClozeExercise[] = [
+  {
+    id: 'uoe2-11',
+    kind: 'open-cloze',
+    title: 'Learning to cook at thirty',
+    focus: 'Phrasal verbs, relativos y comparativos',
+    text: `Until last year, I couldn't cook anything more complicated {1} toast. I lived on takeaways and ready meals, {2} cost me a fortune and did nothing for my health. Then a friend gave me a cookery course for my birthday. I nearly didn't go, but I'm glad I did. The teacher was a retired chef {3} patience seemed to have no limit. She taught us how to use a knife properly, how to make a simple sauce and, most importantly, how to stop panicking {4} something went wrong. By the end of the course, I was cooking for myself {5} night of the week. I've also saved a lot of money, {6} I now spend more on fresh ingredients. I still make mistakes, of course. Last week I set fire {7} a tea towel. But I've realised that cooking is not about being perfect. It's about enjoying the process, and the more you practise, the {8} confident you become.`,
+    gaps: [
+      { answers: ['than'], explanation: 'Comparativo: "more complicated THAN".' },
+      { answers: ['which'], explanation: 'Relativo no especificativo (después de coma) que se refiere a "takeaways and ready meals": which. "That" no se usa después de coma.' },
+      { answers: ['whose'], explanation: '"Whose" = cuyo. La paciencia es de la profesora: a chef whose patience…' },
+      { answers: ['when', 'if', 'whenever'], explanation: '"When / if something went wrong" = cuando algo salía mal.' },
+      { answers: ['every', 'each'], explanation: '"Every night of the week" = todas las noches.' },
+      { answers: ['although', 'though'], explanation: 'Contraste: ha ahorrado aunque gasta más en ingredientes: although o though.' },
+      { answers: ['to'], explanation: 'Expresión fija: "set fire TO something" = prender fuego a algo.' },
+      { answers: ['more'], explanation: 'Estructura "the more…, the more…": the more you practise, the more confident you become.' },
+    ],
+  },
+  {
+    id: 'uoe2-12',
+    kind: 'open-cloze',
+    title: 'Why we love horror films',
+    focus: 'Pronombres, auxiliares y expresiones',
+    text: `Why would anyone pay money to be frightened? It seems strange, but horror films are {1} of the most profitable types of film in the world. Psychologists believe that part of the answer lies in the way our bodies react. When we watch something scary, our heart beats faster and our body produces adrenaline, just {2} it would in a real emergency. However, because we know we are safe, we can enjoy the excitement {3} any real danger. Another reason is social. Watching a horror film with friends is a shared experience, and screaming together can bring people closer. Interestingly, not everyone reacts {4} the same way. Some people find horror films unbearable, {5} others watch them to relax. Researchers have found that people {6} enjoy them tend to be more curious and open to new experiences. So if you are one of {7} who has to hide behind a cushion, don't worry. There is nothing wrong with you; you {8} simply have a different personality.`,
+    gaps: [
+      { answers: ['one'], explanation: '"One of the most + adjetivo + plural" = uno de los más…' },
+      { answers: ['as'], explanation: '"Just as it would…" = igual que lo haría. Va seguido de sujeto y verbo, así que no sirve "like" en inglés formal.' },
+      { answers: ['without'], explanation: '"Without any real danger" = sin ningún peligro real.' },
+      { answers: ['in'], explanation: 'Expresión fija: "in the same way" = de la misma manera.' },
+      { answers: ['while', 'whereas', 'whilst'], explanation: 'Contraste entre dos grupos: "while / whereas" = mientras que.' },
+      { answers: ['who', 'that'], explanation: 'Relativo de persona, sujeto de "enjoy": people WHO/THAT enjoy them.' },
+      { answers: ['those'], explanation: '"One of those who…" = uno de los que… "Those" sustituye a "the people".' },
+      { answers: ['may', 'might'], explanation: 'Posibilidad: "you may / might simply have…" = puede que simplemente tengas…' },
+    ],
+  },
+  {
+    id: 'uoe2-13',
+    kind: 'open-cloze',
+    title: 'The gap year',
+    focus: 'Preposiciones, artículos y conectores',
+    text: `A growing number of students are deciding to take a year off {1} finishing school and starting university. Some use it to travel, while others work to save money {2} their studies. Supporters of the gap year say that it gives young people the chance to grow up and discover {3} they really want to do. "I had no idea what to study {4} I was eighteen," says Marta, who spent her gap year volunteering in Peru. "By the time I came back, I knew I wanted to be a teacher." Critics, on the {5} hand, argue that a year away from education can make it harder to get back into the habit of studying. There is also the question of cost. Travelling abroad for a year is not something {6} family can afford. However, a gap year does not have to be expensive. Many organisations offer free accommodation in exchange {7} work, and some students choose to stay at home and gain experience in a local business. What matters most, according to Marta, is to have a plan. "Without {8}, the year can just disappear."`,
+    gaps: [
+      { answers: ['between'], explanation: '"Between A and B": entre terminar el instituto y empezar la universidad.' },
+      { answers: ['for'], explanation: '"Save money FOR something" = ahorrar para algo.' },
+      { answers: ['what'], explanation: '"Discover what they want" = descubrir lo que quieren. "What" = lo que.' },
+      { answers: ['when'], explanation: '"When I was eighteen" = cuando tenía dieciocho años.' },
+      { answers: ['other'], explanation: 'Expresión fija: "on the other hand" = por otro lado.' },
+      { answers: ['every'], explanation: '"Not something every family can afford" = no todas las familias pueden permitírselo. Con "every" el sustantivo va en singular.' },
+      { answers: ['for'], explanation: 'Expresión fija: "in exchange FOR" = a cambio de.' },
+      { answers: ['one'], explanation: '"One" sustituye a "a plan" para no repetirlo: without one = sin un plan.' },
+    ],
+  },
+]

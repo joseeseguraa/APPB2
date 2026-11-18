@@ -1,0 +1,55 @@
+import type { WordFormationExercise } from '../../types'
+
+export const part3ExercisesC: WordFormationExercise[] = [
+  {
+    id: 'uoe3-11',
+    kind: 'word-formation',
+    title: 'The power of a nap',
+    focus: 'Sufijos de sustantivo y adjetivo',
+    text: `In many countries, taking a nap in the afternoon is seen as a sign of {1}. Yet scientists say that a short sleep after lunch can have {2} benefits. Research shows that a nap of twenty minutes can improve {3} and memory, and can even make people more {4} at work. Some companies have recognised this and now provide quiet rooms where staff can rest. The key, experts say, is to keep naps short. Sleeping for more than half an hour can leave you feeling {5} and confused, a state known as "sleep inertia". It is also {6} to nap too late in the day, as this can make it harder to fall asleep at night. For people who suffer from {7}, doctors usually recommend avoiding naps {8}.`,
+    gaps: [
+      { stem: 'LAZY', answers: ['laziness'], explanation: '"A sign of + sustantivo": laziness (pereza). La y pasa a i.' },
+      { stem: 'CONSIDER', answers: ['considerable'], explanation: 'Adjetivo delante de "benefits": considerable (importante, notable).' },
+      { stem: 'CONCENTRATE', answers: ['concentration'], explanation: 'Sustantivo coordinado con "memory": concentration.' },
+      { stem: 'PRODUCE', answers: ['productive'], explanation: '"More + adjetivo": productive.' },
+      { stem: 'SLEEP', answers: ['sleepy'], explanation: '"Feeling + adjetivo": sleepy (con sueño). Va coordinado con "confused".' },
+      { stem: 'ADVISE', answers: ['inadvisable', 'unadvisable'], explanation: 'El sentido es negativo (no es buena idea): inadvisable. Doble cambio: prefijo y sufijo.' },
+      { stem: 'SLEEP', answers: ['sleeplessness'], explanation: '"Suffer from + sustantivo": sleeplessness (insomnio). Hacen falta dos sufijos: -less y -ness.' },
+      { stem: 'COMPLETE', answers: ['completely'], explanation: 'Modifica a "avoiding": adverbio, completely.' },
+    ],
+  },
+  {
+    id: 'uoe3-12',
+    kind: 'word-formation',
+    title: 'A museum with no walls',
+    focus: 'Prefijos negativos y adverbios',
+    text: `Street art was once considered a form of vandalism, and in most cities it is still {1} to paint on walls without permission. However, attitudes are changing. In some places, street art has become a major tourist {2}, and local councils now pay artists to decorate {3} buildings. Supporters say that murals bring colour to grey neighbourhoods and give young people a chance to express their {4}. Not everyone agrees. Some residents complain that the paintings are {5} and that they were never asked for their opinion. Others point out that once an area becomes {6}, rents tend to rise and long-term residents are forced to leave. Despite these concerns, it seems {7} that street art will disappear. If anything, its {8} is growing.`,
+    gaps: [
+      { stem: 'LEGAL', answers: ['illegal'], explanation: 'Sentido negativo (sin permiso): illegal. Delante de l el prefijo es il-.' },
+      { stem: 'ATTRACT', answers: ['attraction'], explanation: '"A major tourist + sustantivo": attraction.' },
+      { stem: 'USE', answers: ['unused', 'disused'], explanation: 'Edificios abandonados, sin uso: unused o disused.' },
+      { stem: 'CREATE', answers: ['creativity'], explanation: '"Express their + sustantivo": creativity.' },
+      { stem: 'ATTRACT', answers: ['unattractive'], explanation: 'Queja negativa: unattractive (feas). Prefijo y sufijo a la vez.' },
+      { stem: 'FASHION', answers: ['fashionable'], explanation: '"Become + adjetivo": fashionable (de moda).' },
+      { stem: 'LIKELY', answers: ['unlikely'], explanation: '"It seems unlikely that…" = parece poco probable que. El sentido negativo lo da "despite".' },
+      { stem: 'POPULAR', answers: ['popularity'], explanation: '"Its + sustantivo": popularity.' },
+    ],
+  },
+  {
+    id: 'uoe3-13',
+    kind: 'word-formation',
+    title: 'Talking to plants',
+    focus: 'Cambios internos y sufijos variados',
+    text: `Do plants grow better if you talk to them? Many gardeners {1} believe so, and some even play music to their tomatoes. For a long time, scientists treated the idea with {2}. But recent experiments have produced some {3} results. In one study, plants exposed to certain sounds grew faster than those kept in {4}. Researchers think that plants may respond to the {5} caused by sound waves, rather than to the words themselves. This does not mean that your houseplants understand you. However, it does suggest that plants are far more {6} to their surroundings than we once thought. The {7} of these findings is still being debated, and more research is needed before any firm {8} can be drawn.`,
+    gaps: [
+      { stem: 'STRONG', answers: ['strongly'], explanation: 'Modifica al verbo "believe": adverbio, strongly.' },
+      { stem: 'SUSPECT', answers: ['suspicion'], explanation: '"Treat something with + sustantivo": suspicion (desconfianza).' },
+      { stem: 'SURPRISE', answers: ['surprising'], explanation: 'Adjetivo delante de "results", con -ing porque son los resultados los que sorprenden.' },
+      { stem: 'SILENT', answers: ['silence'], explanation: '"Kept in + sustantivo": silence.' },
+      { stem: 'VIBRATE', answers: ['vibrations', 'vibration'], explanation: 'Sustantivo: vibrations (vibraciones) causadas por las ondas de sonido.' },
+      { stem: 'SENSE', answers: ['sensitive'], explanation: '"Sensitive to" = sensible a. No confundir con "sensible" (sensato).' },
+      { stem: 'SIGNIFY', answers: ['significance'], explanation: '"The + sustantivo + of": significance (importancia).' },
+      { stem: 'CONCLUDE', answers: ['conclusions', 'conclusion'], explanation: '"Draw a conclusion" = sacar una conclusión. Con "any firm" suele ir en plural.' },
+    ],
+  },
+]

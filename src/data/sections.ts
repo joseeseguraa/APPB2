@@ -1,10 +1,13 @@
 import type { PartInfo, SectionInfo } from '../types'
 import { part1Exercises } from './uoe/part1'
 import { part1ExercisesB } from './uoe/part1b'
+import { part1ExercisesC } from './uoe/part1c'
 import { part2Exercises } from './uoe/part2'
 import { part2ExercisesB } from './uoe/part2b'
+import { part2ExercisesC } from './uoe/part2c'
 import { part3Exercises } from './uoe/part3'
 import { part3ExercisesB } from './uoe/part3b'
+import { part3ExercisesC } from './uoe/part3c'
 import { part4Exercises } from './uoe/part4'
 import { part4ExercisesB } from './uoe/part4b'
 import { part4ExercisesC } from './uoe/part4c'
@@ -71,7 +74,7 @@ export const sections: SectionInfo[] = [
             'Fijarse solo en el significado y olvidar la preposición que sigue.',
           ],
         },
-        exercises: [...part1Exercises, ...part1ExercisesB],
+        exercises: [...part1Exercises, ...part1ExercisesB, ...part1ExercisesC],
       },
       {
         slug: 'part-2',
@@ -104,7 +107,7 @@ export const sections: SectionInfo[] = [
             'Olvidar la preposición final de una estructura (focus ON, deal WITH).',
           ],
         },
-        exercises: [...part2Exercises, ...part2ExercisesB],
+        exercises: [...part2Exercises, ...part2ExercisesB, ...part2ExercisesC],
       },
       {
         slug: 'part-3',
@@ -136,7 +139,7 @@ export const sections: SectionInfo[] = [
             'Confundir -ed y -ing: bored (cómo te sientes) frente a boring (lo que te aburre).',
           ],
         },
-        exercises: [...part3Exercises, ...part3ExercisesB],
+        exercises: [...part3Exercises, ...part3ExercisesB, ...part3ExercisesC],
       },
       {
         slug: 'part-4',
