@@ -5,6 +5,10 @@ import { c1Conditionals, c1Cleft, c1Inversion, c1Tenses } from './grammar/g1'
 import { c1Modals, c1Passive, c1Relatives, c1Wishes } from './grammar/g2'
 import { c1Linking, c1Reporting, c1Subjunctive, c1Verbpatterns } from './grammar/g3'
 import { c1Comparison, c1Determiners, c1Ellipsis, c1Participles } from './grammar/g4'
+import { c1Collocations, c1Idioms, c1Intensifiers, c1Phrasal } from './vocabulary/v1'
+import { c1Confusing, c1Prepositions, c1Register, c1WordFormation } from './vocabulary/v2'
+import { c1Business, c1Media, c1Science, c1Society } from './vocabulary/v3'
+import { c1Arts, c1Environment, c1Health, c1Law } from './vocabulary/v4'
 import { c1Letter, c1Proposal, c1Report, c1Review } from './writing/part2'
 import { c1Part1 } from './uoe/part1'
 import { c1Part1B } from './uoe/part1b'
@@ -317,10 +321,14 @@ export const c1Sections: SectionInfo[] = [
     slug: 'vocabulary',
     name: 'Vocabulary',
     nameEs: 'Vocabulario',
-    description: 'Vocabulario de nivel C1 con teoría y ejercicios. En preparación.',
+    description: 'Phrasal verbs, colocaciones, expresiones idiomáticas y vocabulario temático de nivel C1.',
     icon: '📚',
-    available: false,
-    parts: [],
+    available: true,
+    parts: [
+      ...grouped('Palabras que van juntas', [c1Phrasal, c1Collocations, c1Intensifiers, c1Idioms, c1Prepositions]),
+      ...grouped('Precisión y registro', [c1WordFormation, c1Confusing, c1Register]),
+      ...grouped('Vocabulario por temas', [c1Science, c1Society, c1Business, c1Media, c1Environment, c1Arts, c1Health, c1Law]),
+    ],
   },
   {
     slug: 'speaking',
