@@ -1,8 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { findSection } from '../data/sections'
 import { loadProgress } from '../lib/progress'
-import { BackLink } from '../components/Layout'
-import { Meter, PageHeader, Panel } from '../components/ui'
+import { Meter, PageHeader, Panel, SECTION_ICON } from '../components/ui'
 import NotFound from './NotFound'
 
 export default function SectionPage() {
@@ -14,8 +13,7 @@ export default function SectionPage() {
 
   return (
     <div className="max-w-4xl">
-      <BackLink to="/" label="Inicio" />
-      <PageHeader title={section.name} lead={section.description} />
+      <PageHeader icon={SECTION_ICON[section.slug]} title={section.name} lead={section.description} />
 
       {section.intro && (
         <div className="mb-8 max-w-2xl space-y-3 text-[0.98rem] leading-relaxed text-ink-2 border-l-2 border-print pl-4">

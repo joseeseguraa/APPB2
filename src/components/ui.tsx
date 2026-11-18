@@ -65,16 +65,20 @@ export function PageHeader({
   lead,
   aside,
   number,
+  icon,
 }: {
   title: ReactNode
   lead?: ReactNode
   aside?: ReactNode
   /** número de parte del examen (se muestra en tinta magenta) */
   number?: number
+  /** icono de sección (si no hay número de parte) */
+  icon?: IconName
 }) {
   return (
     <header className="mb-6 sm:mb-8 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0 max-w-2xl flex gap-4 items-start">
+        {number === undefined && icon && <IconTile name={icon} />}
         {number !== undefined && (
           <span className="shrink-0 grid place-items-center w-12 h-12 rounded-full border-2 border-print text-print text-xl font-bold tabular-nums">
             {number}
@@ -140,28 +144,126 @@ export function ModeTag({ mode }: { mode: 'practice' | 'exam' }) {
   )
 }
 
-/* ---------- Iconos mínimos (trazo) ---------- */
+/* ---------- Iconos de trazo (24×24) ---------- */
 
-export function Icon({ name, className = 'w-5 h-5' }: { name: 'practice' | 'mock' | 'progress' | 'back'; className?: string }) {
-  const paths: Record<string, ReactNode> = {
-    practice: (
-      <>
-        <path d="M4 20h4L19 9l-4-4L4 16v4Z" />
-        <path d="m13.5 6.5 4 4" />
-      </>
-    ),
-    mock: (
-      <>
-        <circle cx="12" cy="13" r="7.5" />
-        <path d="M12 9.5V13l2.5 2M9.5 2.5h5" />
-      </>
-    ),
-    progress: <path d="M4 19V5M4 19h16M8 15v-4M12 15V8M16 15v-6" />,
-    back: <path d="M15 5 8 12l7 7" />,
-  }
+export type IconName =
+  | 'home'
+  | 'exam'
+  | 'uoe'
+  | 'reading'
+  | 'writing'
+  | 'grammar'
+  | 'vocabulary'
+  | 'listening'
+  | 'speaking'
+  | 'mock'
+  | 'progress'
+  | 'practice'
+  | 'menu'
+  | 'close'
+  | 'back'
+  | 'chevron'
+  | 'flame'
+  | 'check'
+
+const ICONS: Record<IconName, ReactNode> = {
+  home: <path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4v-9.5Z" />,
+  exam: (
+    <>
+      <rect x="5" y="4" width="14" height="17" rx="2" />
+      <path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3" />
+    </>
+  ),
+  uoe: (
+    <>
+      <rect x="3.5" y="6" width="17" height="12" rx="2" />
+      <path d="M7.5 12h2.5M14 12h2.5M11.5 9.5v5" />
+    </>
+  ),
+  reading: (
+    <>
+      <path d="M3.5 5.5c3-1 6-1 8.5 1v13c-2.5-2-5.5-2-8.5-1v-13Z" />
+      <path d="M20.5 5.5c-3-1-6-1-8.5 1v13c2.5-2 5.5-2 8.5-1v-13Z" />
+    </>
+  ),
+  writing: (
+    <>
+      <path d="M4 20h4L19 9l-4-4L4 16v4Z" />
+      <path d="m13.5 6.5 4 4" />
+    </>
+  ),
+  grammar: (
+    <>
+      <path d="M4 19 8.5 6h1L14 19M5.6 14.5h6.8" />
+      <path d="M16 12.5c.6-1 1.6-1.5 2.6-1.3 1.1.2 1.6 1 1.6 2.1V19M20.2 15.2c-2.6-.2-4.4.4-4.4 2 0 1.3 1.6 2.2 4.4 1.1" />
+    </>
+  ),
+  vocabulary: (
+    <>
+      <rect x="4" y="5" width="11" height="14" rx="1.5" />
+      <path d="M18 7.5v12a1.5 1.5 0 0 1-1.5 1.5H8M7.5 9.5h4M7.5 13h4" />
+    </>
+  ),
+  listening: (
+    <>
+      <path d="M4 15v-3a8 8 0 0 1 16 0v3" />
+      <rect x="3.5" y="14" width="4" height="6" rx="1.5" />
+      <rect x="16.5" y="14" width="4" height="6" rx="1.5" />
+    </>
+  ),
+  speaking: (
+    <>
+      <rect x="9" y="3.5" width="6" height="11" rx="3" />
+      <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" />
+    </>
+  ),
+  mock: (
+    <>
+      <circle cx="12" cy="13" r="7.5" />
+      <path d="M12 9.5V13l2.5 2M9.5 2.5h5" />
+    </>
+  ),
+  progress: <path d="M4 19V5M4 19h16M8 15v-4M12 15V8M16 15v-6" />,
+  practice: (
+    <>
+      <path d="M4 20h4L19 9l-4-4L4 16v4Z" />
+      <path d="m13.5 6.5 4 4" />
+    </>
+  ),
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
+  close: <path d="M6 6l12 12M18 6 6 18" />,
+  back: <path d="M15 5 8 12l7 7" />,
+  chevron: <path d="m9 5 7 7-7 7" />,
+  flame: <path d="M12 21c-3.9 0-6.5-2.6-6.5-6 0-3.6 3-5.6 3.8-9 2 1.3 3 3 3.2 4.6.9-.6 1.5-1.6 1.6-2.8 2.4 1.7 4.4 4.3 4.4 7.2 0 3.4-2.6 6-6.5 6Z" />,
+  check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
+}
+
+export function Icon({ name, className = 'w-5 h-5' }: { name: IconName; className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
-      {paths[name]}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+      {ICONS[name]}
     </svg>
   )
+}
+
+/** Icono de sección dentro de una baldosa (cabeceras de página). */
+export function IconTile({ name, tone = 'print' }: { name: IconName; tone?: 'print' | 'ink' }) {
+  return (
+    <span
+      className={`shrink-0 grid place-items-center w-11 h-11 rounded-lg ${tone === 'print' ? 'bg-print-soft text-print' : 'bg-ink text-white'}`}
+    >
+      <Icon name={name} className="w-[1.35rem] h-[1.35rem]" />
+    </span>
+  )
+}
+
+/** Icono asociado a cada sección por su slug. */
+export const SECTION_ICON: Record<string, IconName> = {
+  'use-of-english': 'uoe',
+  reading: 'reading',
+  writing: 'writing',
+  grammar: 'grammar',
+  vocabulary: 'vocabulary',
+  listening: 'listening',
+  speaking: 'speaking',
 }

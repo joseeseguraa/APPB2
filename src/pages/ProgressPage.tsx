@@ -83,7 +83,7 @@ export default function ProgressPage() {
 
   return (
     <div className="max-w-5xl">
-      <PageHeader title="Mi progreso" lead="Se calcula con tu último intento de cada ejercicio y se guarda en este navegador." />
+      <PageHeader icon="progress" title="Mi progreso" lead="Se calcula con tu último intento de cada ejercicio y se guarda en este navegador." />
 
       <Panel className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-line mb-10">
         {figures.map((f) => (

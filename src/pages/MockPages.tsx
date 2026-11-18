@@ -19,6 +19,7 @@ export function MockHome() {
   return (
     <div className="max-w-5xl">
       <PageHeader
+        icon="mock"
         title="Simulacros"
         lead="Dos pruebas del B2 First con el tiempo oficial y una nota estimada en la escala de Cambridge."
       />
@@ -201,7 +202,7 @@ function MockRueRunner({ n }: { n: number }) {
       {summary}
 
       {/* Pestañas de partes */}
-      <nav className="sticky top-14 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 mb-6 bg-bg/95 backdrop-blur border-b border-line flex gap-1 overflow-x-auto" aria-label="Partes">
+      <nav className="sticky top-14 lg:top-0 z-20 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 py-2 mb-6 bg-bg/95 backdrop-blur border-b border-line flex gap-1 overflow-x-auto" aria-label="Partes">
         {parts.map((_, i) => {
           const done = answers[i].filter((x) => x.trim()).length
           const r = results?.[i]

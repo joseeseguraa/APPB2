@@ -139,7 +139,7 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
         </div>
 
         {mode === 'practice' && (
-          <aside className="lg:sticky lg:top-20">
+          <aside className="lg:sticky lg:top-6">
             <button onClick={() => setShowPlan((s) => !s)} className={btn('secondary', 'sm')} aria-expanded={showPlan}>
               {showPlan ? 'Ocultar el plan' : 'Ver un plan párrafo a párrafo'}
             </button>
@@ -160,7 +160,7 @@ export default function WritingRunner({ task, part, mode, partUrl, nextUrl }: Pr
       </div>
 
       {phase === 'writing' ? (
-        <div className="sticky bottom-[calc(3.9rem+env(safe-area-inset-bottom))] sm:bottom-0 z-20 mt-8 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-bg/95 backdrop-blur border-t border-line flex gap-2">
+        <div className="sticky bottom-[calc(3.9rem+env(safe-area-inset-bottom))] sm:bottom-0 z-20 mt-8 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 py-3 bg-bg/95 backdrop-blur border-t border-line flex gap-2">
           <button onClick={() => setPhase('review')} disabled={words === 0} className={btn('primary')}>
             He terminado, quiero revisarlo
           </button>

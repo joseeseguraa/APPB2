@@ -1,82 +1,218 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Icon } from './ui'
+import { Icon, type IconName } from './ui'
 
-const NAV = [
-  { to: '/', label: 'Practicar', icon: 'practice' as const },
-  { to: '/simulacro', label: 'Simulacro', icon: 'mock' as const },
-  { to: '/progreso', label: 'Progreso', icon: 'progress' as const },
+interface NavItem {
+  to: string
+  label: string
+  icon: IconName
+  soon?: boolean
+}
+
+const GROUPS: { title?: string; items: NavItem[] }[] = [
+  { items: [{ to: '/', label: 'Inicio', icon: 'home' }] },
+  {
+    title: 'El examen',
+    items: [
+      { to: '/examen', label: 'Formato y partes', icon: 'exam' },
+      { to: '/s/use-of-english', label: 'Use of English', icon: 'uoe' },
+      { to: '/s/reading', label: 'Reading', icon: 'reading' },
+      { to: '/s/writing', label: 'Writing', icon: 'writing' },
+      { to: '/listening', label: 'Listening', icon: 'listening', soon: true },
+      { to: '/speaking', label: 'Speaking', icon: 'speaking', soon: true },
+    ],
+  },
+  {
+    title: 'Base',
+    items: [
+      { to: '/s/grammar', label: 'Grammar', icon: 'grammar' },
+      { to: '/s/vocabulary', label: 'Vocabulary', icon: 'vocabulary' },
+    ],
+  },
+  {
+    title: 'Seguimiento',
+    items: [
+      { to: '/simulacro', label: 'Simulacros', icon: 'mock' },
+      { to: '/progreso', label: 'Mi progreso', icon: 'progress' },
+    ],
+  },
 ]
 
-/** "Practicar" está activo en el inicio y en todas las secciones de práctica. */
-function useActive() {
-  const { pathname } = useLocation()
-  return (to: string) => (to === '/' ? pathname === '/' || pathname.startsWith('/s/') : pathname.startsWith(to))
+function isActive(pathname: string, to: string) {
+  return to === '/' ? pathname === '/' : pathname === to || pathname.startsWith(to + '/')
 }
+
+function Wordmark() {
+  return (
+    <Link to="/" className="flex items-center gap-2.5" aria-label="B2 First práctica, inicio">
+      <span className="grid place-items-center w-10 h-6 rounded-full border-2 border-print text-print text-[0.7rem] font-extrabold">B2</span>
+      <span className="font-bold tracking-[-0.01em] text-[1.05rem]">
+        First <span className="font-medium text-ink-3">práctica</span>
+      </span>
+    </Link>
+  )
+}
+
+function SideNav({ onNavigate }: { onNavigate?: () => void }) {
+  const { pathname } = useLocation()
+  return (
+    <nav aria-label="Secciones" className="flex flex-col gap-6">
+      {GROUPS.map((g, gi) => (
+        <div key={gi}>
+          {g.title && <p className="px-3 mb-1.5 text-xs font-semibold text-ink-3">{g.title}</p>}
+          <ul className="grid gap-0.5">
+            {g.items.map((it) => {
+              if (it.soon)
+                return (
+                  <li key={it.to}>
+                    <span className="flex items-center gap-3 h-10 px-3 rounded-md text-ink-3 cursor-default">
+                      <Icon name={it.icon} className="w-[1.15rem] h-[1.15rem]" />
+                      <span className="flex-1 text-[0.95rem]">{it.label}</span>
+                      <span className="text-[0.7rem] font-semibold border border-line rounded-full px-2 py-0.5">Pronto</span>
+                    </span>
+                  </li>
+                )
+              const active = isActive(pathname, it.to)
+              return (
+                <li key={it.to}>
+                  <NavLink
+                    to={it.to}
+                    onClick={onNavigate}
+                    aria-current={active ? 'page' : undefined}
+                    className={`relative flex items-center gap-3 h-10 px-3 rounded-md text-[0.95rem] transition-colors ${
+                      active ? 'bg-bg text-ink font-semibold' : 'text-ink-2 hover:text-ink hover:bg-bg/60'
+                    }`}
+                  >
+                    {active && <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-print" aria-hidden />}
+                    <Icon name={it.icon} className={`w-[1.15rem] h-[1.15rem] ${active ? 'text-print' : ''}`} />
+                    {it.label}
+                  </NavLink>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  )
+}
+
+const BOTTOM: { to: string; label: string; icon: IconName }[] = [
+  { to: '/', label: 'Inicio', icon: 'home' },
+  { to: '/simulacro', label: 'Simulacro', icon: 'mock' },
+  { to: '/progreso', label: 'Progreso', icon: 'progress' },
+]
 
 export default function Layout() {
   const { pathname } = useLocation()
-  const isActive = useActive()
+  const [open, setOpen] = useState(false)
+
   useEffect(() => {
     window.scrollTo(0, 0)
+    setOpen(false)
   }, [pathname])
 
+  // Cerrar el menú con Escape y bloquear el scroll de fondo mientras está abierto
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
+  const inPractice = pathname.startsWith('/s/') || pathname === '/examen'
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-paper border-b border-line sticky top-0 z-30">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5" aria-label="B2 First, inicio">
-            <span className="grid place-items-center w-10 h-6 rounded-full border-2 border-print text-print text-[0.7rem] font-extrabold">
-              B2
-            </span>
-            <span className="font-bold tracking-[-0.01em] text-[1.05rem]">
-              First <span className="font-medium text-ink-3">práctica</span>
-            </span>
-          </Link>
-          <nav className="hidden sm:flex items-center gap-1" aria-label="Principal">
-            {NAV.map((l) => (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                className={`h-9 px-3.5 inline-flex items-center rounded-md text-[0.95rem] font-medium transition-colors ${
-                  isActive(l.to) ? 'bg-bg text-ink' : 'text-ink-2 hover:text-ink'
-                }`}
-              >
-                {l.label}
-              </NavLink>
-            ))}
-          </nav>
+    <div className="min-h-screen lg:grid lg:grid-cols-[16.5rem_1fr]">
+      {/* Menú lateral (escritorio) */}
+      <aside className="hidden lg:flex flex-col sticky top-0 h-screen bg-paper border-r border-line px-4 py-5 overflow-y-auto">
+        <div className="px-2 mb-8">
+          <Wordmark />
         </div>
-      </header>
+        <SideNav />
+        <p className="mt-auto pt-8 px-3 text-xs leading-relaxed text-ink-3">
+          Material de práctica original. No es contenido oficial de Cambridge English.
+        </p>
+      </aside>
 
-      <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 pt-6 sm:pt-10 pb-28 sm:pb-16">
-        <Outlet />
-      </main>
-
-      <footer className="hidden sm:block border-t border-line text-xs text-ink-3 py-6">
-        <div className="mx-auto max-w-6xl px-6">Material de práctica original. No es contenido oficial de Cambridge English.</div>
-      </footer>
-
-      {/* Barra inferior en móvil */}
-      <nav
-        className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-paper border-t border-line grid grid-cols-3 pb-[env(safe-area-inset-bottom)]"
-        aria-label="Principal"
-      >
-        {NAV.map((l) => {
-          const active = isActive(l.to)
-          return (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              className={`flex flex-col items-center gap-0.5 py-2 text-[0.72rem] font-semibold ${active ? 'text-print' : 'text-ink-3'}`}
+      <div className="min-w-0 flex flex-col min-h-screen">
+        {/* Cabecera (móvil y tablet) */}
+        <header className="lg:hidden bg-paper border-b border-line sticky top-0 z-30">
+          <div className="px-4 sm:px-6 h-14 flex items-center justify-between">
+            <Wordmark />
+            <button
+              onClick={() => setOpen(true)}
+              className="grid place-items-center w-10 h-10 -mr-2 rounded-md text-ink hover:bg-bg"
+              aria-label="Abrir el menú de secciones"
+              aria-expanded={open}
             >
-              <Icon name={l.icon} className="w-6 h-6" />
-              {l.label}
-            </NavLink>
-          )
-        })}
+              <Icon name="menu" className="w-6 h-6" />
+            </button>
+          </div>
+        </header>
+
+        <main className="flex-1 w-full max-w-6xl px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 lg:pt-10 pb-28 lg:pb-16">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Menú desplegable (móvil y tablet) */}
+      <div className={`lg:hidden fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
+        <div
+          onClick={() => setOpen(false)}
+          className={`absolute inset-0 bg-ink/40 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Secciones"
+          className={`absolute inset-y-0 left-0 w-[82%] max-w-xs bg-paper shadow-xl px-4 py-5 overflow-y-auto transition-transform duration-200 ease-out ${
+            open ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex items-center justify-between px-2 mb-6">
+            <Wordmark />
+            <button onClick={() => setOpen(false)} className="grid place-items-center w-10 h-10 -mr-2 rounded-md hover:bg-bg" aria-label="Cerrar el menú">
+              <Icon name="close" className="w-5 h-5" />
+            </button>
+          </div>
+          <SideNav onNavigate={() => setOpen(false)} />
+        </div>
+      </div>
+
+      {/* Barra inferior (móvil) */}
+      <nav
+        className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-paper border-t border-line grid grid-cols-4 pb-[env(safe-area-inset-bottom)]"
+        aria-label="Accesos rápidos"
+      >
+        {BOTTOM.slice(0, 1).map((l) => (
+          <BottomLink key={l.to} {...l} active={pathname === '/'} />
+        ))}
+        <button
+          onClick={() => setOpen(true)}
+          className={`flex flex-col items-center gap-0.5 py-2 text-[0.72rem] font-semibold ${inPractice ? 'text-print' : 'text-ink-3'}`}
+        >
+          <Icon name="practice" className="w-6 h-6" />
+          Practicar
+        </button>
+        {BOTTOM.slice(1).map((l) => (
+          <BottomLink key={l.to} {...l} active={pathname.startsWith(l.to)} />
+        ))}
       </nav>
     </div>
+  )
+}
+
+function BottomLink({ to, label, icon, active }: { to: string; label: string; icon: IconName; active: boolean }) {
+  return (
+    <NavLink to={to} className={`flex flex-col items-center gap-0.5 py-2 text-[0.72rem] font-semibold ${active ? 'text-print' : 'text-ink-3'}`}>
+      <Icon name={icon} className="w-6 h-6" />
+      {label}
+    </NavLink>
   )
 }
 

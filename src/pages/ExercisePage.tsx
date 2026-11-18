@@ -90,7 +90,7 @@ export function ActionBar({ children, sticky = true }: { children: ReactNode; st
     <div
       className={`${
         sticky ? 'sticky bottom-[calc(3.9rem+env(safe-area-inset-bottom))] sm:bottom-0 z-20 bg-bg/95 backdrop-blur border-t border-line' : ''
-      } mt-8 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 flex flex-wrap gap-2 items-center`}
+      } mt-8 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 py-3 flex flex-wrap gap-2 items-center`}
     >
       {children}
     </div>
@@ -364,7 +364,7 @@ function QuestionRow({ n, children }: { n: number; children: ReactNode }) {
 function McCloze({ ex, answers, results, onChange, disabled }: PartProps<McClozeExercise>) {
   return (
     <div className="grid lg:grid-cols-[minmax(0,1fr)_22rem] gap-6 items-start">
-      <Panel className="p-5 sm:p-8 lg:sticky lg:top-20">
+      <Panel className="p-5 sm:p-8 lg:sticky lg:top-6">
         <p className="passage">
           {splitGaps(ex.text).map((seg, k) =>
             typeof seg === 'string' ? (
@@ -668,7 +668,7 @@ function Paragraphs({ text }: { text: string }) {
 function SplitLayout({ text, children }: { text: ReactNode; children: ReactNode }) {
   return (
     <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
-      <Panel className="p-5 sm:p-8 passage lg:sticky lg:top-20 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">{text}</Panel>
+      <Panel className="p-5 sm:p-8 passage lg:sticky lg:top-6 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">{text}</Panel>
       <div className="mt-6 lg:mt-0">{children}</div>
     </div>
   )

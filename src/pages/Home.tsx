@@ -1,188 +1,257 @@
 import { Link } from 'react-router-dom'
-import { findPart, findSection, sections } from '../data/sections'
-import { loadDays, loadProgress, streak, type ProgressMap } from '../lib/progress'
-import { btn, Meter, Panel } from '../components/ui'
-import type { PartInfo } from '../types'
+import { sections } from '../data/sections'
+import { loadDays, loadProgress, streak } from '../lib/progress'
+import { btn, Icon, IconTile, Meter, Panel, SECTION_ICON, type IconName } from '../components/ui'
+import type { Exercise, PartInfo, SectionInfo } from '../types'
+import { partStats } from './ExamPage'
 
-/** % de aciertos en una parte (último intento de cada ejercicio) y nº de ejercicios hechos. */
-function partStats(part: PartInfo | undefined, progress: ProgressMap) {
-  if (!part) return { done: 0, total: 0, pct: null as number | null }
-  const recs = part.exercises.map((e) => progress[e.id]).filter(Boolean)
-  const s = recs.reduce((a, r) => a + r.score, 0)
-  const t = recs.reduce((a, r) => a + r.total, 0)
-  return { done: recs.length, total: part.exercises.length, pct: t ? Math.round((s / t) * 100) : null }
+interface Located {
+  s: SectionInfo
+  p: PartInfo
+  e: Exercise
 }
 
-interface Cell {
-  n: number
-  name: string
-  to?: string
-  part?: PartInfo
+function locate(id: string): Located | null {
+  for (const s of sections)
+    for (const p of s.parts) {
+      const e = p.exercises.find((x) => x.id === id)
+      if (e) return { s, p, e }
+    }
+  return null
 }
 
-const PAPERS: { name: string; time: string; cells: Cell[] }[] = [
-  {
-    name: 'Reading & Use of English',
-    time: '1 h 15 min',
-    cells: [
-      { n: 1, name: 'Multiple-choice cloze', to: '/s/use-of-english/part-1', part: findPart('use-of-english', 'part-1') },
-      { n: 2, name: 'Open cloze', to: '/s/use-of-english/part-2', part: findPart('use-of-english', 'part-2') },
-      { n: 3, name: 'Word formation', to: '/s/use-of-english/part-3', part: findPart('use-of-english', 'part-3') },
-      { n: 4, name: 'Key word transformation', to: '/s/use-of-english/part-4', part: findPart('use-of-english', 'part-4') },
-      { n: 5, name: 'Multiple choice', to: '/s/reading/part-5', part: findPart('reading', 'part-5') },
-      { n: 6, name: 'Gapped text', to: '/s/reading/part-6', part: findPart('reading', 'part-6') },
-      { n: 7, name: 'Multiple matching', to: '/s/reading/part-7', part: findPart('reading', 'part-7') },
-    ],
-  },
-  {
-    name: 'Writing',
-    time: '1 h 20 min',
-    cells: [
-      { n: 1, name: 'Essay', to: '/s/writing/essay', part: findPart('writing', 'essay') },
-      { n: 2, name: 'Article, email, report o review', to: '/s/writing' },
-    ],
-  },
-  {
-    name: 'Listening',
-    time: '40 min',
-    cells: ['Extractos cortos', 'Completar frases', 'Emparejar', 'Opción múltiple'].map((name, i) => ({ n: i + 1, name })),
-  },
-  {
-    name: 'Speaking',
-    time: '14 min',
-    cells: ['Entrevista', 'Fotos', 'Tarea en pareja', 'Discusión'].map((name, i) => ({ n: i + 1, name })),
-  },
-]
+function partLabel(s: SectionInfo, p: PartInfo) {
+  return p.number ? `${s.name}, Part ${p.number}` : `${s.name}, ${p.name}`
+}
 
-function ExamCell({ cell, progress }: { cell: Cell; progress: ProgressMap }) {
-  const st = partStats(cell.part, progress)
-  const inner = (
-    <>
-      <span className={`text-sm font-bold tabular-nums ${cell.to ? 'text-print' : 'text-ink-3'}`}>Part {cell.n}</span>
-      <span className={`block text-[0.9rem] leading-snug mt-0.5 ${cell.to ? 'text-ink' : 'text-ink-3'}`}>{cell.name}</span>
-      {cell.part && (
-        <span className="block mt-3">
-          <Meter value={st.pct ?? 0} tone={st.pct === null ? 'ink' : 'score'} />
-          <span className="block mt-1 text-xs text-ink-3 tabular-nums">
-            {st.pct === null ? `${st.total} ejercicios` : `${st.pct}% de aciertos`}
-          </span>
-        </span>
-      )}
-      {!cell.to && <span className="block mt-3 text-xs text-ink-3">Próximamente</span>}
-    </>
-  )
-  return cell.to ? (
-    <Link to={cell.to} className="block p-3.5 rounded-md hover:bg-bg transition-colors">
-      {inner}
-    </Link>
-  ) : (
-    <div className="p-3.5">{inner}</div>
-  )
+function greeting() {
+  const h = new Date().getHours()
+  return h < 6 ? 'Buenas noches' : h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches'
+}
+
+function dayKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+interface Suggestion {
+  icon: IconName
+  title: string
+  why: string
+  to: string
 }
 
 export default function Home() {
   const progress = loadProgress()
   const days = loadDays()
   const st = streak(days)
-  const doneCount = Object.keys(progress).length
+  const done = Object.keys(progress).length
+  const allEx = sections.flatMap((s) => s.parts.flatMap((p) => p.exercises))
 
-  // último ejercicio trabajado, para "Continuar"
-  const last = Object.entries(progress).sort((a, b) => b[1].lastAt.localeCompare(a[1].lastAt))[0]
-  let lastLink: { to: string; title: string; where: string } | null = null
-  if (last) {
-    for (const s of sections)
-      for (const p of s.parts) {
-        const e = p.exercises.find((x) => x.id === last[0])
-        if (e)
-          lastLink = {
-            to: `/s/${s.slug}/${p.slug}/${e.id}?mode=practice`,
-            title: e.title,
-            where: p.number ? `${s.name}, Part ${p.number}` : `${s.name}, ${p.name}`,
-          }
-      }
+  const recent = Object.entries(progress)
+    .sort((a, b) => b[1].lastAt.localeCompare(a[1].lastAt))
+    .map(([id, r]) => ({ loc: locate(id), r }))
+    .filter((x): x is { loc: Located; r: (typeof progress)[string] } => x.loc !== null)
+    .slice(0, 5)
+
+  const graded = Object.entries(progress).filter(([id]) => locate(id)?.e.kind !== 'writing')
+  const sc = graded.reduce((a, [, r]) => a + r.score, 0)
+  const tt = graded.reduce((a, [, r]) => a + r.total, 0)
+  const accuracy = tt ? Math.round((sc / tt) * 100) : null
+
+  /* ---------- Sugerencias para hoy ---------- */
+  const suggestions: Suggestion[] = []
+  const examParts = sections
+    .filter((s) => s.slug === 'use-of-english' || s.slug === 'reading')
+    .flatMap((s) => s.parts.map((p) => ({ s, p, st: partStats(p, progress) })))
+
+  // 1. La parte del examen más floja (si hay datos)
+  const weakest = examParts
+    .filter((x) => x.st.pct !== null && x.st.pct < 75)
+    .sort((a, b) => (a.st.pct ?? 0) - (b.st.pct ?? 0))[0]
+  if (weakest) {
+    const next = weakest.p.exercises.find((e) => !progress[e.id]) ?? weakest.p.exercises[0]
+    suggestions.push({
+      icon: SECTION_ICON[weakest.s.slug],
+      title: `Refuerza ${partLabel(weakest.s, weakest.p)}`,
+      why: `Llevas un ${weakest.st.pct}% de aciertos. Repasa la guía y haz "${next.title}".`,
+      to: `/s/${weakest.s.slug}/${weakest.p.slug}/${next.id}?mode=practice`,
+    })
   }
 
-  const grammar = findSection('grammar')!
-  const vocab = findSection('vocabulary')!
+  // 2. Siguiente ejercicio sin hacer en el examen
+  const pending = examParts.find((x) => x !== weakest && x.p.exercises.some((e) => !progress[e.id]))
+  if (pending) {
+    const next = pending.p.exercises.find((e) => !progress[e.id])!
+    suggestions.push({
+      icon: SECTION_ICON[pending.s.slug],
+      title: `${partLabel(pending.s, pending.p)}: ${next.title}`,
+      why:
+        pending.st.done === 0
+          ? 'Aún no has practicado esta parte del examen.'
+          : `Te quedan ${pending.st.total - pending.st.done} ejercicios en esta parte.`,
+      to: `/s/${pending.s.slug}/${pending.p.slug}/${next.id}?mode=practice`,
+    })
+  }
+
+  // 3. Un tema de base sin empezar
+  const base = sections
+    .filter((s) => s.slug === 'grammar' || s.slug === 'vocabulary')
+    .flatMap((s) => s.parts.map((p) => ({ s, p })))
+    .find(({ p }) => p.exercises.every((e) => !progress[e.id]))
+  if (base) {
+    suggestions.push({
+      icon: SECTION_ICON[base.s.slug],
+      title: `${base.s.name}: ${base.p.name}`,
+      why: base.p.summary ?? base.p.nameEs,
+      to: `/s/${base.s.slug}/${base.p.slug}`,
+    })
+  }
+
+  // 4. Un writing si aún no hay ninguno
+  const writing = sections.find((s) => s.slug === 'writing')!
+  if (suggestions.length < 3 && !writing.parts.some((p) => p.exercises.some((e) => progress[e.id]))) {
+    suggestions.push({
+      icon: 'writing',
+      title: 'Writing: tu primer essay',
+      why: 'La Part 1 del Writing es obligatoria. Lee la estructura y escribe uno.',
+      to: '/s/writing/essay',
+    })
+  }
+
+  /* ---------- Actividad de los últimos 14 días ---------- */
+  const daySet = new Set(days)
+  const last14 = Array.from({ length: 14 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (13 - i))
+    return { d, active: daySet.has(dayKey(d)) }
+  })
+
+  const last = recent[0]
 
   return (
-    <div>
-      <section className="mb-8 sm:mb-10 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
-        <div className="max-w-2xl">
-          <h1 className="text-[2rem] sm:text-[2.6rem] leading-[1.1] font-bold tracking-[-0.025em] text-balance">
-            Prepara el B2 First parte por parte
-          </h1>
-          <p className="mt-3 text-ink-2 text-[1.05rem] leading-relaxed">
-            Cada parte del examen con su guía, ejercicios originales y la explicación en español de cada respuesta.
-          </p>
-        </div>
-        {doneCount > 0 && (
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <div>
-              <p className="text-2xl font-bold tabular-nums leading-none">{st}</p>
-              <p className="text-xs text-ink-3 mt-1">{st === 1 ? 'día seguido' : 'días seguidos'}</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold tabular-nums leading-none">{doneCount}</p>
-              <p className="text-xs text-ink-3 mt-1">ejercicios hechos</p>
-            </div>
-            {lastLink && (
-              <Link to={lastLink.to} className={btn('primary')} title={lastLink.where}>
-                Continuar con {lastLink.title}
-              </Link>
-            )}
-          </div>
-        )}
-      </section>
+    <div className="max-w-5xl">
+      <header className="mb-8">
+        <h1 className="text-[2rem] sm:text-[2.4rem] leading-[1.1] font-bold tracking-[-0.025em]">{greeting()}</h1>
+        <p className="mt-2 text-ink-2 text-[1.05rem]">
+          {done === 0
+            ? 'Aquí verás qué te conviene practicar cada día. Empieza por cualquiera de estas propuestas.'
+            : 'Esto es lo que te conviene practicar hoy.'}
+        </p>
+      </header>
 
-      <h2 className="text-lg font-bold mb-3">El examen</h2>
-      <Panel className="divide-y divide-line mb-10">
-        {PAPERS.map((paper) => (
-          <div key={paper.name} className={`grid md:grid-cols-[13rem_1fr] ${paper.cells[0].to ? '' : 'pb-4 sm:pb-0'}`}>
-            <div className="px-4 pt-4 md:py-5 md:border-r border-line">
-              <p className="font-bold leading-snug">{paper.name}</p>
-              <p className="text-sm text-ink-3">
-                {paper.time}
-                {!paper.cells[0].to && <span className="sm:hidden">, próximamente</span>}
-              </p>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_19rem] items-start">
+        <div className="grid gap-8 min-w-0">
+          {last && (
+            <Panel className="p-5 flex flex-wrap items-center gap-4">
+              <IconTile name={SECTION_ICON[last.loc.s.slug] ?? 'practice'} tone="ink" />
+              <div className="flex-1 min-w-[12rem]">
+                <p className="text-sm text-ink-3">Lo último que hiciste</p>
+                <p className="font-bold leading-snug">{last.loc.e.title}</p>
+                <p className="text-sm text-ink-2">{partLabel(last.loc.s, last.loc.p)}</p>
+              </div>
+              <Link to={`/s/${last.loc.s.slug}/${last.loc.p.slug}/${last.loc.e.id}?mode=practice`} className={btn('primary', 'sm')}>
+                Repetir
+              </Link>
+            </Panel>
+          )}
+
+          <section>
+            <h2 className="text-lg font-bold mb-3">Para hoy</h2>
+            <Panel className="divide-y divide-line">
+              {suggestions.slice(0, 3).map((sg) => (
+                <Link key={sg.to} to={sg.to} className="group flex items-center gap-4 px-4 sm:px-5 py-4 hover:bg-bg/60 transition-colors">
+                  <IconTile name={sg.icon} />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold leading-snug">{sg.title}</p>
+                    <p className="text-sm text-ink-2 mt-0.5">{sg.why}</p>
+                  </div>
+                  <Icon name="chevron" className="w-5 h-5 text-ink-3 group-hover:text-ink transition-colors shrink-0" />
+                </Link>
+              ))}
+            </Panel>
+          </section>
+
+          {recent.length > 0 && (
+            <section>
+              <h2 className="text-lg font-bold mb-3">Últimos ejercicios</h2>
+              <Panel className="divide-y divide-line">
+                {recent.map(({ loc, r }) => {
+                  const pct = Math.round((r.score / r.total) * 100)
+                  const isW = loc.e.kind === 'writing'
+                  return (
+                    <Link
+                      key={loc.e.id}
+                      to={`/s/${loc.s.slug}/${loc.p.slug}/${loc.e.id}?mode=practice`}
+                      className="flex items-center gap-4 px-4 sm:px-5 py-3 hover:bg-bg/60 transition-colors"
+                    >
+                      <Icon name={SECTION_ICON[loc.s.slug] ?? 'practice'} className="w-5 h-5 text-ink-3 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold truncate">{loc.e.title}</p>
+                        <p className="text-xs text-ink-3 truncate">{partLabel(loc.s, loc.p)}</p>
+                      </div>
+                      <span
+                        className={`text-sm font-bold tabular-nums ${
+                          isW ? 'text-ink-2' : pct >= 75 ? 'text-ok' : pct >= 50 ? 'text-warn' : 'text-bad'
+                        }`}
+                      >
+                        {r.score}/{r.total}
+                      </span>
+                    </Link>
+                  )
+                })}
+              </Panel>
+            </section>
+          )}
+        </div>
+
+        <aside className="grid gap-4">
+          <Panel className="p-5">
+            <div className="flex items-center gap-3">
+              <span className={`grid place-items-center w-11 h-11 rounded-full ${st > 0 ? 'bg-print-soft text-print' : 'bg-bg text-ink-3'}`}>
+                <Icon name="flame" className="w-6 h-6" />
+              </span>
+              <div>
+                <p className="text-2xl font-bold tabular-nums leading-none">
+                  {st} <span className="text-base font-semibold">{st === 1 ? 'día' : 'días'}</span>
+                </p>
+                <p className="text-sm text-ink-2 mt-1">{st > 0 ? 'seguidos practicando' : 'Practica hoy para empezar tu racha'}</p>
+              </div>
             </div>
-            <div
-              className={`${paper.cells[0].to ? 'grid' : 'hidden sm:grid'} grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-0.5 p-1.5 md:p-2`}
-            >
-              {paper.cells.map((c) => (
-                <ExamCell key={c.n} cell={c} progress={progress} />
+            <div className="mt-5 grid gap-1" style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}>
+              {last14.map(({ d, active }, i) => (
+                <span
+                  key={i}
+                  title={d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  className={`aspect-square rounded-[3px] ${active ? 'bg-print' : 'bg-line'} ${i === 13 ? 'ring-1 ring-offset-1 ring-ink-3' : ''}`}
+                />
               ))}
             </div>
-          </div>
-        ))}
-      </Panel>
+            <p className="mt-2 text-xs text-ink-3">Últimas dos semanas</p>
+          </Panel>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        {[grammar, vocab].map((sec) => {
-          const ex = sec.parts.flatMap((p) => p.exercises)
-          const done = ex.filter((e) => progress[e.id]).length
-          return (
-            <Link key={sec.slug} to={`/s/${sec.slug}`} className="group">
-              <Panel className="p-5 h-full group-hover:border-line-strong transition-colors">
-                <h2 className="text-lg font-bold">{sec.name}</h2>
-                <p className="text-ink-2 text-[0.95rem] mt-1 leading-relaxed">{sec.description}</p>
-                <div className="mt-4 flex items-center gap-3">
-                  <Meter value={(done / ex.length) * 100} className="flex-1" />
-                  <span className="text-xs text-ink-3 tabular-nums shrink-0">{`${sec.parts.length} temas, ${done}/${ex.length} hechos`}</span>
-                </div>
-              </Panel>
+          <Panel className="p-5 grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none">{done}</p>
+              <p className="text-sm text-ink-2 mt-1">de {allEx.length} hechos</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none">{accuracy === null ? '—' : `${accuracy}%`}</p>
+              <p className="text-sm text-ink-2 mt-1">de aciertos</p>
+            </div>
+            <Meter value={(done / allEx.length) * 100} className="col-span-2" />
+            <Link to="/progreso" className="col-span-2 text-sm font-semibold text-print hover:underline underline-offset-2">
+              Ver mi progreso completo
             </Link>
-          )
-        })}
-        <Panel className="p-5 !bg-ink !border-ink text-white">
-          <h2 className="text-lg font-bold">Simulacro completo</h2>
-          <p className="text-white/75 text-[0.95rem] mt-1 leading-relaxed">
-            Reading &amp; Use of English y Writing con el tiempo oficial y una nota estimada en la escala de Cambridge.
-          </p>
-          <Link to="/simulacro" className={`${btn('secondary', 'sm')} mt-4 !border-transparent`}>
-            Ver simulacros
-          </Link>
-        </Panel>
+          </Panel>
+
+          <Panel className="p-5 !bg-ink !border-ink text-white">
+            <p className="font-bold">¿Listo para medirte?</p>
+            <p className="text-white/75 text-sm mt-1 leading-relaxed">Haz un simulacro con el tiempo oficial y obtén una nota estimada.</p>
+            <Link to="/simulacro" className={`${btn('secondary', 'sm')} mt-4 !border-transparent`}>
+              Ir a simulacros
+            </Link>
+          </Panel>
+        </aside>
       </div>
     </div>
   )
