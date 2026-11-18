@@ -1,8 +1,12 @@
 import type { SectionInfo } from '../types'
 import { part1Exercises } from './uoe/part1'
+import { part1ExercisesB } from './uoe/part1b'
 import { part2Exercises } from './uoe/part2'
+import { part2ExercisesB } from './uoe/part2b'
 import { part3Exercises } from './uoe/part3'
+import { part3ExercisesB } from './uoe/part3b'
 import { part4Exercises } from './uoe/part4'
+import { part4ExercisesB } from './uoe/part4b'
 import { future, narrativeTenses, presentPerfect } from './grammar/tenses'
 import { conditionals, passive, reportedSpeech } from './grammar/structures'
 import { gerunds, modals, relatives } from './grammar/more'
@@ -54,7 +58,7 @@ export const sections: SectionInfo[] = [
             'Fijarse solo en el significado y olvidar la preposición que sigue.',
           ],
         },
-        exercises: part1Exercises,
+        exercises: [...part1Exercises, ...part1ExercisesB],
       },
       {
         slug: 'part-2',
@@ -87,7 +91,7 @@ export const sections: SectionInfo[] = [
             'Olvidar la preposición final de una estructura (focus ON, deal WITH).',
           ],
         },
-        exercises: part2Exercises,
+        exercises: [...part2Exercises, ...part2ExercisesB],
       },
       {
         slug: 'part-3',
@@ -119,7 +123,7 @@ export const sections: SectionInfo[] = [
             'Confundir -ed y -ing: bored (cómo te sientes) frente a boring (lo que te aburre).',
           ],
         },
-        exercises: part3Exercises,
+        exercises: [...part3Exercises, ...part3ExercisesB],
       },
       {
         slug: 'part-4',
@@ -152,7 +156,7 @@ export const sections: SectionInfo[] = [
             'Olvidar información de la frase original (un "not", un tiempo verbal).',
           ],
         },
-        exercises: part4Exercises,
+        exercises: [...part4Exercises, ...part4ExercisesB],
       },
     ],
   },
