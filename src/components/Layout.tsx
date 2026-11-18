@@ -27,6 +27,7 @@ const GROUPS: { title?: string; items: NavItem[] }[] = [
     title: 'El examen',
     items: [
       { to: '/examen', label: 'Formato y partes', icon: 'exam' },
+      { to: '/estrategia', label: 'Estrategia', icon: 'tips' },
       { to: '/s/use-of-english', label: 'Use of English', icon: 'uoe' },
       { to: '/s/reading', label: 'Reading', icon: 'reading' },
       { to: '/s/writing', label: 'Writing', icon: 'writing' },
@@ -175,7 +176,7 @@ export default function Layout() {
     }
   }, [open])
 
-  const inPractice = pathname.startsWith('/s/') || pathname === '/examen'
+  const inPractice = pathname.startsWith('/s/') || pathname === '/examen' || pathname === '/estrategia'
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[16.5rem_1fr]">

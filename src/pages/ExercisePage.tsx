@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { findPart, findSection } from '../data/sections'
 import type {
@@ -133,6 +133,22 @@ function Runner({ ex: original, mode, minutes, partUrl, nextUrl, position }: Run
     }
   }, [ex, n, mode])
 
+  // Ctrl/Cmd + Intro comprueba sin tener que ir al botón
+  const checkRef = useRef(check)
+  checkRef.current = () => {
+    if (!finishedRef.current && results === null) check()
+  }
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        checkRef.current()
+      }
+    }
+    window.addEventListener('keydown', h)
+    return () => window.removeEventListener('keydown', h)
+  }, [])
+
   const totalSeconds = minutes * 60
   const left = useCountdown(totalSeconds, mode === 'exam' && !finished, check)
 
@@ -190,6 +206,7 @@ function Runner({ ex: original, mode, minutes, partUrl, nextUrl, position }: Run
                 {blanks} {blanks === 1 ? 'pregunta' : 'preguntas'} sin responder
               </span>
             )}
+            <span className="hidden lg:inline text-xs text-ink-3 ml-auto">Ctrl + Intro para {mode === 'exam' ? 'entregar' : 'comprobar'}</span>
           </>
         )}
         {mode === 'practice' && showFeedback && (

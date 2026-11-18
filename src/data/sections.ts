@@ -144,7 +144,7 @@ export const sections: SectionInfo[] = [
         name: 'Key word transformation',
         nameEs: 'Transformaciones con palabra clave',
         questions: 6,
-        suggestedMinutes: 15,
+        suggestedMinutes: 12,
         guide: {
           format: [
             '6 ítems. Te dan una frase, una PALABRA CLAVE y una segunda frase incompleta.',
@@ -213,7 +213,7 @@ export const sections: SectionInfo[] = [
         name: 'Multiple choice',
         nameEs: 'Texto largo con preguntas de opción múltiple',
         questions: 6,
-        suggestedMinutes: 15,
+        suggestedMinutes: 13,
         guide: {
           format: [
             'Un texto largo (unas 550–650 palabras): un artículo, una novela o un relato en primera persona.',
@@ -247,7 +247,7 @@ export const sections: SectionInfo[] = [
         name: 'Gapped text',
         nameEs: 'Texto con frases que faltan',
         questions: 6,
-        suggestedMinutes: 15,
+        suggestedMinutes: 12,
         guide: {
           format: [
             'Un texto del que se han quitado 6 frases. Tienes 7 frases (A–G) para colocar: sobra una.',
@@ -278,7 +278,7 @@ export const sections: SectionInfo[] = [
         name: 'Multiple matching',
         nameEs: 'Emparejar enunciados con textos',
         questions: 10,
-        suggestedMinutes: 15,
+        suggestedMinutes: 10,
         guide: {
           format: [
             'Un texto dividido en secciones (A–D o A–E), o varios textos cortos.',
