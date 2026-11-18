@@ -13,8 +13,11 @@ import { gerunds, modals, relatives } from './grammar/more'
 import { collocations, phrasalVerbs, prepositions } from './vocabulary/words'
 import { confusingWords, expressions, falseFriends } from './vocabulary/traps'
 import { part5Exercises } from './reading/part5'
+import { part5ExercisesB } from './reading/part5b'
 import { part6Exercises } from './reading/part6'
+import { part6ExercisesB } from './reading/part6b'
 import { part7Exercises } from './reading/part7'
+import { part7ExercisesB } from './reading/part7b'
 import { article, essay, informalEmail } from './writing/types1'
 import { formalLetter, report, review } from './writing/types2'
 
@@ -228,7 +231,7 @@ export const sections: SectionInfo[] = [
             'Usar tu opinión o tu conocimiento del mundo en vez de lo que dice el texto.',
           ],
         },
-        exercises: part5Exercises,
+        exercises: [...part5Exercises, ...part5ExercisesB],
       },
       {
         slug: 'part-6',
@@ -259,7 +262,7 @@ export const sections: SectionInfo[] = [
             'Elegir una frase solo porque trata el mismo tema, sin comprobar las referencias.',
           ],
         },
-        exercises: part6Exercises,
+        exercises: [...part6Exercises, ...part6ExercisesB],
       },
       {
         slug: 'part-7',
@@ -289,7 +292,7 @@ export const sections: SectionInfo[] = [
             'Dedicar demasiado tiempo a una sola pregunta.',
           ],
         },
-        exercises: part7Exercises,
+        exercises: [...part7Exercises, ...part7ExercisesB],
       },
     ],
   },
