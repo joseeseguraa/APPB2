@@ -108,7 +108,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 - [ ] **F8 – Listening** P1–P4 (al final, cuando todo lo demás esté hecho)
 - [x] **F10 – Para compartir con amigos** (18-nov):
   - Bienvenida en 3 pasos con nombre (`appb2.user.v1`, `components/Welcome.tsx`). El nombre se cambia en Mi progreso.
-  - Enlace "Avísanos" en cada corrección (`lib/report.ts`). Si `REPORT_EMAIL` en `src/config.ts` está vacío, abre una incidencia en GitHub; si tiene un email, abre un correo.
+  - Enlace "Avísanos" en cada corrección (`lib/report.ts`). Los avisos llegan por correo a José (`REPORT_EMAIL` en `src/config.ts`). Si se vacía, abren una incidencia en GitHub.
   - App instalable y sin conexión con vite-plugin-pwa: manifest, service worker e iconos en `public/pwa-*.png`.
   - **Mis errores** (`/repaso`, `lib/review.ts`, `appb2.review.v1`): las preguntas falladas se repasan en 4 niveles (1, 3, 7 y 14 días). Gapped text y matching no entran porque dependen de todo el texto.
   - **Reto diario** (`/reto`, `appb2.daily.v1`): 10 preguntas al día (4 de UoE, 3 de Grammar, 3 de Vocabulary), iguales para todos según la fecha. Los fallos van a Mis errores.

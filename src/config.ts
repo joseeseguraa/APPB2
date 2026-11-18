@@ -8,4 +8,4 @@ export const REPO_URL = 'https://github.com/joseeseguraa/APPB2'
  * Si se deja vacío, los avisos abren una incidencia en GitHub (hace falta cuenta de GitHub).
  * Para recibirlos por email, escribe aquí tu dirección, por ejemplo 'tunombre@gmail.com'.
  */
-export const REPORT_EMAIL = ''
+export const REPORT_EMAIL = 'joseeseguraa1@gmail.com'
