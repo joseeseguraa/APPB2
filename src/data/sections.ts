@@ -22,10 +22,13 @@ import { collocations, phrasalVerbs, prepositions } from './vocabulary/words'
 import { confusingWords, expressions, falseFriends } from './vocabulary/traps'
 import { part5Exercises } from './reading/part5'
 import { part5ExercisesB } from './reading/part5b'
+import { part5ExercisesC } from './reading/part5c'
 import { part6Exercises } from './reading/part6'
 import { part6ExercisesB } from './reading/part6b'
+import { part6ExercisesC } from './reading/part6c'
 import { part7Exercises } from './reading/part7'
 import { part7ExercisesB } from './reading/part7b'
+import { part7ExercisesC } from './reading/part7c'
 import { article, essay, informalEmail } from './writing/types1'
 import { formalLetter, report, review } from './writing/types2'
 
@@ -242,7 +245,7 @@ export const sections: SectionInfo[] = [
             'Usar tu opinión o tu conocimiento del mundo en vez de lo que dice el texto.',
           ],
         },
-        exercises: [...part5Exercises, ...part5ExercisesB],
+        exercises: [...part5Exercises, ...part5ExercisesB, ...part5ExercisesC],
       },
       {
         slug: 'part-6',
@@ -273,7 +276,7 @@ export const sections: SectionInfo[] = [
             'Elegir una frase solo porque trata el mismo tema, sin comprobar las referencias.',
           ],
         },
-        exercises: [...part6Exercises, ...part6ExercisesB],
+        exercises: [...part6Exercises, ...part6ExercisesB, ...part6ExercisesC],
       },
       {
         slug: 'part-7',
@@ -303,7 +306,7 @@ export const sections: SectionInfo[] = [
             'Dedicar demasiado tiempo a una sola pregunta.',
           ],
         },
-        exercises: [...part7Exercises, ...part7ExercisesB],
+        exercises: [...part7Exercises, ...part7ExercisesB, ...part7ExercisesC],
       },
     ],
   },
