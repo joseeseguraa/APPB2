@@ -8,6 +8,7 @@ import NotFound from './pages/NotFound'
 import ExamPage from './pages/ExamPage'
 import ReviewPage from './pages/ReviewPage'
 import DailyPage from './pages/DailyPage'
+import { FlashcardsHome, FlashcardsSession } from './pages/FlashcardsPage'
 import ProgressPage from './pages/ProgressPage'
 import { MockHome, MockRue, MockWriting } from './pages/MockPages'
 
@@ -22,6 +23,8 @@ export default function App() {
         <Route path="examen" element={<ExamPage />} />
         <Route path="repaso" element={<ReviewPage />} />
         <Route path="reto" element={<DailyPage />} />
+        <Route path="tarjetas" element={<FlashcardsHome />} />
+        <Route path="tarjetas/:deck" element={<FlashcardsSession />} />
         <Route path="progreso" element={<ProgressPage />} />
         <Route path="simulacro" element={<MockHome />} />
         <Route path="simulacro/:n/rue" element={<MockRue />} />

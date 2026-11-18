@@ -6,6 +6,8 @@ import type { Exercise, PartInfo, SectionInfo } from '../types'
 import { partStats } from './ExamPage'
 import { dateKey, dueKeys, loadDaily } from '../lib/review'
 import { loadUser } from '../lib/user'
+import { decks } from '../data/flashcards'
+import { deckStats } from '../lib/flashcards'
 
 interface Located {
   s: SectionInfo
@@ -66,6 +68,14 @@ export default function Home() {
   const daily = loadDaily()[dateKey()]
   if (!daily)
     suggestions.push({ icon: 'daily', title: 'Reto diario', why: '10 preguntas variadas, unos 5 minutos. Cambia cada día.', to: '/reto' })
+  const cardsDue = decks.reduce((a, d) => a + deckStats(d).due, 0)
+  if (cardsDue > 0)
+    suggestions.push({
+      icon: 'cards',
+      title: `Repasa ${cardsDue} ${cardsDue === 1 ? 'tarjeta' : 'tarjetas'} de vocabulario`,
+      why: 'Tarjetas que te tocan hoy para no olvidarlas.',
+      to: '/tarjetas',
+    })
   if (due > 0)
     suggestions.push({
       icon: 'review',

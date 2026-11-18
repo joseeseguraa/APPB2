@@ -116,3 +116,21 @@ describe('barajar opciones', () => {
         }
   })
 })
+
+import { decks } from './data/flashcards'
+import { cardKey, deckStats, rateCard, sessionCards } from './lib/flashcards'
+
+describe('tarjetas de vocabulario', () => {
+  it('los mazos no tienen tarjetas repetidas', () => {
+    for (const d of decks) expect(new Set(d.cards.map((c) => c.en)).size, d.slug).toBe(d.cards.length)
+  })
+  it('la sesión incluye nuevas y, tras valorarlas, programa el siguiente repaso', () => {
+    const d = decks[0]
+    expect(sessionCards(d)).toHaveLength(10)
+    const k = cardKey(d.slug, d.cards[0].en)
+    expect(rateCard(k, 'good').level).toBe(1)
+    expect(rateCard(k, 'easy').level).toBe(3)
+    expect(rateCard(k, 'again').level).toBe(0)
+    expect(deckStats(d).fresh).toBe(d.cards.length - 1)
+  })
+})

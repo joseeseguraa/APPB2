@@ -20,6 +20,7 @@ const GROUPS: { title?: string; items: NavItem[] }[] = [
     items: [
       { to: '/reto', label: 'Reto diario', icon: 'daily' },
       { to: '/repaso', label: 'Mis errores', icon: 'review' },
+      { to: '/tarjetas', label: 'Tarjetas', icon: 'cards' },
     ],
   },
   {

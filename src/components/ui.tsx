@@ -169,6 +169,8 @@ export type IconName =
   | 'daily'
   | 'flag'
   | 'copy'
+  | 'cards'
+  | 'tips'
 
 const ICONS: Record<IconName, ReactNode> = {
   home: <path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4v-9.5Z" />,
@@ -253,6 +255,18 @@ const ICONS: Record<IconName, ReactNode> = {
     </>
   ),
   flag: <path d="M5.5 21V4.5M5.5 4.5h11l-2 4 2 4h-11" />,
+  cards: (
+    <>
+      <rect x="7" y="7" width="13" height="13" rx="2" />
+      <path d="M17 7V5.5A1.5 1.5 0 0 0 15.5 4h-10A1.5 1.5 0 0 0 4 5.5v10A1.5 1.5 0 0 0 5.5 17H7" />
+    </>
+  ),
+  tips: (
+    <>
+      <path d="M9 18h6M10 21h4" />
+      <path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3Z" />
+    </>
+  ),
   copy: (
     <>
       <rect x="8.5" y="8.5" width="11" height="11" rx="2" />
