@@ -146,7 +146,13 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 - [x] **F15 – Mejoras para los dos niveles** (19-nov):
   - **Buscar** (`/buscar`, `pages/SearchPage.tsx`): busca sin tildes en la teoría de Grammar y Vocabulary, en las guías de cada parte y en las tarjetas del nivel activo.
   - **Tiempo del modo examen a elegir**: en cada ejercicio, 75 %, 100 % o 150 % del tiempo recomendado (parámetro `?t=` en la URL).
-- [ ] **F11 – Ranking entre amigos** (al final, a petición de José): necesita un servidor (Supabase o Firebase). Hay que decidirlo con él antes.
+- [ ] **F11 – Ranking entre amigos** (al final, a petición de José). Hablado el 19-nov, sin decidir todavía:
+  - Problema: hoy todo va en el navegador, así que la misma persona en dos dispositivos cuenta como dos.
+  - Opciones: solo ranking sin cuentas (duplicados), código personal para enlazar dispositivos, o iniciar sesión con Google o enlace al email.
+  - Propuesta de Claude: Supabase (gratis) con inicio de sesión opcional. Quien entre sincroniza todo su progreso y sale en el ranking; quien no, sigue como ahora.
+  - La web sigue en GitHub Pages; Supabase es un servicio aparte al que llama el navegador. En el repo solo va la clave pública (anon key); la seguridad la dan las reglas RLS (cada uno solo ve y cambia lo suyo; del ranking solo nombre y puntos). La clave secreta nunca va al repo.
+  - Se puede cerrar a solo invitados: registro libre desactivado y acceso solo para los emails que añada José. El panel de Supabase solo lo ve él.
+  - Pendiente de José: crear la cuenta de Supabase (pasar URL del proyecto y anon key), decir qué cuenta en el ranking (p. ej. aciertos de la semana o nota del último simulacro) y si B2 y C1 van por separado.
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
@@ -177,6 +183,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-19 | C1 Advanced, tanda 1: selector de nivel, progreso separado por nivel, formato C1, guías de las 8 partes y 12 ejercicios. 469 tests | F14 tanda 2: más Reading & Use of English de C1 |
 | 2026-11-19 | C1 completo con la misma cantidad que B2: Reading & UoE, Writing, Grammar, Vocabulary, tarjetas, estrategia y simulacros. Comprobados en el navegador los 400 ejercicios de los dos niveles. 866 tests | Mejoras para aprender en los dos niveles |
 | 2026-11-19 | Buscador de teoría y tarjetas, y tiempo a elegir en el modo examen (B2 y C1). 866 tests | Lo que pida José (Speaking aplazado) |
+| 2026-11-19 | Conversación sobre el ranking: dispositivos, alojamiento en GitHub Pages + Supabase y acceso solo con invitación (sin código) | José decide si se hace y qué cuenta en el ranking |
 
 ## 7. Comandos
 ```
