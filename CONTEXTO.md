@@ -146,6 +146,11 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 - [x] **F15 – Mejoras para los dos niveles** (19-nov):
   - **Buscar** (`/buscar`, `pages/SearchPage.tsx`): busca sin tildes en la teoría de Grammar y Vocabulary, en las guías de cada parte y en las tarjetas del nivel activo.
   - **Tiempo del modo examen a elegir**: en cada ejercicio, 75 %, 100 % o 150 % del tiempo recomendado (parámetro `?t=` en la URL).
+- [x] **F16 – Practicar mejor** (19-nov, para B2 y C1):
+  - **Práctica a medida** (`/practica`, `pages/PracticePage.tsx`): se eligen partes de Use of English y temas de Grammar y Vocabulary, cuántas preguntas (10, 20 o 30) y cuáles (todas, de ejercicios sin hacer o falladas en el último intento o en Mis errores). Las preguntas se reparten entre lo elegido (`pickBalanced` en `lib/cards.ts`). Reading no entra porque depende del texto. Los fallos van a Mis errores. La última selección se recuerda (`appb2.practice.v1`, por nivel).
+  - En Mi progreso, "Dónde más fallas" tiene un botón que abre la práctica a medida con esas partes y solo las falladas (`/practica?f=failed&p=seccion/parte,...`).
+  - En las preguntas sueltas (reto, práctica a medida y Mis errores), al corregir se puede abrir la teoría del tema o la guía de la parte sin salir de la sesión (`components/TheoryView.tsx`, compartido con `PartPage`).
+  - En el reto y la práctica a medida, botón "Guardar en Mis errores" para las preguntas acertadas sin estar seguro.
 - [ ] **F11 – Ranking entre amigos** (al final, a petición de José). Hablado el 19-nov, sin decidir todavía:
   - Problema: hoy todo va en el navegador, así que la misma persona en dos dispositivos cuenta como dos.
   - Opciones: solo ranking sin cuentas (duplicados), código personal para enlazar dispositivos, o iniciar sesión con Google o enlace al email.
@@ -156,7 +161,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 - [ ] **F9 – Extras:** más contenido (hecho en parte el 18-nov: UoE 10 por parte, Reading 6 por parte, Grammar 12 temas, Vocabulary 10 temas), corrección con IA, repetición espaciada
 
 ## 5. Estado actual
-- **Fase:** B2 y C1 completos (salvo Speaking, Listening y ranking, aplazados). Siguiente: mejoras para aprender que sirvan a los dos niveles, o lo que pida José.
+- **Fase:** B2 y C1 completos (salvo Speaking, Listening y ranking, aplazados). F16 hecho. Siguiente: más mejoras para aprender en los dos niveles, o lo que pida José.
 - **Contenido actual:** 197 ejercicios o tareas: UoE 54 (13 en las Parts 1–3 y 15 en la Part 4), Reading 24 (8 por parte), Grammar 48 (16 temas), Vocabulary 48 (16 temas) y Writing 24 (los 6 tipos del B2 First adulto). Además, 6 simulacros y 212 tarjetas en 7 mazos.
 - **Contenido C1:** 202 ejercicios o tareas: UoE 54, Reading 32 (8 por parte, 4 partes), Grammar 48 (16 temas), Vocabulary 48 (16 temas) y Writing 20 (los 5 tipos del C1). 6 simulacros y 210 tarjetas en 7 mazos.
 - **Preferencia (18-nov):** nada de logros, compartir resultados ni funciones de "enganche". Solo cosas que ayuden a aprender.
@@ -184,6 +189,7 @@ Inspirado en la **hoja de respuestas de Cambridge**. Las opciones se ven como la
 | 2026-11-19 | C1 completo con la misma cantidad que B2: Reading & UoE, Writing, Grammar, Vocabulary, tarjetas, estrategia y simulacros. Comprobados en el navegador los 400 ejercicios de los dos niveles. 866 tests | Mejoras para aprender en los dos niveles |
 | 2026-11-19 | Buscador de teoría y tarjetas, y tiempo a elegir en el modo examen (B2 y C1). 866 tests | Lo que pida José (Speaking aplazado) |
 | 2026-11-19 | Conversación sobre el ranking: dispositivos, alojamiento en GitHub Pages + Supabase y acceso solo con invitación (sin código) | José decide si se hace y qué cuenta en el ranking |
+| 2026-11-19 | F16: práctica a medida, enlace desde los puntos débiles, teoría dentro de las sesiones de preguntas y guardar acertadas en Mis errores (B2 y C1). 870 tests. Revisado en el navegador en escritorio y móvil | Más mejoras para aprender o lo que pida José (ranking aplazado) |
 
 ## 7. Comandos
 ```

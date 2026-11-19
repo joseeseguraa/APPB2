@@ -127,6 +127,17 @@ export default function ProgressPage() {
                 </Link>
               ))}
             </Panel>
+            {weak.some((w) => w.sectionSlug !== 'reading') && (
+              <Link
+                to={`/practica?f=failed&p=${weak
+                  .filter((w) => w.sectionSlug !== 'reading')
+                  .map((w) => `${w.sectionSlug}/${w.partSlug}`)
+                  .join(',')}`}
+                className={`${btn('secondary', 'sm')} mt-3`}
+              >
+                Practicar lo que fallaste en estas partes
+              </Link>
+            )}
           </section>
         )}
 

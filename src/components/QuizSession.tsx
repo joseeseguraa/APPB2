@@ -5,6 +5,8 @@ import { checkAll, shuffleOptions } from '../lib/exercise'
 import type { Exercise } from '../types'
 import { ExerciseBody } from '../pages/ExercisePage'
 import { btn, Meter, Panel } from './ui'
+import { addMistake } from '../lib/review'
+import { Guide, Theory } from './TheoryView'
 
 interface Props {
   cards: Card[]
@@ -14,6 +16,8 @@ interface Props {
   onFinish?: (score: number) => void
   /** contenido extra en la pantalla final */
   endExtra?: ReactNode
+  /** botón para guardar en Mis errores una pregunta acertada (por si se acertó de suerte) */
+  allowSave?: boolean
 }
 
 /** Nº de opciones de una tarjeta de una sola pregunta (0 si se escribe). */
@@ -31,11 +35,12 @@ function optionCount(ex: Exercise): number {
 }
 
 /** Sesión de preguntas sueltas, una a una, con corrección inmediata. */
-export default function QuizSession({ cards, onAnswer, onFinish, endExtra }: Props) {
+export default function QuizSession({ cards, onAnswer, onFinish, endExtra, allowSave }: Props) {
   const [i, setI] = useState(0)
   const [value, setValue] = useState<string[]>([''])
   const [result, setResult] = useState<boolean[] | null>(null)
   const [log, setLog] = useState<boolean[]>([])
+  const [saved, setSaved] = useState(false)
   // opciones barajadas una vez por sesión
   const [shuffled] = useState(() => cards.map((c) => shuffleOptions(c.ex)))
   const done = i >= cards.length
@@ -100,6 +105,7 @@ export default function QuizSession({ cards, onAnswer, onFinish, endExtra }: Pro
     setLog(newLog)
     setResult(null)
     setValue([''])
+    setSaved(false)
     setI(i + 1)
     if (i + 1 >= cards.length) onFinish?.(newLog.filter(Boolean).length)
     window.scrollTo(0, 0)
@@ -142,6 +148,40 @@ export default function QuizSession({ cards, onAnswer, onFinish, endExtra }: Pro
         disabled={result !== null}
         onChange={(_, v) => setValue([v])}
       />
+      {result !== null && (
+        <div className="mt-5 grid gap-3">
+          {allowSave && result[0] && (
+            <div className="flex flex-wrap items-center gap-3">
+              {saved ? (
+                <span className="text-sm text-ok font-semibold">Guardada en Mis errores: te saldrá mañana.</span>
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      addMistake(card.exId, card.q)
+                      setSaved(true)
+                    }}
+                    className={btn('secondary', 'sm')}
+                  >
+                    Guardar en Mis errores
+                  </button>
+                  <span className="text-sm text-ink-3">Si la has acertado sin estar seguro.</span>
+                </>
+              )}
+            </div>
+          )}
+          {(card.part.theory || card.part.guide) && (
+            <details key={card.key} className="group bg-paper border border-line rounded-[var(--radius-panel)]">
+              <summary className="cursor-pointer select-none px-4 sm:px-5 py-3 font-semibold text-[0.95rem] hover:bg-bg/60 rounded-[var(--radius-panel)]">
+                {card.part.theory ? `Repasar la teoría: ${card.part.name}` : `Ver la guía de la Part ${card.part.number}`}
+              </summary>
+              <div className="px-4 sm:px-5 pb-6 pt-3 border-t border-line">
+                {card.part.theory ? <Theory blocks={card.part.theory} /> : card.part.guide && <Guide guide={card.part.guide} />}
+              </div>
+            </details>
+          )}
+        </div>
+      )}
       <div className="sticky bottom-[calc(3.9rem+env(safe-area-inset-bottom))] sm:bottom-0 z-20 mt-6 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 py-3 bg-bg/95 backdrop-blur border-t border-line flex gap-2 items-center">
         {result === null ? (
           <>

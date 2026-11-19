@@ -26,6 +26,7 @@ export default function DailyPage() {
         <PageHeader icon="daily" title="Reto diario" />
         <QuizSession
           cards={cards}
+          allowSave
           onAnswer={(c, ok) => !ok && addMistake(c.exId, c.q)}
           onFinish={(score) => {
             // se guarda el primer intento del día (o una mejora)

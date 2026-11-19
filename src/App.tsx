@@ -10,6 +10,7 @@ import StrategyPage from './pages/StrategyPage'
 import SearchPage from './pages/SearchPage'
 import ReviewPage from './pages/ReviewPage'
 import DailyPage from './pages/DailyPage'
+import PracticePage from './pages/PracticePage'
 import { FlashcardsHome, FlashcardsSession } from './pages/FlashcardsPage'
 import ProgressPage from './pages/ProgressPage'
 import { MockHome, MockRue, MockWriting } from './pages/MockPages'
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="buscar" element={<SearchPage />} />
         <Route path="repaso" element={<ReviewPage />} />
         <Route path="reto" element={<DailyPage />} />
+        <Route path="practica" element={<PracticePage />} />
         <Route path="tarjetas" element={<FlashcardsHome />} />
         <Route path="tarjetas/:deck" element={<FlashcardsSession />} />
         <Route path="progreso" element={<ProgressPage />} />

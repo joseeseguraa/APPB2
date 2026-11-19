@@ -22,6 +22,7 @@ const GROUPS: { title?: string; items: NavItem[] }[] = [
     title: 'Cada día',
     items: [
       { to: '/reto', label: 'Reto diario', icon: 'daily' },
+      { to: '/practica', label: 'Práctica a medida', icon: 'practice' },
       { to: '/repaso', label: 'Mis errores', icon: 'review' },
       { to: '/tarjetas', label: 'Tarjetas', icon: 'cards' },
     ],

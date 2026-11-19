@@ -133,3 +133,60 @@ export function dailyCards(date: string, count = 10): Card[] {
   }
   return picked.slice(0, count)
 }
+
+/* ---------- Práctica a medida ---------- */
+
+export type PracticeFilter = 'all' | 'new' | 'failed'
+
+/** Clave de una parte o tema para la práctica a medida: "seccion/parte". */
+export function partKey(section: SectionInfo, part: PartInfo): string {
+  return `${section.slug}/${part.slug}`
+}
+
+/** Preguntas sueltas que se pueden practicar fuera de su texto (sin Reading, que depende del texto). */
+export function practiceCards(): Card[] {
+  return allCards().filter((c) => c.source.kind !== 'reading-mc')
+}
+
+/**
+ * Filtra las preguntas de la práctica a medida.
+ * - new: ejercicios que todavía no se han hecho nunca.
+ * - failed: preguntas falladas en el último intento del ejercicio o pendientes en Mis errores.
+ */
+export function filterCards(
+  cards: Card[],
+  filter: PracticeFilter,
+  progress: Record<string, { wrong: number[] }>,
+  review: Record<string, unknown>,
+): Card[] {
+  if (filter === 'new') return cards.filter((c) => !progress[c.exId])
+  if (filter === 'failed') return cards.filter((c) => progress[c.exId]?.wrong.includes(c.q) || c.key in review)
+  return cards
+}
+
+/** Elige n preguntas al azar, repartidas lo más posible entre las partes o temas elegidos. */
+export function pickBalanced(cards: Card[], n: number, rnd: () => number = Math.random): Card[] {
+  const groups = new Map<string, Card[]>()
+  for (const c of cards) {
+    const k = partKey(c.section, c.part)
+    groups.set(k, [...(groups.get(k) ?? []), c])
+  }
+  const lists = [...groups.values()].map((l) => [...l])
+  const picked: Card[] = []
+  // por turnos: una pregunta de cada parte hasta llegar a n
+  while (picked.length < n && lists.some((l) => l.length)) {
+    for (let i = lists.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1))
+      ;[lists[i], lists[j]] = [lists[j], lists[i]]
+    }
+    for (const l of lists) {
+      if (picked.length >= n || !l.length) continue
+      picked.push(l.splice(Math.floor(rnd() * l.length), 1)[0])
+    }
+  }
+  for (let i = picked.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1))
+    ;[picked[i], picked[j]] = [picked[j], picked[i]]
+  }
+  return picked
+}
